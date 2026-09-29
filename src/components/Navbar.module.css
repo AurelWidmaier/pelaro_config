@@ -1,0 +1,119 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(36, 72, 85, 0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(251, 233, 208, 0.08);
+}
+
+.bar {
+  height: var(--nav-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--color-cream);
+  letter-spacing: -0.02em;
+}
+
+.desktopNav {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.link {
+  color: rgba(251, 233, 208, 0.75);
+  font-weight: 500;
+  font-size: 0.95rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--color-cream);
+  background: rgba(251, 233, 208, 0.08);
+}
+
+.linkActive {
+  color: var(--color-dark);
+  background: var(--color-cream);
+}
+
+.linkActive:hover {
+  color: var(--color-dark);
+  background: var(--color-cream);
+}
+
+.burger {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.burgerLine {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--color-cream);
+  margin-inline: auto;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.burgerLineOpenTop {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.burgerLineOpenMid {
+  opacity: 0;
+}
+
+.burgerLineOpenBottom {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.mobileNav {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  padding: 4px 20px 16px;
+  gap: 4px;
+}
+
+.mobileLink {
+  color: rgba(251, 233, 208, 0.8);
+  font-weight: 500;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+}
+
+.mobileLink:hover {
+  background: rgba(251, 233, 208, 0.08);
+}
+
+@media (min-width: 720px) {
+  .desktopNav {
+    display: flex;
+  }
+
+  .burger {
+    display: none;
+  }
+
+  .mobileNav {
+    display: none;
+  }
+}

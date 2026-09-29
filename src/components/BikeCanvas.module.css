@@ -1,0 +1,31 @@
+.canvas {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 5 / 3;
+  overflow: hidden;
+}
+
+.base {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.layer {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  height: auto;
+  pointer-events: none;
+}
+
+.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  border: 1.5px dashed rgba(36, 72, 85, 0.3);
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- PLACEHOLDER ASSET – Laufräder: Alltag -->
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#2b2b2b" stroke-width="26" />
+  <circle cx="200" cy="200" r="140" fill="none" stroke="#874F41" stroke-width="6" />
+  <circle cx="200" cy="200" r="22" fill="#874F41" />
+  <g stroke="#874F41" stroke-width="4">
+    <line x1="200" y1="200" x2="200" y2="62" />
+    <line x1="200" y1="200" x2="319" y2="131" />
+    <line x1="200" y1="200" x2="319" y2="269" />
+    <line x1="200" y1="200" x2="200" y2="338" />
+    <line x1="200" y1="200" x2="81" y2="269" />
+    <line x1="200" y1="200" x2="81" y2="131" />
+  </g>
+</svg>

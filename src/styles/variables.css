@@ -1,0 +1,36 @@
+:root {
+  /* Brand colors */
+  --color-dark: #244855;
+  --color-dark-soft: #2f5967;
+  --color-accent: #e64833;
+  --color-accent-soft: #f06c59;
+  --color-brown: #874f41;
+  --color-sage: #90aead;
+  --color-cream: #fbe9d0;
+  --color-cream-dim: #f1dcb9;
+
+  /* Semantic aliases */
+  --bg-page: var(--color-cream);
+  --bg-dark: var(--color-dark);
+  --text-on-dark: var(--color-cream);
+  --text-on-light: var(--color-dark);
+  --text-muted: #5b7480;
+
+  /* Typography */
+  --font-heading: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-body: 'Inter', 'Segoe UI', sans-serif;
+
+  /* Radii & shadow */
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 32px;
+  --shadow-soft: 0 24px 60px -28px rgba(36, 72, 85, 0.45);
+  --shadow-card: 0 12px 30px -16px rgba(36, 72, 85, 0.3);
+
+  /* Layout */
+  --container-width: 1140px;
+  --nav-height: 64px;
+
+  /* Motion */
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}

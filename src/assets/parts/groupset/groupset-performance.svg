@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- PLACEHOLDER ASSET – Schaltgruppe: Performance -->
+  <circle cx="100" cy="100" r="46" fill="none" stroke="#E64833" stroke-width="9" />
+  <circle cx="100" cy="100" r="32" fill="none" stroke="#E64833" stroke-width="5" />
+  <circle cx="100" cy="100" r="18" fill="none" stroke="#E64833" stroke-width="4" />
+  <circle cx="100" cy="100" r="7" fill="#E64833" />
+</svg>

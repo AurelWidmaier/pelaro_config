@@ -1,0 +1,8 @@
+.page {
+  min-height: calc(100vh - var(--nav-height));
+  background: var(--bg-page);
+}
+
+.progressBar {
+  padding-top: 24px;
+}

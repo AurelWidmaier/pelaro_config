@@ -1,0 +1,18 @@
+.wrap {
+  min-height: calc(100vh - var(--nav-height));
+  display: flex;
+  align-items: center;
+  padding-block: 80px;
+}
+
+.title {
+  font-size: clamp(2rem, 6vw, 3rem);
+  color: var(--color-dark);
+  margin-block: 16px 12px;
+}
+
+.text {
+  color: var(--text-muted);
+  max-width: 50ch;
+  font-size: 1.05rem;
+}

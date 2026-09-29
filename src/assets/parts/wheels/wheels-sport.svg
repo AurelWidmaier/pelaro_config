@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- PLACEHOLDER ASSET – Laufräder: Sport -->
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#1c1c1c" stroke-width="24" />
+  <circle cx="200" cy="200" r="150" fill="none" stroke="#244855" stroke-width="10" />
+  <circle cx="200" cy="200" r="20" fill="#244855" />
+  <g stroke="#244855" stroke-width="7" stroke-linecap="round">
+    <line x1="200" y1="200" x2="200" y2="68" />
+    <line x1="200" y1="200" x2="315" y2="140" />
+    <line x1="200" y1="200" x2="315" y2="260" />
+    <line x1="200" y1="200" x2="200" y2="332" />
+    <line x1="200" y1="200" x2="85" y2="260" />
+  </g>
+</svg>

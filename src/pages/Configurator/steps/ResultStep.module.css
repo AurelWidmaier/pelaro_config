@@ -1,0 +1,86 @@
+.layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+}
+
+.visual {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+}
+
+.summary {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-block: 14px;
+  border-bottom: 1px solid rgba(36, 72, 85, 0.1);
+}
+
+.rowLabel {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.rowName {
+  display: block;
+  font-weight: 600;
+  color: var(--color-dark);
+  margin-top: 2px;
+}
+
+.rowPrice {
+  font-weight: 600;
+  color: var(--color-dark);
+}
+
+.totalRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.totalPrice {
+  color: var(--color-dark);
+}
+
+.totalOver {
+  color: var(--color-accent);
+}
+
+.budgetNote {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+@media (min-width: 860px) {
+  .layout {
+    grid-template-columns: 1.1fr 1fr;
+    align-items: start;
+  }
+}

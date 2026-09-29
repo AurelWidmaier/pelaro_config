@@ -1,0 +1,68 @@
+import { useConfigurator } from '../../../context/ConfiguratorContext'
+import { getPriceBracket, suggestGroupsets } from '../../../config/parts'
+import { OptionCard } from '../../../components/OptionCard'
+import { BudgetBar } from '../../../components/BudgetBar'
+import { PriceBracketNote } from '../../../components/PriceBracketNote'
+import { StepShell } from '../StepShell'
+import styles from './OptionGrid.module.css'
+
+const KIND_LABEL = {
+  'mechanisch-2x': '2x mechanisch',
+  'mechanisch-1x': '1x mechanisch',
+  elektronisch: 'Elektronisch',
+} as const
+
+export function GroupsetStep() {
+  const { bikeType, budget, totalPrice, groupsetId, selectGroupset, canGoNext, goNext, goBack } =
+    useConfigurator()
+
+  if (!bikeType) {
+    return (
+      <StepShell eyebrow="Schritt 4 von 5" title="Wähle deine Schaltgruppe">
+        <p>Bitte wähle zuerst einen Bike-Typ aus.</p>
+        <button type="button" className="btn btn-ghost" onClick={goBack} style={{ marginTop: 16 }}>
+          Zurück
+        </button>
+      </StepShell>
+    )
+  }
+
+  const options = suggestGroupsets(bikeType, budget)
+  const bracket = getPriceBracket('groupset', budget)
+  const otherTotal = totalPrice - (options.find((o) => o.id === groupsetId)?.price ?? 0)
+
+  return (
+    <StepShell
+      eyebrow="Schritt 4 von 5"
+      title="Wähle deine Schaltgruppe"
+      intro="Die Schaltgruppe sorgt dafür, dass du sauber und leicht Gänge wechseln kannst – höhere Stufen schalten präziser und wiegen weniger."
+      footer={
+        <>
+          <button type="button" className="btn btn-ghost" onClick={goBack}>
+            Zurück
+          </button>
+          <button type="button" className="btn btn-primary" onClick={goNext} disabled={!canGoNext}>
+            Weiter
+          </button>
+        </>
+      }
+    >
+      <div className={styles.budgetRow}>
+        <BudgetBar budget={budget} spent={totalPrice} />
+      </div>
+      <PriceBracketNote label="eine Schaltgruppe" min={bracket.min} max={bracket.max} />
+      <div className={styles.grid} style={{ marginTop: 20 }}>
+        {options.map((option) => (
+          <OptionCard
+            key={option.id}
+            option={option}
+            badge={KIND_LABEL[option.kind]}
+            selected={option.id === groupsetId}
+            onSelect={selectGroupset}
+            overBudget={otherTotal + option.price > budget}
+          />
+        ))}
+      </div>
+    </StepShell>
+  )
+}

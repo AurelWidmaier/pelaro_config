@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- PLACEHOLDER ASSET – Laufräder: Aero-Carbon -->
+  <circle cx="200" cy="200" r="170" fill="none" stroke="#111111" stroke-width="22" />
+  <circle cx="200" cy="200" r="145" fill="none" stroke="#E64833" stroke-width="34" opacity="0.9" />
+  <circle cx="200" cy="200" r="18" fill="#E64833" />
+  <g stroke="#111111" stroke-width="8" stroke-linecap="round">
+    <line x1="200" y1="200" x2="200" y2="90" />
+    <line x1="200" y1="200" x2="298" y2="252" />
+    <line x1="200" y1="200" x2="102" y2="252" />
+  </g>
+</svg>

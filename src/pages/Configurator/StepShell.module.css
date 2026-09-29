@@ -1,0 +1,32 @@
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-block: 28px 60px;
+}
+
+.title {
+  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  color: var(--color-dark);
+  margin-top: 8px;
+}
+
+.intro {
+  color: var(--text-muted);
+  max-width: 60ch;
+  font-size: 0.98rem;
+}
+
+.body {
+  margin-top: 8px;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(36, 72, 85, 0.1);
+}

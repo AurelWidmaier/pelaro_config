@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600">
+  <!-- PLACEHOLDER ASSET – Rennrad, Alu -->
+  <g fill="none" stroke="#90AEAD" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M225 430 L440 430 L405 190 L225 430" />
+    <path d="M405 190 L695 145 L722 268 L440 430" />
+    <path d="M695 145 L722 268" />
+    <path d="M722 268 L775 430" />
+  </g>
+  <rect x="373" y="178" width="68" height="15" rx="7" fill="#90AEAD" transform="rotate(-9 407 186)" />
+  <line x1="407" y1="186" x2="407" y2="232" stroke="#90AEAD" stroke-width="11" stroke-linecap="round" />
+  <path d="M695 145 C 668 140, 648 128, 638 116" stroke="#90AEAD" stroke-width="9" stroke-linecap="round" fill="none" />
+  <circle cx="638" cy="116" r="6" fill="#90AEAD" />
+  <circle cx="440" cy="430" r="26" fill="none" stroke="#244855" stroke-width="8" />
+  <line x1="440" y1="430" x2="482" y2="462" stroke="#244855" stroke-width="8" stroke-linecap="round" />
+  <circle cx="225" cy="430" r="140" fill="none" stroke="#244855" stroke-width="2" stroke-dasharray="6 8" opacity="0.35" />
+  <circle cx="775" cy="430" r="140" fill="none" stroke="#244855" stroke-width="2" stroke-dasharray="6 8" opacity="0.35" />
+  <text x="500" y="580" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#244855" opacity="0.45">Platzhalter – Rennrad Alu</text>
+</svg>

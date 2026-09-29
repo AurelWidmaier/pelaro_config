@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600">
+  <!-- PLACEHOLDER ASSET – Hardtail-MTB, Carbon -->
+  <defs>
+    <linearGradient id="carbonGradMtb" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#244855" />
+      <stop offset="100%" stop-color="#0f2229" />
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="url(#carbonGradMtb)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M200 445 L420 445 L390 215 L200 445" />
+    <path d="M390 215 L650 200 L675 320 L420 445" />
+  </g>
+  <g stroke="#244855" stroke-width="9" stroke-linecap="round">
+    <line x1="650" y1="200" x2="690" y2="330" />
+    <line x1="668" y1="200" x2="708" y2="330" />
+  </g>
+  <line x1="690" y1="330" x2="800" y2="445" stroke="#244855" stroke-width="9" stroke-linecap="round" />
+  <circle cx="679" cy="265" r="9" fill="none" stroke="#244855" stroke-width="4" />
+  <rect x="356" y="203" width="68" height="15" rx="7" fill="#244855" transform="rotate(-6 390 210)" />
+  <line x1="390" y1="210" x2="390" y2="260" stroke="#244855" stroke-width="10" stroke-linecap="round" />
+  <line x1="650" y1="200" x2="595" y2="196" stroke="#244855" stroke-width="9" stroke-linecap="round" />
+  <circle cx="420" cy="445" r="26" fill="none" stroke="#E64833" stroke-width="7" />
+  <line x1="420" y1="445" x2="465" y2="475" stroke="#E64833" stroke-width="7" stroke-linecap="round" />
+  <circle cx="200" cy="445" r="150" fill="none" stroke="#244855" stroke-width="2" stroke-dasharray="6 8" opacity="0.3" />
+  <circle cx="800" cy="445" r="150" fill="none" stroke="#244855" stroke-width="2" stroke-dasharray="6 8" opacity="0.3" />
+  <text x="500" y="580" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#244855" opacity="0.45">Platzhalter – Hardtail-MTB Carbon</text>
+</svg>

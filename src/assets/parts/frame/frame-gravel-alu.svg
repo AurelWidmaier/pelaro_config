@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600">
+  <!-- PLACEHOLDER ASSET – Gravel, Alu -->
+  <g fill="none" stroke="#90AEAD" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M210 438 L430 438 L395 205 L210 438" />
+    <path d="M395 205 L660 178 L690 285 L430 438" />
+    <path d="M660 178 L690 285" />
+    <path d="M690 285 L790 438" />
+  </g>
+  <rect x="362" y="193" width="68" height="15" rx="7" fill="#90AEAD" transform="rotate(-7 396 200)" />
+  <line x1="396" y1="200" x2="396" y2="248" stroke="#90AEAD" stroke-width="11" stroke-linecap="round" />
+  <path d="M660 178 C 636 172, 618 162, 608 150" stroke="#90AEAD" stroke-width="9" stroke-linecap="round" fill="none" />
+  <circle cx="608" cy="150" r="6" fill="#90AEAD" />
+  <circle cx="430" cy="438" r="26" fill="none" stroke="#244855" stroke-width="8" />
+  <line x1="430" y1="438" x2="472" y2="470" stroke="#244855" stroke-width="8" stroke-linecap="round" />
+  <circle cx="210" cy="438" r="145" fill="none" stroke="#244855" stroke-width="2" stroke-dasharray="6 8" opacity="0.35" />
+  <circle cx="790" cy="438" r="145" fill="none" stroke="#244855" stroke-width="2" stroke-dasharray="6 8" opacity="0.35" />
+  <text x="500" y="580" text-anchor="middle" font-family="sans-serif" font-size="18" fill="#244855" opacity="0.45">Platzhalter – Gravel Alu</text>
+</svg>
