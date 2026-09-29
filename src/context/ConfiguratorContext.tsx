@@ -10,6 +10,7 @@ import {
   type BikeType,
   type VariantSelection,
 } from '../config/parts'
+import { getStandardParts } from '../config/standardParts'
 
 export const STEP_ORDER = ['biketype', 'budget', 'frame', 'groupset', 'wheels', 'result'] as const
 export type StepId = (typeof STEP_ORDER)[number]
@@ -80,12 +81,18 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
     ].filter((entry) => entry.part)
 
     const weights = selected.map(({ part, variants }) => getConfiguredWeight(part, variants))
+    // Sattel, Reifen & Co. sind immer dabei und zählen von Anfang an mit.
+    const standardParts = getStandardParts(state.bikeType, getFrameById(state.frameId))
     return {
-      totalPrice: selected.reduce((sum, { part, variants }) => sum + getConfiguredPrice(part, variants), 0),
-      totalWeight: weights.reduce<number>((sum, w) => sum + (w ?? 0), 0),
+      totalPrice:
+        selected.reduce((sum, { part, variants }) => sum + getConfiguredPrice(part, variants), 0) +
+        standardParts.reduce((sum, p) => sum + p.price, 0),
+      totalWeight:
+        weights.reduce<number>((sum, w) => sum + (w ?? 0), 0) + standardParts.reduce((sum, p) => sum + p.weight, 0),
       weightIncomplete: weights.some((w) => w === undefined),
     }
   }, [
+    state.bikeType,
     state.frameId,
     state.frameVariants,
     state.groupsetId,

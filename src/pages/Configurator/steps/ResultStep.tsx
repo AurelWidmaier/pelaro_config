@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useConfigurator } from '../../../context/ConfiguratorContext'
 import {
@@ -10,6 +11,9 @@ import {
   getWheelsById,
   type VariantSelection,
 } from '../../../config/parts'
+import { getStandardParts } from '../../../config/standardParts'
+import { findExportBikeImage } from '../../../config/bikeImages'
+import { exportBikePdf, type PdfPartRow } from '../../../utils/exportPdf'
 import { formatPrice, formatWeight } from '../../../utils/format'
 import { BikeCanvas } from '../../../components/BikeCanvas'
 import { StepShell } from '../StepShell'
@@ -36,7 +40,75 @@ export function ResultStep() {
   const frame = getFrameById(frameId)
   const groupset = getGroupsetById(groupsetId)
   const wheels = getWheelsById(wheelsId)
+  const standardParts = getStandardParts(bikeType, frame)
   const overBudget = totalPrice > budget
+  const [exporting, setExporting] = useState(false)
+
+  const partRows: ResultRow[] = [
+    { label: 'Bike-Typ', option: bikeTypeInfo, url: undefined, price: undefined, weight: undefined, variants: '' },
+    {
+      label: 'Rahmen',
+      option: frame,
+      url: frame?.url,
+      price: frame ? getConfiguredPrice(frame, frameVariants) : undefined,
+      weight: getConfiguredWeight(frame, frameVariants),
+      variants: describeVariants(frame, frameVariants),
+    },
+    {
+      label: 'Schaltgruppe',
+      option: groupset,
+      url: groupset?.url,
+      price: groupset ? getConfiguredPrice(groupset, groupsetVariants) : undefined,
+      weight: getConfiguredWeight(groupset, groupsetVariants),
+      variants: describeVariants(groupset, groupsetVariants),
+    },
+    {
+      label: 'Laufräder',
+      option: wheels,
+      url: wheels?.url,
+      price: wheels ? getConfiguredPrice(wheels, wheelsVariants) : undefined,
+      weight: getConfiguredWeight(wheels, wheelsVariants),
+      variants: describeVariants(wheels, wheelsVariants),
+    },
+  ]
+
+  const standardRows: ResultRow[] = standardParts.map((part) => ({
+    label: part.label,
+    option: part,
+    url: part.url,
+    price: part.price,
+    weight: part.weight,
+    variants: part.detail ?? '',
+  }))
+
+  async function handleExport() {
+    setExporting(true)
+    try {
+      const image =
+        (await findExportBikeImage(frame?.imageKey, wheels?.imageKey, groupset?.imageKey)) ??
+        (frame ? { url: frame.image, isPreview: false } : undefined)
+      const toPdfRow = (row: ResultRow): PdfPartRow => ({
+        label: row.label,
+        name: row.option?.name ?? '—',
+        detail: row.variants || undefined,
+        price: row.price,
+        weight: row.weight,
+        url: row.url,
+      })
+      await exportBikePdf({
+        bikeTypeName: bikeTypeInfo?.name,
+        image,
+        parts: partRows.filter((row) => row.price !== undefined).map(toPdfRow),
+        standardParts: standardRows.map(toPdfRow),
+        totalPrice,
+        totalWeight,
+        weightIncomplete,
+        budget,
+      })
+    } finally {
+      setExporting(false)
+    }
+  }
 
   return (
     <StepShell
@@ -61,72 +133,17 @@ export function ResultStep() {
 
         <div className={styles.summary}>
           <ul className={styles.list}>
-            {[
-              { label: 'Bike-Typ', option: bikeTypeInfo, url: undefined, price: undefined, weight: undefined, variants: '' },
-              {
-                label: 'Rahmen',
-                option: frame,
-                url: frame?.url,
-                price: frame ? getConfiguredPrice(frame, frameVariants) : undefined,
-                weight: getConfiguredWeight(frame, frameVariants),
-                variants: describeVariants(frame, frameVariants),
-              },
-              {
-                label: 'Schaltgruppe',
-                option: groupset,
-                url: groupset?.url,
-                price: groupset ? getConfiguredPrice(groupset, groupsetVariants) : undefined,
-                weight: getConfiguredWeight(groupset, groupsetVariants),
-                variants: describeVariants(groupset, groupsetVariants),
-              },
-              {
-                label: 'Laufräder',
-                option: wheels,
-                url: wheels?.url,
-                price: wheels ? getConfiguredPrice(wheels, wheelsVariants) : undefined,
-                weight: getConfiguredWeight(wheels, wheelsVariants),
-                variants: describeVariants(wheels, wheelsVariants),
-              },
-            ].map(({ label, option, url, price, weight, variants }) => {
-              const content = (
-                <>
-                  <div>
-                    <span className={styles.rowLabel}>{label}</span>
-                    <span className={styles.rowName}>
-                      {option?.name ?? '—'}
-                      {url && (
-                        <span className={styles.rowLinkIcon} aria-hidden="true">
-                          ↗
-                        </span>
-                      )}
-                    </span>
-                    {variants && <span className={styles.rowVariants}>{variants}</span>}
-                  </div>
-                  <span className={styles.rowPrice}>
-                    {price !== undefined ? formatPrice(price) : ''}
-                    {weight !== undefined && <span className={styles.rowWeight}>{formatWeight(weight)}</span>}
-                  </span>
-                </>
-              )
-              return (
-                <li key={label}>
-                  {url ? (
-                    <a
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
-                      className={`${styles.row} ${styles.rowLink}`}
-                      title={`${option?.name} beim Händler ansehen`}
-                    >
-                      {content}
-                    </a>
-                  ) : (
-                    <div className={styles.row}>{content}</div>
-                  )}
-                </li>
-              )
-            })}
+            {partRows.map(renderRow)}
           </ul>
+
+          {standardParts.length > 0 && (
+            <>
+              <h3 className={styles.listHeading}>Immer dabei</h3>
+              <ul className={styles.list}>
+                {standardRows.map(renderRow)}
+              </ul>
+            </>
+          )}
 
           <div className={styles.totalRow}>
             <span>Gesamtpreis</span>
@@ -146,9 +163,14 @@ export function ResultStep() {
               : `${formatPrice(budget - totalPrice)} unter deinem Budget von ${formatPrice(budget)}`}
           </div>
 
-          <Link to="/" className="btn btn-primary" style={{ marginTop: 16, width: 'fit-content' }}>
-            Zur Startseite
-          </Link>
+          <div className={styles.actions}>
+            <button type="button" className="btn btn-primary" onClick={handleExport} disabled={exporting}>
+              {exporting ? 'PDF wird erstellt …' : 'Als PDF herunterladen'}
+            </button>
+            <Link to="/" className="btn btn-ghost">
+              Zur Startseite
+            </Link>
+          </div>
         </div>
       </div>
     </StepShell>
@@ -163,4 +185,53 @@ function describeVariants(
   return getSelectedVariantOptions(part, selection)
     .map(({ group, option }) => `${group.label} ${option.label}`)
     .join(' · ')
+}
+
+interface ResultRow {
+  label: string
+  option?: { name: string }
+  url?: string
+  price?: number
+  weight?: number
+  variants: string
+}
+
+function renderRow({ label, option, url, price, weight, variants }: ResultRow) {
+  const content = (
+    <>
+      <div>
+        <span className={styles.rowLabel}>{label}</span>
+        <span className={styles.rowName}>
+          {option?.name ?? '—'}
+          {url && (
+            <span className={styles.rowLinkIcon} aria-hidden="true">
+              ↗
+            </span>
+          )}
+        </span>
+        {variants && <span className={styles.rowVariants}>{variants}</span>}
+      </div>
+      <span className={styles.rowPrice}>
+        {price !== undefined ? formatPrice(price) : ''}
+        {weight !== undefined && <span className={styles.rowWeight}>{formatWeight(weight)}</span>}
+      </span>
+    </>
+  )
+  return (
+    <li key={label}>
+      {url ? (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+          className={`${styles.row} ${styles.rowLink}`}
+          title={`${option?.name} beim Händler ansehen`}
+        >
+          {content}
+        </a>
+      ) : (
+        <div className={styles.row}>{content}</div>
+      )}
+    </li>
+  )
 }

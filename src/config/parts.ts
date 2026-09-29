@@ -203,6 +203,8 @@ export interface CatalogFrame extends ConfigurablePart {
    * Schaltungs-Layer darüber (layerPositions.ts ist darauf nicht kalibriert).
    */
   photo?: boolean
+  /** Bremsscheiben-Größen VR/HR in mm für die Standardkomponenten (sonst 160/160). */
+  brakeRotors?: [number, number]
 }
 
 export const FRAME_CATALOG: CatalogFrame[] = [
@@ -271,6 +273,7 @@ export const FRAME_CATALOG: CatalogFrame[] = [
     description: 'T1000-Carbon-Gravelrahmen mit Platz für 45-mm-Reifen, Steckachsen und Cockpit inklusive.',
     price: 546,
     url: 'https://s.click.aliexpress.com/e/_c3AqSCXf',
+    brakeRotors: [160, 140],
     // Rahmen 1140 (52 cm) + Lenker/Vorbau 380 + Gabel 490 + Sattelstütze 140
     weight: 2150,
     image: frameBxtGravel135,
