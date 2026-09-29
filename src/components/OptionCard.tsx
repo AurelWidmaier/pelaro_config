@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { formatPrice } from '../utils/format'
+import { formatPrice, formatWeight } from '../utils/format'
 import styles from './OptionCard.module.css'
 
 interface OptionCardOption {
@@ -17,9 +17,11 @@ interface OptionCardProps {
   overBudget?: boolean
   /** Kategorie-Kennzeichnung, z. B. "Alu", "Carbon", "2x mechanisch". */
   badge?: string
+  /** Gesamtgewicht des Teils in Gramm (inkl. gewählter Unterauswahl). */
+  weight?: number
 }
 
-export function OptionCard({ option, selected, onSelect, overBudget, badge }: OptionCardProps) {
+export function OptionCard({ option, selected, onSelect, overBudget, badge, weight }: OptionCardProps) {
   return (
     <motion.button
       type="button"
@@ -39,7 +41,10 @@ export function OptionCard({ option, selected, onSelect, overBudget, badge }: Op
         </div>
         <p className={styles.description}>{option.description}</p>
         <div className={styles.priceRow}>
-          <span className={styles.price}>{formatPrice(option.price)}</span>
+          <span className={styles.price}>
+            {formatPrice(option.price)}
+            {weight !== undefined && <span className={styles.weight}> · {formatWeight(weight)}</span>}
+          </span>
           {overBudget && <span className={styles.warning}>sprengt dein Budget</span>}
         </div>
       </div>

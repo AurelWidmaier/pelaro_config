@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   text-align: left;
-  background: #fff;
+  background: var(--bg-card);
   border: 2px solid transparent;
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -21,7 +21,7 @@
 
 .imageWrap {
   position: relative;
-  background: var(--color-cream);
+  background: var(--bg-card-media);
   padding: 20px;
   display: flex;
   align-items: center;
@@ -104,4 +104,9 @@
   font-size: 0.72rem;
   font-weight: 600;
   color: var(--color-accent);
+}
+
+.weight {
+  font-weight: 500;
+  color: var(--text-muted);
 }

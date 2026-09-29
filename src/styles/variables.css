@@ -8,9 +8,13 @@
   --color-sage: #90aead;
   --color-cream: #fbe9d0;
   --color-cream-dim: #f1dcb9;
+  --color-sage-light: #eef3f2;
+  --color-sage-mist: #e2ebe9;
 
   /* Semantic aliases */
   --bg-page: var(--color-cream);
+  --bg-card: var(--color-sage-light);
+  --bg-card-media: var(--color-sage-mist);
   --bg-dark: var(--color-dark);
   --text-on-dark: var(--color-cream);
   --text-on-light: var(--color-dark);

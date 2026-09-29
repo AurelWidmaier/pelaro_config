@@ -1,6 +1,13 @@
 import { useConfigurator } from '../../../context/ConfiguratorContext'
-import { getPriceBracket, suggestGroupsets } from '../../../config/parts'
+import {
+  getConfiguredPrice,
+  getConfiguredWeight,
+  getGroupsetById,
+  getPriceBracket,
+  suggestGroupsets,
+} from '../../../config/parts'
 import { OptionCard } from '../../../components/OptionCard'
+import { PartDetails } from '../../../components/PartDetails'
 import { BudgetBar } from '../../../components/BudgetBar'
 import { PriceBracketNote } from '../../../components/PriceBracketNote'
 import { StepShell } from '../StepShell'
@@ -13,8 +20,20 @@ const KIND_LABEL = {
 } as const
 
 export function GroupsetStep() {
-  const { bikeType, budget, totalPrice, groupsetId, selectGroupset, canGoNext, goNext, goBack } =
-    useConfigurator()
+  const {
+    bikeType,
+    budget,
+    totalPrice,
+    totalWeight,
+    weightIncomplete,
+    groupsetId,
+    groupsetVariants,
+    selectGroupset,
+    setGroupsetVariant,
+    canGoNext,
+    goNext,
+    goBack,
+  } = useConfigurator()
 
   if (!bikeType) {
     return (
@@ -29,7 +48,8 @@ export function GroupsetStep() {
 
   const options = suggestGroupsets(bikeType, budget)
   const bracket = getPriceBracket('groupset', budget)
-  const otherTotal = totalPrice - (options.find((o) => o.id === groupsetId)?.price ?? 0)
+  const selectedGroupset = getGroupsetById(groupsetId)
+  const otherTotal = totalPrice - getConfiguredPrice(selectedGroupset, groupsetVariants)
 
   return (
     <StepShell
@@ -48,7 +68,12 @@ export function GroupsetStep() {
       }
     >
       <div className={styles.budgetRow}>
-        <BudgetBar budget={budget} spent={totalPrice} />
+        <BudgetBar
+          budget={budget}
+          spent={totalPrice}
+          weight={totalWeight}
+          weightIncomplete={weightIncomplete}
+        />
       </div>
       <PriceBracketNote label="eine Schaltgruppe" min={bracket.min} max={bracket.max} />
       <div className={styles.grid} style={{ marginTop: 20 }}>
@@ -59,10 +84,14 @@ export function GroupsetStep() {
             badge={KIND_LABEL[option.kind]}
             selected={option.id === groupsetId}
             onSelect={selectGroupset}
+            weight={getConfiguredWeight(option, option.id === groupsetId ? groupsetVariants : {})}
             overBudget={otherTotal + option.price > budget}
           />
         ))}
       </div>
+      {selectedGroupset && (
+        <PartDetails part={selectedGroupset} selection={groupsetVariants} onChange={setGroupsetVariant} />
+      )}
     </StepShell>
   )
 }

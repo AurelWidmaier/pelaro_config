@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   text-align: left;
-  background: #fff;
+  background: var(--bg-card);
   border: 2px solid transparent;
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -20,7 +20,7 @@
 }
 
 .imageWrap {
-  background: var(--color-cream);
+  background: var(--bg-card-media);
   padding: 24px;
   display: flex;
   align-items: center;

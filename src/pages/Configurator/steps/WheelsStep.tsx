@@ -1,6 +1,7 @@
 import { useConfigurator } from '../../../context/ConfiguratorContext'
-import { getPriceBracket, suggestWheels } from '../../../config/parts'
+import { getConfiguredPrice, getConfiguredWeight, getPriceBracket, getWheelsById, suggestWheels } from '../../../config/parts'
 import { OptionCard } from '../../../components/OptionCard'
+import { PartDetails } from '../../../components/PartDetails'
 import { BudgetBar } from '../../../components/BudgetBar'
 import { PriceBracketNote } from '../../../components/PriceBracketNote'
 import { StepShell } from '../StepShell'
@@ -9,8 +10,20 @@ import styles from './OptionGrid.module.css'
 const MATERIAL_LABEL = { alu: 'Alu', carbon: 'Carbon' } as const
 
 export function WheelsStep() {
-  const { bikeType, budget, totalPrice, wheelsId, selectWheels, canGoNext, goNext, goBack } =
-    useConfigurator()
+  const {
+    bikeType,
+    budget,
+    totalPrice,
+    totalWeight,
+    weightIncomplete,
+    wheelsId,
+    wheelsVariants,
+    selectWheels,
+    setWheelsVariant,
+    canGoNext,
+    goNext,
+    goBack,
+  } = useConfigurator()
 
   if (!bikeType) {
     return (
@@ -25,7 +38,8 @@ export function WheelsStep() {
 
   const options = suggestWheels(bikeType, budget)
   const bracket = getPriceBracket('wheels', budget)
-  const otherTotal = totalPrice - (options.find((o) => o.id === wheelsId)?.price ?? 0)
+  const selectedWheels = getWheelsById(wheelsId)
+  const otherTotal = totalPrice - getConfiguredPrice(selectedWheels, wheelsVariants)
 
   return (
     <StepShell
@@ -44,7 +58,12 @@ export function WheelsStep() {
       }
     >
       <div className={styles.budgetRow}>
-        <BudgetBar budget={budget} spent={totalPrice} />
+        <BudgetBar
+          budget={budget}
+          spent={totalPrice}
+          weight={totalWeight}
+          weightIncomplete={weightIncomplete}
+        />
       </div>
       <PriceBracketNote label="Laufräder" min={bracket.min} max={bracket.max} />
       <div className={styles.grid} style={{ marginTop: 20 }}>
@@ -55,10 +74,14 @@ export function WheelsStep() {
             badge={MATERIAL_LABEL[option.material]}
             selected={option.id === wheelsId}
             onSelect={selectWheels}
+            weight={getConfiguredWeight(option, option.id === wheelsId ? wheelsVariants : {})}
             overBudget={otherTotal + option.price > budget}
           />
         ))}
       </div>
+      {selectedWheels && (
+        <PartDetails part={selectedWheels} selection={wheelsVariants} onChange={setWheelsVariant} />
+      )}
     </StepShell>
   )
 }

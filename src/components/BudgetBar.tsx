@@ -1,18 +1,37 @@
-import { formatPrice } from '../utils/format'
+import { formatPrice, formatWeight } from '../utils/format'
 import styles from './BudgetBar.module.css'
 
-export function BudgetBar({ budget, spent }: { budget: number; spent: number }) {
+interface BudgetBarProps {
+  budget: number
+  spent: number
+  /** Gesamtgewicht der bisher gewählten Teile in Gramm. */
+  weight: number
+  /** Mindestens ein gewähltes Teil hat keine Gewichtsangabe. */
+  weightIncomplete?: boolean
+}
+
+export function BudgetBar({ budget, spent, weight, weightIncomplete }: BudgetBarProps) {
   const percent = Math.min(100, (spent / budget) * 100)
   const over = spent > budget
 
   return (
     <div className={styles.wrap}>
+      <div className={styles.totals}>
+        <div className={styles.total}>
+          <span className={styles.totalLabel}>Gesamtpreis</span>
+          <strong className={over ? styles.over : undefined}>{formatPrice(spent)}</strong>
+        </div>
+        <div className={styles.total}>
+          <span className={styles.totalLabel}>Gesamtgewicht</span>
+          <strong title={weightIncomplete ? 'Nicht alle gewählten Teile haben eine Gewichtsangabe' : undefined}>
+            {weight > 0 ? `${weightIncomplete ? 'mind. ' : ''}${formatWeight(weight)}` : '—'}
+          </strong>
+        </div>
+      </div>
       <div className={styles.row}>
-        <span>
-          Bisher: <strong>{formatPrice(spent)}</strong>
-        </span>
+        <span>Budget: {formatPrice(budget)}</span>
         <span className={over ? styles.over : undefined}>
-          Budget: {formatPrice(budget)}
+          {over ? `${formatPrice(spent - budget)} drüber` : `${formatPrice(budget - spent)} übrig`}
         </span>
       </div>
       <div className={styles.track}>

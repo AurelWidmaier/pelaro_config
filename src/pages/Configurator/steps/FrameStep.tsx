@@ -1,6 +1,7 @@
 import { useConfigurator } from '../../../context/ConfiguratorContext'
-import { getPriceBracket, suggestFrames } from '../../../config/parts'
+import { getConfiguredPrice, getConfiguredWeight, getFrameById, getPriceBracket, suggestFrames } from '../../../config/parts'
 import { OptionCard } from '../../../components/OptionCard'
+import { PartDetails } from '../../../components/PartDetails'
 import { BudgetBar } from '../../../components/BudgetBar'
 import { PriceBracketNote } from '../../../components/PriceBracketNote'
 import { StepShell } from '../StepShell'
@@ -9,8 +10,20 @@ import styles from './OptionGrid.module.css'
 const MATERIAL_LABEL = { alu: 'Alu', carbon: 'Carbon' } as const
 
 export function FrameStep() {
-  const { bikeType, budget, totalPrice, frameId, selectFrame, canGoNext, goNext, goBack } =
-    useConfigurator()
+  const {
+    bikeType,
+    budget,
+    totalPrice,
+    totalWeight,
+    weightIncomplete,
+    frameId,
+    frameVariants,
+    selectFrame,
+    setFrameVariant,
+    canGoNext,
+    goNext,
+    goBack,
+  } = useConfigurator()
 
   if (!bikeType) {
     return (
@@ -25,7 +38,8 @@ export function FrameStep() {
 
   const options = suggestFrames(bikeType, budget)
   const bracket = getPriceBracket('frame', budget)
-  const otherTotal = totalPrice - (options.find((o) => o.id === frameId)?.price ?? 0)
+  const selectedFrame = getFrameById(frameId)
+  const otherTotal = totalPrice - getConfiguredPrice(selectedFrame, frameVariants)
 
   return (
     <StepShell
@@ -44,7 +58,12 @@ export function FrameStep() {
       }
     >
       <div className={styles.budgetRow}>
-        <BudgetBar budget={budget} spent={totalPrice} />
+        <BudgetBar
+          budget={budget}
+          spent={totalPrice}
+          weight={totalWeight}
+          weightIncomplete={weightIncomplete}
+        />
       </div>
       <PriceBracketNote label="einen Rahmen" min={bracket.min} max={bracket.max} />
       <div className={styles.grid} style={{ marginTop: 20 }}>
@@ -55,10 +74,14 @@ export function FrameStep() {
             badge={MATERIAL_LABEL[option.material]}
             selected={option.id === frameId}
             onSelect={selectFrame}
+            weight={getConfiguredWeight(option, option.id === frameId ? frameVariants : {})}
             overBudget={otherTotal + option.price > budget}
           />
         ))}
       </div>
+      {selectedFrame && (
+        <PartDetails part={selectedFrame} selection={frameVariants} onChange={setFrameVariant} />
+      )}
     </StepShell>
   )
 }

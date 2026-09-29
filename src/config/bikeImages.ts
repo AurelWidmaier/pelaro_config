@@ -12,7 +12,7 @@ const BIKES_BASE = `${ASSET_BASE}/bikes`
 let manifestPromise: Promise<Map<string, string>> | null = null
 
 function loadManifest() {
-  manifestPromise ??= fetch(`${BIKES_BASE}/manifest.json`)
+  manifestPromise ??= fetch(`${BIKES_BASE}/manifest.json`, { cache: 'no-cache' })
     .then((res) => (res.ok ? (res.json() as Promise<string[]>) : []))
     .then((files) => new Map(files.map((file) => [file.replace(/\.[^.]+$/, '').toLowerCase(), file])))
     .catch(() => new Map<string, string>())
