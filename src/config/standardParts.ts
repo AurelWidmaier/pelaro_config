@@ -113,10 +113,17 @@ export const DEFAULT_STANDARD_PARTS: StandardPartsConfig = {
     },
   },
   defaultRotors: [160, 160],
-  // Die ER7 hat ein BSA-24-Lager im Set, die GRT12 wahlweise BSA, BB86/92,
+  // Die ER7 hat ein BSA-24-Lager im Set, GRT12 und R9 wahlweise BSA, BB86/92,
   // PF30 oder BB30, und der BXT Pro-145 bringt sein T47-Lager selbst mit.
   bottomBrackets: {
     'frame-bxt-pro-145|groupset-ltwoo-grt12': {
+      name: 'ZRACE Innenlager T47-DUB',
+      detail: 'T47, 29-mm-Achse',
+      price: 22.19,
+      weight: 129,
+      url: 'https://s.click.aliexpress.com/e/_c3yXlbbL',
+    },
+    'frame-bxt-pro-145|groupset-ltwoo-r9': {
       name: 'ZRACE Innenlager T47-DUB',
       detail: 'T47, 29-mm-Achse',
       price: 22.19,
