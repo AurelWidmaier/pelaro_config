@@ -7,7 +7,7 @@ const STEPS = [
   {
     n: '01',
     title: 'Bike-Typ wählen',
-    text: 'Rennrad, Gravel, Race-Gravel oder Hardtail-MTB – du entscheidest, wofür dein Bike gebaut wird.',
+    text: 'Rennrad, Gravel/Race-Gravel oder Hardtail-MTB – du entscheidest, wofür dein Bike gebaut wird.',
   },
   {
     n: '02',
@@ -29,7 +29,7 @@ const STEPS = [
 const FEATURES = [
   {
     title: 'Für jeden Bike-Typ',
-    text: 'Rennrad, Gravel, Race-Gravel oder Hardtail-MTB – der Konfigurator passt sich deinem Einsatzzweck an.',
+    text: 'Rennrad, Gravel/Race-Gravel oder Hardtail-MTB – der Konfigurator passt sich deinem Einsatzzweck an.',
   },
   {
     title: 'Transparente Preise',

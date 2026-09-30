@@ -93,10 +93,10 @@ export function WheelsStep() {
           locked={wheelsLocks}
         />
       )}
-      {(bikeType === 'gravel' || bikeType === 'race-gravel') && (
+      {bikeType === 'gravel' && (
         <PartDetails part={getGravelTire()} selection={tireVariants} onChange={setTireVariant} />
       )}
-      {(bikeType === 'gravel' || bikeType === 'race-gravel') && tireWarning && (
+      {bikeType === 'gravel' && tireWarning && (
         <p className={styles.warning}>⚠ {tireWarning}</p>
       )}
     </StepShell>

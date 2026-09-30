@@ -141,7 +141,7 @@ export function applyStandardParts(value: StandardPartsConfig) {
 }
 
 /** Bike-Typen mit Straßen-/Gravel-Ausstattung (700C, Rennlenker). */
-const SUPPORTED_BIKE_TYPES: BikeType[] = ['rennrad', 'gravel', 'race-gravel']
+const SUPPORTED_BIKE_TYPES: BikeType[] = ['rennrad', 'gravel']
 
 /** Gravel-Reifen als wählbares Teil (Preis/Gewicht für beide Reifen). */
 export function getGravelTire() {

@@ -43,11 +43,6 @@ export const LAYER_POSITIONS: Record<BikeType, FrameLayerConfig> = {
     wheelFront: { xPercent: 79, yPercent: 73, widthPercent: 35, scale: 1, zIndex: 2 },
     groupset: { xPercent: 43, yPercent: 73, widthPercent: 9, scale: 1, zIndex: 3 },
   },
-  'race-gravel': {
-    wheelRear: { xPercent: 21.8, yPercent: 71.7, widthPercent: 34, scale: 1, zIndex: 2 },
-    wheelFront: { xPercent: 78.2, yPercent: 71.7, widthPercent: 34, scale: 1, zIndex: 2 },
-    groupset: { xPercent: 43.5, yPercent: 71.7, widthPercent: 9, scale: 1, zIndex: 3 },
-  },
   'hardtail-mtb': {
     wheelRear: { xPercent: 20, yPercent: 74.2, widthPercent: 38, scale: 1, zIndex: 2 },
     wheelFront: { xPercent: 80, yPercent: 74.2, widthPercent: 38, scale: 1, zIndex: 2 },

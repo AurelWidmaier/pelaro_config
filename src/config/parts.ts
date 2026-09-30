@@ -65,7 +65,7 @@ export function toStoredImage(url: string): string {
  * gepflegt wird das Sortiment dann im Admin unter /admin.
  */
 
-export type BikeType = 'rennrad' | 'gravel' | 'race-gravel' | 'hardtail-mtb'
+export type BikeType = 'rennrad' | 'gravel' | 'hardtail-mtb'
 
 export interface BikeTypeInfo {
   id: BikeType
@@ -83,15 +83,9 @@ export const BIKE_TYPES: BikeTypeInfo[] = [
   },
   {
     id: 'gravel',
-    name: 'Gravelbike',
-    description: 'Vielseitig für Asphalt, Schotter und Waldwege – der Allrounder.',
+    name: 'Gravel / Race-Gravel',
+    description: 'Vom vielseitigen Allrounder bis zum schnellen Race-Gravel – für Asphalt, Schotter und Waldwege.',
     image: previewGravel,
-  },
-  {
-    id: 'race-gravel',
-    name: 'Race-Gravel',
-    description: 'Sportliche Gravel-Geometrie für alle, die es auch mal eilig haben.',
-    image: frameRaceGravelAlu,
   },
   {
     id: 'hardtail-mtb',
@@ -403,11 +397,6 @@ export const DEFAULT_FRAME_CATALOG: CatalogFrame[] = [
   },
   { id: 'frame-gravel-carbon-race', bikeType: 'gravel', material: 'carbon', name: 'Carbon Gravel', description: 'Leichter Carbon-Rahmen mit gedämpfter Fahrt über groben Untergrund.', price: 949, image: frameGravelCarbon },
 
-  // Race-Gravel
-  { id: 'frame-race-gravel-alu-basic', bikeType: 'race-gravel', material: 'alu', name: 'Alu Race-Gravel Einstieg', description: 'Sportlich ausgelegter Alu-Rahmen für schnelle Gravel-Ausfahrten.', price: 249, image: frameRaceGravelAlu },
-  { id: 'frame-race-gravel-alu-sport', bikeType: 'race-gravel', material: 'alu', name: 'Alu Race-Gravel Sport', description: 'Aggressivere Geometrie für mehr Tempo auf Schotter und Asphalt.', price: 419, image: frameRaceGravelAlu },
-  { id: 'frame-race-gravel-carbon-endurance', bikeType: 'race-gravel', material: 'carbon', name: 'Carbon Race-Gravel Endurance', description: 'Leichter Carbon-Rahmen mit sportlicher, aber verträglicher Sitzposition.', price: 629, image: frameRaceGravelCarbon },
-  { id: 'frame-race-gravel-carbon-race', bikeType: 'race-gravel', material: 'carbon', name: 'Carbon Race-Gravel', description: 'Wettkampftaugliches Carbon-Setup für ambitionierte Gravel-Racer:innen.', price: 999, image: frameRaceGravelCarbon },
 
   // Hardtail-MTB
   { id: 'frame-hardtail-alu-basic', bikeType: 'hardtail-mtb', material: 'alu', name: 'Alu Hardtail Einstieg', description: 'Stabiler Alu-Rahmen für den Einstieg ins Mountainbiken.', price: 219, image: frameHardtailAlu },
@@ -445,21 +434,21 @@ export interface CatalogGroupset extends ConfigurablePart {
 export type Freehub = 'shimano-hg' | 'sram-xdr' | 'shimano-ms'
 
 export const DEFAULT_GROUPSET_CATALOG: CatalogGroupset[] = [
-  // Mechanisch, 2-fach – passend für Rennrad, Gravel, Race-Gravel
-  { id: 'groupset-2x-einsteiger', bikeTypes: ['rennrad', 'gravel', 'race-gravel'], kind: 'mechanisch-2x', name: '2x Einsteiger-Schaltung', description: 'Zuverlässige 2-fach Schaltung mit großer Bandbreite – einfach zu warten.', price: 139, image: groupsetEinsteiger },
-  { id: 'groupset-2x-mittelklasse', bikeTypes: ['rennrad', 'gravel', 'race-gravel'], kind: 'mechanisch-2x', name: '2x Mittelklasse-Schaltung', description: 'Präzisere Gangwechsel und geringeres Gewicht als die Einsteigerstufe.', price: 299, image: groupsetMittelklasse },
-  { id: 'groupset-2x-performance', bikeTypes: ['rennrad', 'gravel', 'race-gravel'], kind: 'mechanisch-2x', name: '2x Performance-Schaltung', description: 'Leichtbau-Komponenten für schnelle, verlustarme Gangwechsel.', price: 649, image: groupsetPerformance },
+  // Mechanisch, 2-fach – passend für Rennrad und Gravel
+  { id: 'groupset-2x-einsteiger', bikeTypes: ['rennrad', 'gravel'], kind: 'mechanisch-2x', name: '2x Einsteiger-Schaltung', description: 'Zuverlässige 2-fach Schaltung mit großer Bandbreite – einfach zu warten.', price: 139, image: groupsetEinsteiger },
+  { id: 'groupset-2x-mittelklasse', bikeTypes: ['rennrad', 'gravel'], kind: 'mechanisch-2x', name: '2x Mittelklasse-Schaltung', description: 'Präzisere Gangwechsel und geringeres Gewicht als die Einsteigerstufe.', price: 299, image: groupsetMittelklasse },
+  { id: 'groupset-2x-performance', bikeTypes: ['rennrad', 'gravel'], kind: 'mechanisch-2x', name: '2x Performance-Schaltung', description: 'Leichtbau-Komponenten für schnelle, verlustarme Gangwechsel.', price: 649, image: groupsetPerformance },
 
-  // Mechanisch, 1-fach – passend für Gravel, Race-Gravel, Hardtail-MTB
-  { id: 'groupset-1x-einsteiger', bikeTypes: ['gravel', 'race-gravel', 'hardtail-mtb'], kind: 'mechanisch-1x', name: '1x Einsteiger-Schaltung', description: 'Simple 1-fach Schaltung ohne Umwerfer – weniger Technik, weniger Wartung.', price: 159, image: groupsetEinsteiger },
-  { id: 'groupset-1x-mittelklasse', bikeTypes: ['gravel', 'race-gravel', 'hardtail-mtb'], kind: 'mechanisch-1x', name: '1x Mittelklasse-Schaltung', description: 'Breite Kassette für viel Bandbreite bei nur einem Kettenblatt.', price: 329, image: groupsetMittelklasse },
-  { id: 'groupset-1x-performance', bikeTypes: ['gravel', 'race-gravel', 'hardtail-mtb'], kind: 'mechanisch-1x', name: '1x12 Performance-Schaltung', description: 'Präzises 1x12-Setup mit Clutch-Schaltwerk für ruhigen Kettenlauf.', price: 679, image: groupsetPerformance },
+  // Mechanisch, 1-fach – passend für Gravel und Hardtail-MTB
+  { id: 'groupset-1x-einsteiger', bikeTypes: ['gravel', 'hardtail-mtb'], kind: 'mechanisch-1x', name: '1x Einsteiger-Schaltung', description: 'Simple 1-fach Schaltung ohne Umwerfer – weniger Technik, weniger Wartung.', price: 159, image: groupsetEinsteiger },
+  { id: 'groupset-1x-mittelklasse', bikeTypes: ['gravel', 'hardtail-mtb'], kind: 'mechanisch-1x', name: '1x Mittelklasse-Schaltung', description: 'Breite Kassette für viel Bandbreite bei nur einem Kettenblatt.', price: 329, image: groupsetMittelklasse },
+  { id: 'groupset-1x-performance', bikeTypes: ['gravel', 'hardtail-mtb'], kind: 'mechanisch-1x', name: '1x12 Performance-Schaltung', description: 'Präzises 1x12-Setup mit Clutch-Schaltwerk für ruhigen Kettenlauf.', price: 679, image: groupsetPerformance },
 
-  // Elektronisch – Premium-Option für Rennrad, Gravel, Race-Gravel
+  // Elektronisch – Premium-Option für Rennrad und Gravel
   {
     id: 'groupset-ltwoo-er7',
     imageKey: 'er7',
-    bikeTypes: ['rennrad', 'gravel', 'race-gravel'],
+    bikeTypes: ['rennrad', 'gravel'],
     kind: 'elektronisch',
     brand: 'LTWOO',
     name: 'LTWOO ER7 2x12',
@@ -501,7 +490,7 @@ export const DEFAULT_GROUPSET_CATALOG: CatalogGroupset[] = [
   {
     id: 'groupset-ltwoo-grt12',
     imageKey: 'grt12',
-    bikeTypes: ['gravel', 'race-gravel'],
+    bikeTypes: ['gravel'],
     kind: 'mechanisch-1x',
     brand: 'LTWOO',
     name: 'LTWOO GRT12 1x12',
@@ -601,7 +590,7 @@ export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
   {
     id: 'wheels-elitewheels-ent-2-0',
     imageKey: 'ent2',
-    bikeTypes: ['rennrad', 'gravel', 'race-gravel'],
+    bikeTypes: ['rennrad', 'gravel'],
     material: 'carbon',
     brand: 'Elitewheels',
     name: 'Elitewheels ENT 2.0',
@@ -670,7 +659,7 @@ export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
   {
     id: 'wheels-elitewheels-slr-gravel',
     imageKey: 'slr',
-    bikeTypes: ['gravel', 'race-gravel'],
+    bikeTypes: ['gravel'],
     material: 'carbon',
     brand: 'Elitewheels',
     name: 'Elitewheels SLR Gravel',
@@ -717,9 +706,6 @@ export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
   { id: 'wheels-gravel-alu-sport', bikeTypes: ['gravel'], material: 'alu', name: 'Alu-Laufräder Sport', description: 'Leichtere Alu-Laufräder für spürbar agileres Fahrverhalten.', price: 249, image: wheelsSport },
   { id: 'wheels-gravel-carbon-aero', bikeTypes: ['gravel'], material: 'carbon', name: 'Carbon-Laufräder Aero', description: 'Aerodynamische Carbon-Laufräder für maximale Performance.', price: 699, image: wheelsAero },
 
-  { id: 'wheels-race-gravel-alu-basic', bikeTypes: ['race-gravel'], material: 'alu', name: 'Alu-Laufräder Alltag', description: 'Stabile Alu-Laufräder für den Alltag – langlebig und pflegeleicht.', price: 129, image: wheelsAlltag },
-  { id: 'wheels-race-gravel-alu-sport', bikeTypes: ['race-gravel'], material: 'alu', name: 'Alu-Laufräder Sport', description: 'Leichtere Alu-Laufräder für spürbar agileres Fahrverhalten.', price: 239, image: wheelsSport },
-  { id: 'wheels-race-gravel-carbon-aero', bikeTypes: ['race-gravel'], material: 'carbon', name: 'Carbon-Laufräder Aero', description: 'Aerodynamische Carbon-Laufräder für maximale Performance.', price: 679, image: wheelsAero },
 
   { id: 'wheels-hardtail-alu-basic', bikeTypes: ['hardtail-mtb'], material: 'alu', name: 'Alu-Laufräder Alltag', description: 'Stabile, breite Alu-Laufräder für den Alltag auf dem Trail.', price: 149, image: wheelsAlltag },
   { id: 'wheels-hardtail-alu-sport', bikeTypes: ['hardtail-mtb'], material: 'alu', name: 'Alu-Laufräder Trail', description: 'Leichtere Alu-Laufräder für spürbar agileres Fahrverhalten im Gelände.', price: 269, image: wheelsSport },
@@ -793,12 +779,18 @@ export interface Suggestion<T> {
 }
 
 /**
- * Zeigt immer alle Teile des Bike-Typs, nach Preis aufsteigend (günstiger
- * links, teurer rechts). Empfohlen wird das Teil, dessen Preis am nächsten an
+ * Zeigt alle Teile des Bike-Typs, nach Preis aufsteigend (günstiger links,
+ * teurer rechts). Platzhalter ohne Händler-Link fallen weg, sobald es für den
+ * Bike-Typ mindestens ein echtes Produkt gibt. Empfohlen wird das Teil, dessen Preis am nächsten an
  * der Mitte der Budget-Preisspanne liegt – bevorzugt eines innerhalb der Spanne.
  */
-function suggestByBracket<T extends { id: string; price: number }>(items: T[], bracket: PriceBracket): Suggestion<T> {
-  const options = [...items].sort((a, b) => a.price - b.price)
+function suggestByBracket<T extends { id: string; price: number; url?: string }>(
+  items: T[],
+  bracket: PriceBracket,
+): Suggestion<T> {
+  // Platzhalter (ohne Händler-Link) nur zeigen, solange es kein echtes Produkt gibt.
+  const real = items.filter((item) => item.url)
+  const options = [...(real.length > 0 ? real : items)].sort((a, b) => a.price - b.price)
   const center = (bracket.min + bracket.max) / 2
   const inBracket = options.filter((item) => item.price >= bracket.min && item.price <= bracket.max)
   const candidates = inBracket.length > 0 ? inBracket : options

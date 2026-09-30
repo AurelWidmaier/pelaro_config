@@ -31,8 +31,8 @@ export function Hero3DPlaceholder() {
         style={{ rotateY, y: translateY, scale }}
       >
         <BikeCanvas
-          frameId="frame-race-gravel-carbon"
-          wheelsId="wheels-race-gravel-carbon"
+          frameId="frame-gravel-carbon-race"
+          wheelsId="wheels-gravel-carbon-aero"
           groupsetId="groupset-2x-performance"
           className={styles.bike}
         />
