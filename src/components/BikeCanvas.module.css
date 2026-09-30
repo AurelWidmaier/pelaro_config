@@ -20,6 +20,8 @@
   left: calc(-1 * var(--bleed, 0px));
   width: calc(100% + 2 * var(--bleed, 0px));
   height: calc(100% + 2 * var(--bleed, 0px));
+  /* globale img-Regel (max-width: 100%) würde die Überbreite abschneiden */
+  max-width: none;
   object-fit: cover;
   border-radius: var(--radius-md);
 }
