@@ -1,7 +1,7 @@
 import {
   getConfiguredPrice,
   getConfiguredWeight,
-  getGroupsetLocks,
+  hasBottomBracketInSet,
   getSelectedVariantOptions,
   type BikeType,
   type CatalogFrame,
@@ -215,7 +215,7 @@ export function getStandardParts(
   const rim = selectedRim(wheels, wheelsVariants)
   const [front, rear] = frame?.brakeRotors ?? config.defaultRotors
   // Bringt die Schaltgruppe ein zum Rahmen passendes Lager mit, braucht es kein zusätzliches.
-  const bottomBracketInSet = Boolean(getGroupsetLocks(groupset, frame).bottomBracket)
+  const bottomBracketInSet = hasBottomBracketInSet(groupset, frame)
   const bottomBracket = bottomBracketInSet ? undefined : config.bottomBrackets[`${frame?.id}|${groupset?.id}`]
   const gravelTire = getGravelTire()
 

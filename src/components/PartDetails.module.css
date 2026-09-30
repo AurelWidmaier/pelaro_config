@@ -101,6 +101,12 @@
   cursor: not-allowed;
 }
 
+/* Vom Rahmen vorgegeben: aktiv dargestellt, aber nicht klickbar */
+.pillActive:disabled {
+  opacity: 1;
+  cursor: default;
+}
+
 .lockedHint {
   font-weight: 400;
   color: var(--text-muted);

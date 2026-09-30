@@ -177,11 +177,13 @@ export function getSelectedVariantOptions(
   part: ConfigurablePart | undefined,
   selection: VariantSelection,
 ): { group: VariantGroup; option: VariantOption }[] {
-  return (part?.variants ?? []).map((group) => {
-    const chosenId = selection[group.id] ?? group.defaultOptionId
-    const option = group.options.find((o) => o.id === chosenId) ?? group.options[0]
-    return { group, option }
-  })
+  return (part?.variants ?? [])
+    .filter((group) => selection[group.id] !== NOT_APPLICABLE)
+    .map((group) => {
+      const chosenId = selection[group.id] ?? group.defaultOptionId
+      const option = group.options.find((o) => o.id === chosenId) ?? group.options[0]
+      return { group, option }
+    })
 }
 
 /** Grundpreis plus Aufpreise der gewählten Unterauswahlen. */
@@ -207,6 +209,9 @@ export function getConfiguredWeight(
   )
 }
 
+/** Markiert eine Unterauswahl, die für die aktuelle Kombination entfällt (wird ausgeblendet). */
+export const NOT_APPLICABLE = '__none__'
+
 /**
  * Setzt eine Unterauswahl fest, wenn das Teil diese Option überhaupt anbietet –
  * z. B. das Tretlager der Kurbel passend zum Rahmen.
@@ -221,14 +226,28 @@ function lockIfOffered(
   if (optionId && group?.options.some((o) => o.id === optionId)) locks[groupId] = optionId
 }
 
-/** Unterauswahlen der Schaltgruppe, die der Rahmen vorgibt (Tretlager). */
+/**
+ * Unterauswahlen der Schaltgruppe, die der Rahmen vorgibt (Tretlager).
+ * Passt keine Innenlager-Variante des Sets zum Rahmen (z. B. T47) oder ist das
+ * Tretlager des Rahmens unbekannt, entfällt die Auswahl ganz – dann kommt ggf.
+ * ein Zusatz-Innenlager aus den Standardteilen dazu.
+ */
 export function getGroupsetLocks(
   groupset: CatalogGroupset | undefined,
   frame: CatalogFrame | undefined,
 ): VariantSelection {
   const locks: VariantSelection = {}
   lockIfOffered(locks, groupset, 'bottomBracket', frame?.bottomBracket)
+  if (!locks.bottomBracket && groupset?.variants?.some((g) => g.id === 'bottomBracket')) {
+    locks.bottomBracket = NOT_APPLICABLE
+  }
   return locks
+}
+
+/** Hat die Schaltgruppe ein Innenlager, das zum Rahmen passt? */
+export function hasBottomBracketInSet(groupset: CatalogGroupset | undefined, frame: CatalogFrame | undefined): boolean {
+  const locked = getGroupsetLocks(groupset, frame).bottomBracket
+  return Boolean(locked) && locked !== NOT_APPLICABLE
 }
 
 /** Unterauswahlen der Laufräder, die die Schaltgruppe vorgibt (Freilauf passend zur Kassette). */

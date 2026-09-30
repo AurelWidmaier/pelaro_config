@@ -71,7 +71,8 @@ export function PartDetails({ part, selection, onChange, locked = {} }: PartDeta
           </legend>
           {VARIANT_HINTS[group.id] && <p className={styles.variantHint}>{VARIANT_HINTS[group.id]}</p>}
           <div className={styles.pills}>
-            {group.options.map((option) => {
+            {/* Vorgegebene Auswahl: nur die passende Option zeigen */}
+            {(locked[group.id] ? [activeOption] : group.options).map((option) => {
               const active = option.id === activeOption.id
               return (
                 <button
@@ -79,7 +80,7 @@ export function PartDetails({ part, selection, onChange, locked = {} }: PartDeta
                   type="button"
                   className={`${styles.pill} ${active ? styles.pillActive : ''}`}
                   aria-pressed={active}
-                  disabled={Boolean(locked[group.id]) && !active}
+                  disabled={Boolean(locked[group.id])}
                   onClick={() => onChange(group.id, option.id)}
                 >
                   {option.label}
