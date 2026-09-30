@@ -152,15 +152,20 @@ export function getStandardParts(
       weight: 2 * (gravelTubes ? 45 : 24),
       url: 'https://s.click.aliexpress.com/e/_c3BJpVR3',
     },
-    {
-      id: 'rotors',
-      label: 'Bremsscheiben',
-      name: 'Bremsscheiben',
-      detail: `VR ${front} mm · HR ${rear} mm`,
-      price: ROTORS[front].price + ROTORS[rear].price,
-      weight: ROTORS[front].weight + ROTORS[rear].weight,
-      url: 'https://s.click.aliexpress.com/e/_c3afRncd',
-    },
+    // Bringt die Schaltgruppe Bremsscheiben mit, braucht es keine zusätzlichen.
+    ...(groupset?.includesRotors
+      ? []
+      : [
+          {
+            id: 'rotors',
+            label: 'Bremsscheiben',
+            name: 'Bremsscheiben',
+            detail: `VR ${front} mm · HR ${rear} mm`,
+            price: ROTORS[front].price + ROTORS[rear].price,
+            weight: ROTORS[front].weight + ROTORS[rear].weight,
+            url: 'https://s.click.aliexpress.com/e/_c3afRncd',
+          },
+        ]),
     ...(bottomBracket ? [{ id: 'bottomBracket', label: 'Innenlager', ...bottomBracket }] : []),
   ]
 }

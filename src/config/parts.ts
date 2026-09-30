@@ -22,8 +22,9 @@ const wheelsEliteSlrGravel = partImage('wheels/elitewheels-slr-gravel.png')
 const groupsetLtwooEr7 = partImage('groupset/ltwoo-er7.png')
 const groupsetLtwooGrt12 = partImage('groupset/ltwoo-grt12.png')
 
-// Komplettbike-Bild als Vorschau für die Bike-Typ-Auswahl
+// Komplettbike-Bilder als Vorschau für die Bike-Typ-Auswahl
 const previewRennrad = `${ASSET_BASE}/bikes/bxtPro145_ent2_er7.png`
+const previewGravel = `${ASSET_BASE}/bikes/bxtgravel135_slr_grt12.png`
 
 /**
  * Datenmodell für den Konfigurator.
@@ -55,7 +56,7 @@ export const BIKE_TYPES: BikeTypeInfo[] = [
     id: 'gravel',
     name: 'Gravelbike',
     description: 'Vielseitig für Asphalt, Schotter und Waldwege – der Allrounder.',
-    image: frameGravelAlu,
+    image: previewGravel,
   },
   {
     id: 'race-gravel',
@@ -383,6 +384,8 @@ export interface CatalogGroupset extends ConfigurablePart {
   photo?: boolean
   /** Freilauf-Standard der Kassette; legt bei Laufrädern mit Freilauf-Auswahl die Variante fest. */
   freehub?: Freehub
+  /** Bremsscheiben sind im Set – die Standard-Bremsscheiben entfallen. */
+  includesRotors?: boolean
 }
 
 export type Freehub = 'shimano-hg' | 'sram-xdr' | 'shimano-ms'
@@ -448,12 +451,13 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
     url: 'https://s.click.aliexpress.com/e/_c4Nf8s9j',
     weight: 2600,
     freehub: 'shimano-hg',
+    includesRotors: true,
     image: groupsetLtwooGrt12,
     photo: true,
     specs: [
       { label: 'Typ', value: 'Mechanisch, 1 × 12-fach, GRX-Style' },
       { label: 'Innenlager', value: 'im Set, passend zum Rahmen (BSA, BB86/92, PF30 oder BB30)' },
-      { label: 'Bremsen', value: 'Hydraulische Scheibenbremsen' },
+      { label: 'Bremsen', value: 'Hydraulische Scheibenbremsen inkl. Bremsscheiben' },
       { label: 'Material', value: 'Aluminium' },
     ],
     variants: [
