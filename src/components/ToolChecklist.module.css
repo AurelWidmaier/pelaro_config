@@ -146,6 +146,11 @@
   color: var(--text-muted);
 }
 
+.itemVariant {
+  font-size: 0.78rem;
+  color: var(--color-dark);
+}
+
 .itemLink {
   font-size: 0.82rem;
   font-weight: 600;

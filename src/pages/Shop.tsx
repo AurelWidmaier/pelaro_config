@@ -1,5 +1,6 @@
 import { useSearchParams } from 'react-router-dom'
 import { TOOLS, toolImage } from '../config/tools'
+import { formatPrice } from '../utils/format'
 import styles from './Shop.module.css'
 
 /** Shop-Kategorien – weitere (z. B. Pedale, Zubehör) später einfach ergänzen. */
@@ -68,8 +69,13 @@ export function Shop() {
                 <div className={styles.body}>
                   <h3 className={styles.name}>{tool.name}</h3>
                   <p className={styles.description}>{tool.description}</p>
+                  {tool.variant && (
+                    <p className={styles.variant}>
+                      Beim Händler wählen: <strong>{tool.variant}</strong>
+                    </p>
+                  )}
                   <div className={styles.footer}>
-                    {tool.price !== undefined && <span className={styles.price}>{tool.price.toFixed(2).replace('.', ',')} €</span>}
+                    {tool.price !== undefined && <span className={styles.price}>{formatPrice(tool.price)}</span>}
                     {tool.url ? (
                       <a className="btn btn-primary" href={tool.url} target="_blank" rel="noreferrer">
                         Zum Händler

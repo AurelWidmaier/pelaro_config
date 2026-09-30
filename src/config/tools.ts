@@ -2,9 +2,10 @@ import { ASSET_BASE } from './assets'
 import type { CatalogFrame, CatalogGroupset, CatalogWheelset } from './parts'
 
 /**
- * Werkzeug für den Aufbau. Bilder liegen in cdn/tools/<image>, Händler-Links
- * werden nachgetragen (siehe cdn/tools/README.md). Fehlt der Link, zeigt der
- * Shop „Link folgt“.
+ * Werkzeug für den Aufbau. Bilder liegen in cdn/tools/<image> (Tabelle in
+ * cdn/tools/README.md). Viele Angebote haben mehrere Versionen – `variant`
+ * sagt, welche man beim Händler auswählen muss. Fehlt `url`, zeigt der Shop
+ * „Link folgt“.
  */
 export interface Tool {
   id: string
@@ -14,33 +15,242 @@ export interface Tool {
   /** Dateiname in cdn/tools/ */
   image: string
   url?: string
+  /** Preis der empfohlenen Version beim Händler, ohne Versand */
   price?: number
+  /** Welche Version beim Händler auswählen */
+  variant?: string
   /** Unverzichtbar oder nur empfohlen */
   essential: boolean
 }
 
+const ALI = 'https://s.click.aliexpress.com/e/'
+
 export const TOOLS: Tool[] = [
-  { id: 'montagestaender', name: 'Montageständer', description: 'Hält das Bike in Arbeitshöhe – macht den Aufbau deutlich einfacher.', image: 'montagestaender.png', essential: false },
-  { id: 'inbus-set', name: 'Innensechskant-Set 2–10 mm + Torx T25', description: 'Für fast alle Schrauben: Vorbau, Sattel, Bremsen, Steckachsen und Kurbel (8 mm).', image: 'inbus-set.png', essential: true },
-  { id: 'drehmoment-klein', name: 'Drehmomentschlüssel 2–24 Nm', description: 'Pflicht bei Carbon: Vorbau, Sattelstütze und Lenker nur mit dem vorgegebenen Drehmoment anziehen.', image: 'drehmoment-klein.png', essential: true },
-  { id: 'drehmoment-gross', name: 'Drehmomentschlüssel 20–60 Nm', description: 'Für Innenlager, Kassette und Center-Lock-Bremsscheiben (ca. 35–50 Nm).', image: 'drehmoment-gross.png', essential: true },
-  { id: 'innenlager-bsa', name: 'Innenlagerschlüssel BSA 44 mm, 16 Zähne', description: 'Schraubt das BSA-Innenlager ein (Shimano Hollowtech II / SRAM DUB BSA). Passt auch für außenverzahnte Center-Lock-Ringe.', image: 'innenlager-bsa.png', essential: true },
-  { id: 'innenlager-t47', name: 'Innenlagerschlüssel T47', description: 'Schraubt das T47-Innenlager ein. Die Größe hängt vom Lager ab – meist 49 mm mit 12 Zähnen.', image: 'innenlager-t47.png', essential: true },
-  { id: 'kurbel-kappe', name: 'Kurbelkappen-Werkzeug (Shimano TL-FC16/18)', description: 'Stellt bei 24-mm-Kurbeln das Lagerspiel über die Kunststoffkappe ein.', image: 'kurbel-kappe.png', essential: true },
-  { id: 'kassetten-werkzeug', name: 'Kassetten- & Center-Lock-Werkzeug (Shimano HG)', description: 'Zieht den Verschlussring der Kassette und der Center-Lock-Bremsscheiben fest.', image: 'kassetten-werkzeug.png', essential: true },
-  { id: 'kettenpeitsche', name: 'Kettenpeitsche', description: 'Hält die Kassette fest, wenn du sie später wieder abnehmen willst.', image: 'kettenpeitsche.png', essential: false },
-  { id: 'kettennieter', name: 'Kettennieter 11/12-fach', description: 'Kürzt die Kette auf die passende Länge.', image: 'kettennieter.png', essential: true },
-  { id: 'kettenschloss-zange', name: 'Kettenschloss-Zange', description: 'Öffnet und schließt das Kettenschloss ohne Verletzungsgefahr.', image: 'kettenschloss-zange.png', essential: true },
-  { id: 'entlueftungs-kit', name: 'Entlüftungs-Kit + Mineralöl (Shimano-kompatibel)', description: 'Nach dem Kürzen der Bremsleitungen müssen die hydraulischen Bremsen entlüftet werden.', image: 'entlueftungs-kit.png', essential: true },
-  { id: 'leitungsschneider', name: 'Hydraulikleitungs-Schneider + Einpresswerkzeug', description: 'Schneidet die Bremsleitung sauber ab und presst Stützhülse und Olive ein.', image: 'leitungsschneider.png', essential: true },
-  { id: 'zugschneider', name: 'Seilzug- und Hüllenschneider', description: 'Für die Schaltzüge der mechanischen Schaltung – normale Zangen quetschen die Hülle.', image: 'zugschneider.png', essential: true },
-  { id: 'innenverlegung', name: 'Werkzeug für innenverlegte Leitungen (Magnet-Set)', description: 'Fädelt Leitungen und Züge durch den Rahmen – bei voll integrierten Cockpits Gold wert.', image: 'innenverlegung.png', essential: true },
-  { id: 'carbon-saege', name: 'Carbon-Säge mit Sägeführung', description: 'Kürzt den Carbon-Gabelschaft sauber und gerade auf deine Sitzhöhe.', image: 'carbon-saege.png', essential: true },
-  { id: 'carbon-paste', name: 'Carbon-Montagepaste', description: 'Verhindert Rutschen bei Carbon-Klemmungen, damit du nicht zu fest anziehen musst.', image: 'carbon-paste.png', essential: true },
-  { id: 'montagefett', name: 'Montagefett', description: 'Für Gewinde von Innenlager, Pedalen und Steckachsen.', image: 'montagefett.png', essential: true },
-  { id: 'schraubensicherung', name: 'Schraubensicherung mittelfest', description: 'Für Bremsscheiben- und Bremssattelschrauben.', image: 'schraubensicherung.png', essential: false },
-  { id: 'reifenheber', name: 'Reifenheber', description: 'Zum Aufziehen der Reifen und Einlegen der Schläuche.', image: 'reifenheber.png', essential: true },
-  { id: 'standpumpe', name: 'Standpumpe mit Manometer (Sclaverand)', description: 'Pumpt die Reifen auf den richtigen Druck.', image: 'standpumpe.png', essential: true },
+  {
+    id: 'montagestaender',
+    name: 'Montageständer',
+    description: 'Hält das Bike in Arbeitshöhe – macht den Aufbau deutlich einfacher.',
+    image: 'montagestaender.png',
+    url: `${ALI}_c41cRn5r`,
+    price: 37.59,
+    variant: 'steel 66lb (reicht für Rennrad und Gravel)',
+    essential: false,
+  },
+  {
+    id: 'werkzeugkoffer',
+    name: 'Fahrrad-Werkzeugkoffer (44 Teile)',
+    description:
+      'Grundausstattung mit Kettennieter, Innensechskant 1,5–8 mm (8 mm für DUB-Kurbeln), Reifenhebern, Kassetten-Nuss, Speichen- und Maulschlüsseln.',
+    image: 'werkzeugkoffer.png',
+    url: `${ALI}_c4TecGSd`,
+    price: 26.19,
+    variant: '1 Set',
+    essential: true,
+  },
+  {
+    id: 'inbus-set',
+    name: 'Bit-Set mit T-Griff (Innensechskant + Torx)',
+    description: 'Für Vorbau, Sattel, Bremsen und Steckachsen – die Bits passen auch auf den Drehmomentschlüssel.',
+    image: 'inbus-set.png',
+    url: `${ALI}_c3LlwjaD`,
+    price: 18.39,
+    variant: '46PC',
+    essential: true,
+  },
+  {
+    id: 'drehmoment-set',
+    name: 'Drehmomentschlüssel-Set 5–25 / 5–60 / 20–220 Nm',
+    description:
+      'Pflicht bei Carbon: 5–25 Nm für Vorbau, Lenker und Sattelstütze, 5–60 Nm für Innenlager, Kassette und Center-Lock-Scheiben.',
+    image: 'drehmoment-set.png',
+    url: `${ALI}_c4rCxTFj`,
+    price: 61.39,
+    variant: 'MC9PCS',
+    essential: true,
+  },
+  {
+    id: 'innenlager-bsa24',
+    name: 'Innenlager-Schlüssel 44 mm / 16 Zähne',
+    description: 'Für BSA-Innenlager mit 24-mm-Achse (Shimano Hollowtech II, SENICX BSA-24 aus dem ER7-Set).',
+    image: 'innenlager-bsa24.png',
+    url: `${ALI}_c3XRe4t3`,
+    price: 5.59,
+    variant: '44-16',
+    essential: true,
+  },
+  {
+    id: 'innenlager-dub',
+    name: 'Innenlager-Schlüssel 46 mm / 24 Zähne (BSA-DUB)',
+    description: 'Für BSA-DUB-Innenlager mit 29-mm-Achse, wie sie bei LTWOO R9 und GRT12 (ZRACE) im Set liegen.',
+    image: 'innenlager-dub.png',
+    url: `${ALI}_c3XRe4t3`,
+    price: 5.59,
+    variant: '46-24',
+    essential: true,
+  },
+  {
+    id: 'innenlager-t47-zrace',
+    name: 'ZRACE T47-Innenlager-Werkzeug',
+    description: 'Original-Werkzeug für das ZRACE T47-DUB-Innenlager – gleicher Link wie das Lager.',
+    image: 'innenlager-t47-zrace.png',
+    url: `${ALI}_c3yXlbbL`,
+    price: 10.19,
+    variant: 'tool',
+    essential: true,
+  },
+  {
+    id: 'innenlager-t47',
+    name: 'T47-Innenlager-Aufsatz (MUQZI)',
+    description:
+      'Aufsatz für Knarre oder Drehmomentschlüssel. Die Größe hängt vom Innenlager ab (49 mm/12 Zähne, 50 oder 52 mm/16 Zähne) – im Zweifel das Set mit allen Größen.',
+    image: 'innenlager-t47.png',
+    url: `${ALI}_c3LUtLrx`,
+    price: 28.59,
+    variant: '1 Set (alle T47-Größen) – oder passende Einzelgröße ab 7,69 €',
+    essential: true,
+  },
+  {
+    id: 'kurbel-kappe',
+    name: 'Kurbelkappen-Werkzeug (Hollowtech II)',
+    description: 'Stellt bei 24-mm-Kurbeln das Lagerspiel über die Kunststoffkappe ein.',
+    image: 'kurbel-kappe.png',
+    url: `${ALI}_c3T67sXr`,
+    price: 2.79,
+    essential: true,
+  },
+  {
+    id: 'kassetten-werkzeug',
+    name: 'Kassetten-Werkzeug + Kettenpeitsche',
+    description:
+      'Zieht den Verschlussring der Kassette und der Center-Lock-Bremsscheiben fest (Shimano HG). Die Kettenpeitsche hält die Kassette beim Abnehmen.',
+    image: 'kassetten-werkzeug.png',
+    url: `${ALI}_c34zBO4Z`,
+    price: 8.19,
+    variant: 'Set',
+    essential: true,
+  },
+  {
+    id: 'kettenschloss-zange',
+    name: 'Kettenschloss-Zange',
+    description: 'Öffnet und schließt das Kettenschloss ohne Verletzungsgefahr.',
+    image: 'kettenschloss-zange.png',
+    url: `${ALI}_c3Od1p37`,
+    price: 4.09,
+    variant: 'A model (öffnet und schließt)',
+    essential: true,
+  },
+  {
+    id: 'entlueftungs-kit',
+    name: 'Entlüftungs-Kit für hydraulische Bremsen',
+    description: 'Nach dem Kürzen der Bremsleitungen müssen die Bremsen entlüftet werden – mit Trichter, Spritzen und Adaptern.',
+    image: 'entlueftungs-kit.png',
+    url: `${ALI}_c3udX5Ul`,
+    price: 19.69,
+    variant: 'STD',
+    essential: true,
+  },
+  {
+    id: 'mineraloel',
+    name: 'Mineralöl für Bremsen',
+    description: 'LTWOO-Bremsen laufen mit Mineralöl – auf keinen Fall DOT-Flüssigkeit einfüllen.',
+    image: 'mineraloel.png',
+    url: `${ALI}_c3UnqBmh`,
+    price: 5.99,
+    variant: 'Red Fluid 1pcs (Mineral Oil) – nicht DOT',
+    essential: true,
+  },
+  {
+    id: 'leitungsschneider',
+    name: 'Hydraulikleitungs-Schneider + Einpresswerkzeug',
+    description: 'Schneidet die Bremsleitung sauber ab und presst Stützhülse und Olive ein.',
+    image: 'leitungsschneider.png',
+    essential: true,
+  },
+  {
+    id: 'zugschneider',
+    name: 'Seitenschneider für Schaltzüge',
+    description: 'Kürzt die Schaltzüge der mechanischen Schaltung.',
+    image: 'zugschneider.png',
+    url: `${ALI}_c4ddZFAt`,
+    price: 2.89,
+    variant: '1pcs',
+    essential: true,
+  },
+  {
+    id: 'innenverlegung',
+    name: 'Werkzeug für innenverlegte Leitungen (Magnet-Set)',
+    description: 'Fädelt Leitungen und Züge durch den Rahmen – bei voll integrierten Cockpits Gold wert.',
+    image: 'innenverlegung.png',
+    url: `${ALI}_c3j6KvNJ`,
+    price: 7.49,
+    variant: 'Standard Model',
+    essential: true,
+  },
+  {
+    id: 'saegefuehrung',
+    name: 'Sägeführung für Gabelschaft (Tube Holder)',
+    description: 'Hält den Carbon-Gabelschaft fest und führt die Säge gerade. Zusammen mit der Bügelsäge kaufen.',
+    image: 'saegefuehrung.png',
+    url: `${ALI}_c34Dxskp`,
+    price: 28.39,
+    variant: 'Tube Holder Blue (oder Black)',
+    essential: true,
+  },
+  {
+    id: 'buegelsaege',
+    name: 'Bügelsäge 12"',
+    description: 'Kürzt den Carbon-Gabelschaft – gleicher Link wie die Sägeführung, separat auswählen.',
+    image: 'buegelsaege.png',
+    url: `${ALI}_c34Dxskp`,
+    price: 17.89,
+    variant: '12 inch Hacksaw Bow',
+    essential: true,
+  },
+  {
+    id: 'carbon-paste',
+    name: 'Carbon-Montagepaste',
+    description: 'Verhindert Rutschen bei Carbon-Klemmungen, damit du nicht zu fest anziehen musst.',
+    image: 'carbon-paste.png',
+    url: `${ALI}_c3VFJzoV`,
+    price: 2.25,
+    essential: true,
+  },
+  {
+    id: 'montagefett',
+    name: 'Montagefett',
+    description: 'Für Gewinde von Innenlager, Pedalen und Steckachsen.',
+    image: 'montagefett.png',
+    url: `${ALI}_c3NUi5Fb`,
+    price: 3.65,
+    variant: '50g',
+    essential: true,
+  },
+  {
+    id: 'schraubensicherung',
+    name: 'Schraubensicherung mittelfest',
+    description: 'Für Bremsscheiben- und Bremssattelschrauben.',
+    image: 'schraubensicherung.png',
+    essential: false,
+  },
+  {
+    id: 'reifenheber',
+    name: 'Reifenheber (10 Stück)',
+    description: 'Zum Aufziehen der Reifen und Einlegen der Schläuche.',
+    image: 'reifenheber.png',
+    url: `${ALI}_c4nGJsbn`,
+    price: 4.59,
+    essential: true,
+  },
+  {
+    id: 'standpumpe',
+    name: 'Standpumpe mit Manometer',
+    description: 'Pumpt die Reifen auf den richtigen Druck – passt auf Sclaverand-Ventile.',
+    image: 'standpumpe.png',
+    url: `${ALI}_c3S8leK5`,
+    price: 30.99,
+    variant: 'Long style-black',
+    essential: true,
+  },
 ]
 
 export function toolImage(tool: Tool): string {
@@ -55,27 +265,29 @@ function tool(id: string): Tool {
 
 /** Werkzeug, das jedes Bike im Konfigurator braucht. */
 const GENERAL_TOOL_IDS = [
-  'montagestaender',
+  'werkzeugkoffer',
   'inbus-set',
-  'drehmoment-klein',
-  'drehmoment-gross',
+  'drehmoment-set',
   'kassetten-werkzeug',
-  'kettennieter',
   'kettenschloss-zange',
   'entlueftungs-kit',
+  'mineraloel',
   'leitungsschneider',
   'innenverlegung',
-  'carbon-saege',
+  'saegefuehrung',
+  'buegelsaege',
   'carbon-paste',
   'montagefett',
-  'schraubensicherung',
   'reifenheber',
   'standpumpe',
-  'kettenpeitsche',
+  'montagestaender',
+  'schraubensicherung',
 ]
 
-/** Kurbeln mit 24-mm-Achse und Kunststoff-Einstellkappe (Hollowtech-Stil). */
-const CAP_CRANK_GROUPSETS = ['groupset-ltwoo-er7']
+/** Kurbeln mit 24-mm-Achse und Kunststoff-Einstellkappe (Hollowtech-Stil), Innenlager BSA-24. */
+const HOLLOWTECH_GROUPSETS = ['groupset-ltwoo-er7']
+/** Kurbeln mit DUB-Achse (29 mm) – Innenlager aus dem Set ist ein DUB-Lager. */
+const DUB_GROUPSETS = ['groupset-ltwoo-r9', 'groupset-ltwoo-grt12']
 
 export interface RequiredTool {
   tool: Tool
@@ -95,14 +307,23 @@ export function getToolList(
   _wheels?: CatalogWheelset,
 ): ToolList {
   const specific: RequiredTool[] = []
+  const isDub = Boolean(groupset && DUB_GROUPSETS.includes(groupset.id))
 
   if (frame?.bottomBracket === 'bsa') {
-    specific.push({ tool: tool('innenlager-bsa'), reason: `${frame.name} hat ein BSA-Gewindetretlager.` })
+    specific.push(
+      isDub
+        ? { tool: tool('innenlager-dub'), reason: `${frame.name} hat BSA, die ${groupset!.name} bringt ein DUB-Innenlager mit.` }
+        : { tool: tool('innenlager-bsa24'), reason: `${frame.name} hat ein BSA-Gewindetretlager.` },
+    )
   } else if (frame?.bottomBracket === 't47') {
-    specific.push({ tool: tool('innenlager-t47'), reason: `${frame.name} hat ein T47-Gewindetretlager.` })
+    specific.push(
+      isDub
+        ? { tool: tool('innenlager-t47-zrace'), reason: `${frame.name} hat T47 – dafür kommt das ZRACE T47-DUB-Innenlager dazu.` }
+        : { tool: tool('innenlager-t47'), reason: `${frame.name} hat T47, das Innenlager liegt dem Rahmen bei.` },
+    )
   }
 
-  if (groupset && CAP_CRANK_GROUPSETS.includes(groupset.id)) {
+  if (groupset && HOLLOWTECH_GROUPSETS.includes(groupset.id)) {
     specific.push({ tool: tool('kurbel-kappe'), reason: `Die Kurbel der ${groupset.name} wird über eine Kappe eingestellt.` })
   }
 

@@ -117,6 +117,14 @@
   color: var(--text-muted);
 }
 
+.variant {
+  font-size: 0.8rem;
+  color: var(--color-dark);
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--color-sage-mist);
+}
+
 .footer {
   margin-top: auto;
   padding-top: 8px;

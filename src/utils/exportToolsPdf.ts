@@ -1,4 +1,5 @@
 import type { Tool, ToolList } from '../config/tools'
+import { formatPrice } from './format'
 
 // Theme-Farben aus styles/variables.css (wie exportPdf.ts)
 const DARK: [number, number, number] = [36, 72, 85]
@@ -67,8 +68,12 @@ export async function exportToolsPdf({ bikeName, list }: ToolsPdfData): Promise<
   }
 
   const row = (tool: Tool, note?: string) => {
-    const descLines = doc.splitTextToSize(pdfText(note ? `${tool.description} ${note}` : tool.description), CONTENT_W - 18)
-    const h = 8 + descLines.length * 4.2
+    const descLines = doc.splitTextToSize(pdfText(note ? `${note} ${tool.description}` : tool.description), CONTENT_W - 18)
+    const variantParts = [tool.variant ? `Version: ${tool.variant}` : '', tool.price !== undefined ? formatPrice(tool.price) : '']
+      .filter(Boolean)
+      .join(' · ')
+    const variantLines = variantParts ? doc.splitTextToSize(pdfText(variantParts), CONTENT_W - 18) : []
+    const h = 8 + (descLines.length + variantLines.length) * 4.2
     ensureSpace(h + 2)
     doc.setFillColor(...CARD)
     doc.roundedRect(MARGIN, y, CONTENT_W, h, 2.5, 2.5, 'F')
@@ -86,6 +91,10 @@ export async function exportToolsPdf({ bikeName, list }: ToolsPdfData): Promise<
     doc.setFontSize(8.5)
     doc.setTextColor(...MUTED)
     doc.text(descLines, MARGIN + 12, y + 11)
+    if (variantLines.length > 0) {
+      doc.setTextColor(...DARK)
+      doc.text(variantLines, MARGIN + 12, y + 11 + descLines.length * 4.2)
+    }
     y += h + 2
   }
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { toolImage, type Tool, type ToolList } from '../config/tools'
 import { exportToolsPdf } from '../utils/exportToolsPdf'
+import { formatPrice } from '../utils/format'
 import styles from './ToolChecklist.module.css'
 
 interface ToolChecklistProps {
@@ -20,6 +21,13 @@ function ToolItem({ tool, reason }: { tool: Tool; reason?: string }) {
           {!tool.essential && <span className={styles.optional}>empfohlen</span>}
         </span>
         <span className={styles.itemDesc}>{reason ? `${reason} ${tool.description}` : tool.description}</span>
+        {(tool.variant || tool.price !== undefined) && (
+          <span className={styles.itemVariant}>
+            {tool.variant && <>Version: <strong>{tool.variant}</strong></>}
+            {tool.variant && tool.price !== undefined && ' · '}
+            {tool.price !== undefined && formatPrice(tool.price)}
+          </span>
+        )}
       </div>
       {tool.url ? (
         <a className={styles.itemLink} href={tool.url} target="_blank" rel="noreferrer">
