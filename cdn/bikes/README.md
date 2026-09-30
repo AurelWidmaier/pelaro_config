@@ -18,6 +18,7 @@ Die Kurznamen stehen als `imageKey` in `src/config/parts.ts`:
 | Elitewheels SLR Gravel | `slrGravel` |
 | LTWOO ER7 2x12 | `er7` |
 | LTWOO GRT12 1x12 | `grt12` |
+| LTWOO R9 2x11 | `r9` |
 
 Groß-/Kleinschreibung ist egal. Neue Bilder einfach hier ablegen und pushen:
 Der Pages-Workflow erzeugt daraus automatisch `manifest.json`, die App
