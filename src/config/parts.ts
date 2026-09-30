@@ -615,6 +615,7 @@ export const WHEELS_CATALOG: CatalogWheelset[] = [
       { label: 'Material', value: 'Carbon' },
       { label: 'Laufradgröße', value: '700C' },
       { label: 'Achsen VR/HR', value: '12 × 100 mm / 12 × 142 mm Steckachse' },
+      { label: 'Bremsscheiben-Aufnahme', value: 'Center Lock' },
     ],
     variants: [
       {
