@@ -446,6 +446,7 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
     price: 356.99,
     url: 'https://s.click.aliexpress.com/e/_c4Nf8s9j',
     weight: 2600,
+    freehub: 'shimano-hg',
     image: groupsetPerformance,
     specs: [
       { label: 'Typ', value: 'Mechanisch, 1 × 12-fach, GRX-Style' },
@@ -613,6 +614,7 @@ export const WHEELS_CATALOG: CatalogWheelset[] = [
     specs: [
       { label: 'Material', value: 'Carbon' },
       { label: 'Laufradgröße', value: '700C' },
+      { label: 'Achsen VR/HR', value: '12 × 100 mm / 12 × 142 mm Steckachse' },
     ],
     variants: [
       {
