@@ -20,6 +20,7 @@ const frameBxtGravel135 = partImage('frame/bxt-gravel-135.png')
 const wheelsEliteEnt20 = partImage('wheels/elitewheels-ent-2-0.png')
 const wheelsEliteSlrGravel = partImage('wheels/elitewheels-slr-gravel.png')
 const groupsetLtwooEr7 = partImage('groupset/ltwoo-er7.png')
+const groupsetLtwooGrt12 = partImage('groupset/ltwoo-grt12.png')
 
 // Komplettbike-Bild als Vorschau für die Bike-Typ-Auswahl
 const previewRennrad = `${ASSET_BASE}/bikes/bxtPro145_ent2_er7.png`
@@ -447,7 +448,8 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
     url: 'https://s.click.aliexpress.com/e/_c4Nf8s9j',
     weight: 2600,
     freehub: 'shimano-hg',
-    image: groupsetPerformance,
+    image: groupsetLtwooGrt12,
+    photo: true,
     specs: [
       { label: 'Typ', value: 'Mechanisch, 1 × 12-fach, GRX-Style' },
       { label: 'Bremsen', value: 'Hydraulische Scheibenbremsen' },

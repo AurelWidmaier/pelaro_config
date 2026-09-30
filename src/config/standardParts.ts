@@ -65,6 +65,14 @@ export const GRAVEL_TIRE = {
  * Passendes Innenlager je Rahmen × Schaltgruppe. Fehlt eine Kombination,
  * liegt das Innenlager dem Rahmenset bei (BXT Pro-145) oder ist noch offen.
  */
+const KACTUS_BSA24: Omit<StandardPart, 'id' | 'label'> = {
+  name: 'KACTUS Innenlager BSA24',
+  detail: 'BSA 68/73 mm, 24-mm-Achse',
+  price: 32.39,
+  weight: 149,
+  url: 'https://s.click.aliexpress.com/e/_c45TpIpF',
+}
+
 const BOTTOM_BRACKETS: Record<string, Omit<StandardPart, 'id' | 'label'>> = {
   'frame-bxt-gravel-135|groupset-ltwoo-grt12': {
     name: 'BUCKLOS Innenlager BSA',
@@ -73,13 +81,9 @@ const BOTTOM_BRACKETS: Record<string, Omit<StandardPart, 'id' | 'label'>> = {
     weight: 74.7,
     url: 'https://s.click.aliexpress.com/e/_c4oBaqDb',
   },
-  'frame-spcycle-r088|groupset-ltwoo-er7': {
-    name: 'KACTUS Innenlager BSA24',
-    detail: 'BSA 68/73 mm, 24-mm-Achse',
-    price: 32.39,
-    weight: 149,
-    url: 'https://s.click.aliexpress.com/e/_c45TpIpF',
-  },
+  // BSA-Rahmen mit ER7-Kurbel (24-mm-Stahlachse)
+  'frame-spcycle-r088|groupset-ltwoo-er7': KACTUS_BSA24,
+  'frame-bxt-gravel-135|groupset-ltwoo-er7': KACTUS_BSA24,
 }
 
 /** Bremsscheiben VR/HR, wenn der Rahmen nichts anderes vorgibt. */
