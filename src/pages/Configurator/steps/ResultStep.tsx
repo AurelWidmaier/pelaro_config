@@ -17,6 +17,8 @@ import { exportBikePdf, type PdfPartRow } from '../../../utils/exportPdf'
 import { SHIPPING_NOTE, formatPrice, formatWeight } from '../../../utils/format'
 import { BikeCanvas } from '../../../components/BikeCanvas'
 import { Lightbox } from '../../../components/Lightbox'
+import { ToolChecklist } from '../../../components/ToolChecklist'
+import { getToolList } from '../../../config/tools'
 import { StepShell } from '../StepShell'
 import styles from './ResultStep.module.css'
 
@@ -181,6 +183,11 @@ export function ResultStep() {
           </div>
         </div>
       </div>
+
+      <ToolChecklist
+        list={getToolList(frame, groupset, wheels)}
+        bikeName={[frame?.name, groupset?.name].filter(Boolean).join(' mit ') || 'Bike'}
+      />
 
       {realImages.length > 0 && (
         <section className={styles.real}>

@@ -5,6 +5,7 @@ import { ConsentBanner } from './components/ConsentBanner'
 import { CatalogGate } from './components/CatalogGate'
 import { Home } from './pages/Home'
 import { Tutorial } from './pages/Tutorial'
+import { Shop } from './pages/Shop'
 import { ConfiguratorPage } from './pages/Configurator/ConfiguratorPage'
 import { ConfiguratorProvider } from './context/ConfiguratorContext'
 import { trackPageView } from './lib/analytics'
@@ -37,6 +38,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/tutorial" element={<Tutorial />} />
+          <Route path="/shop" element={<Shop />} />
           <Route
             path="/konfigurator"
             element={

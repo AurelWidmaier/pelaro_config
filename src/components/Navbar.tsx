@@ -6,6 +6,7 @@ import styles from './Navbar.module.css'
 const LINKS = [
   { to: '/', label: 'Home' },
   { to: '/tutorial', label: 'Tutorial' },
+  { to: '/shop', label: 'Shop' },
 ]
 
 export function Navbar() {
