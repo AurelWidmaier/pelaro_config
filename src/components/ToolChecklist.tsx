@@ -23,7 +23,7 @@ function ToolItem({ tool, reason }: { tool: Tool; reason?: string }) {
         <span className={styles.itemDesc}>{reason ? `${reason} ${tool.description}` : tool.description}</span>
         {(tool.variant || tool.price !== undefined) && (
           <span className={styles.itemVariant}>
-            {tool.variant && <>Version: <strong>{tool.variant}</strong></>}
+            {tool.variant && <>Beim Händler wählen: <strong>{tool.variant}</strong></>}
             {tool.variant && tool.price !== undefined && ' · '}
             {tool.price !== undefined && formatPrice(tool.price)}
           </span>

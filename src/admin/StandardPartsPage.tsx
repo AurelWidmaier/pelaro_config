@@ -42,14 +42,20 @@ export function StandardPartsPage() {
       if (field === 'price' || field === 'weight') {
         if (value === '') delete part[field]
         else part[field] = Number(value.replace(',', '.'))
-      } else if (value === '' && field === 'detail') delete part[field]
+      } else if (value === '' && (field === 'detail' || field === 'shopChoice')) delete part[field]
       else part[field] = value
       return { ...c, [key]: part }
     })
 
   const setTubes = (field: keyof StandardPartsConfig['tubes'], value: string) =>
     setConfig((c) =>
-      c && { ...c, tubes: { ...c.tubes, [field]: field === 'name' || field === 'url' ? value : Number(value.replace(',', '.')) } },
+      c && {
+        ...c,
+        tubes: {
+          ...c.tubes,
+          [field]: ['name', 'url', 'shopRoad', 'shopGravel'].includes(field) ? value : Number(value.replace(',', '.')),
+        },
+      },
     )
 
   async function save() {
@@ -125,6 +131,15 @@ export function StandardPartsPage() {
               />
             </label>
             <label className={`${styles.field} ${styles.fieldWide}`}>
+              Beim Händler wählen
+              <input
+                className={styles.input}
+                value={config[key].shopChoice ?? ''}
+                placeholder="z. B. „700x28 Tubelss“ (schwarz), Menge 2"
+                onChange={(e) => setSimple(key, 'shopChoice', e.target.value)}
+              />
+            </label>
+            <label className={`${styles.field} ${styles.fieldWide}`}>
               Händler-Link
               <input className={styles.input} value={config[key].url} onChange={(e) => setSimple(key, 'url', e.target.value)} />
             </label>
@@ -151,6 +166,14 @@ export function StandardPartsPage() {
             Gewicht je Schlauch Gravel (g)
             <input className={styles.input} inputMode="numeric" value={config.tubes.weightGravel} onChange={(e) => setTubes('weightGravel', e.target.value)} />
           </label>
+          <label className={styles.field}>
+            Händler-Variante Rennrad
+            <input className={styles.input} value={config.tubes.shopRoad ?? ''} onChange={(e) => setTubes('shopRoad', e.target.value)} />
+          </label>
+          <label className={styles.field}>
+            Händler-Variante Gravel
+            <input className={styles.input} value={config.tubes.shopGravel ?? ''} onChange={(e) => setTubes('shopGravel', e.target.value)} />
+          </label>
           <label className={`${styles.field} ${styles.fieldWide}`}>
             Händler-Link
             <input className={styles.input} value={config.tubes.url} onChange={(e) => setTubes('url', e.target.value)} />
@@ -168,7 +191,7 @@ export function StandardPartsPage() {
             spellCheck={false}
           />
           <span className={styles.hint}>
-            gravelTire.options: Preis/Gewicht je Reifen · rotors.sizes: Preis/Gewicht je Scheibe · defaultRotors: VR/HR in mm
+            gravelTire.options: Preis/Gewicht je Reifen, shopLabel = Größe beim Händler · shopChoice = was beim Händler zu wählen ist · rotors.sizes: Preis/Gewicht je Scheibe · defaultRotors: VR/HR in mm
             · bottomBrackets: Zusatz-Innenlager je „rahmen-id|schaltgruppen-id“ (nur nötig, wenn die Gruppe kein passendes
             Lager mitbringt)
           </span>

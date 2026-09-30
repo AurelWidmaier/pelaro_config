@@ -14,7 +14,7 @@ const BIKE_TYPES = Object.keys(BIKE_TYPE_LABEL)
 const ADVANCED_KEYS = ['variants', 'priceTable'] as const
 
 const VARIANTS_HELP = `Varianten: [{ "id": "size", "label": "Rahmengröße", "defaultOptionId": "54",
-  "options": [{ "id": "54", "label": "54 cm", "priceDelta": 0, "weight": 1600, "maxTireWidth": 43,
+  "options": [{ "id": "54", "label": "54 cm", "shopLabel": "54cm Matte", "priceDelta": 0, "weight": 1600, "maxTireWidth": 43,
   "specs": [{ "label": "…", "value": "…" }] }] }]
 Preistabelle (optional): [{ "when": { "rimDepth": "50", "bearing": "steel" }, "price": 349.99 }]`
 
@@ -257,6 +257,19 @@ export function ProductEditor() {
               onChange={(e) => set('hint', e.target.value)}
             />
             <span className={styles.hint}>Erscheint auf der Auswahlkarte, z. B. „Nimm das, wenn du viel bergauf fährst.“</span>
+          </label>
+          <label className={`${styles.field} ${styles.fieldWide}`}>
+            Beim Händler wählen
+            <input
+              className={styles.input}
+              value={str('shopChoice')}
+              placeholder="„{size}cm {finish}“ · Farbe nach Wunsch"
+              onChange={(e) => set('shopChoice', e.target.value)}
+            />
+            <span className={styles.hint}>
+              Steht in Teileliste und PDF. {'{gruppen-id}'} wird durch den Händler-Namen der gewählten Variante ersetzt
+              („shopLabel“ im Varianten-JSON, sonst die ID).
+            </span>
           </label>
           <label className={`${styles.field} ${styles.fieldWide}`}>
             Beschreibung

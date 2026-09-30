@@ -12,6 +12,7 @@ import wheelsAero from '../assets/parts/wheels/wheels-aero.svg'
 import groupsetEinsteiger from '../assets/parts/groupset/groupset-einsteiger.svg'
 import groupsetMittelklasse from '../assets/parts/groupset/groupset-mittelklasse.svg'
 import groupsetPerformance from '../assets/parts/groupset/groupset-performance.svg'
+import { withShopChoices } from './shopChoices'
 
 // Produktfotos kommen von GitHub Pages (siehe ./assets.ts)
 const frameSpcycleR088 = partImage('frame/spcycle-r088.png')
@@ -123,6 +124,8 @@ export interface VariantOption {
   specs?: PartSpec[]
   /** Maximal empfohlene Reifenbreite in mm (Laufräder, je Felgenhöhe). */
   maxTireWidth?: number
+  /** Name der Variante beim Händler, z. B. „Steel Bearing“ – für {gruppe} in `shopChoice`. */
+  shopLabel?: string
 }
 
 /** Eine Unterauswahl eines Teils, z. B. "Rahmengröße" oder "Felgenhöhe". */
@@ -154,6 +157,12 @@ interface ConfigurablePart {
   imageKey?: string
   /** Produktseite beim Händler (Affiliate-Link), auf die die Teileliste im Ergebnis verlinkt. */
   url?: string
+  /**
+   * Was beim Händler genau auszuwählen ist, mit den Variantennamen des Händlers.
+   * `{gruppen-id}` wird durch `shopLabel` (sonst die ID) der gewählten Option ersetzt,
+   * z. B. „{size}cm {finish}“ · „{rimDepth}“.
+   */
+  shopChoice?: string
   specs?: PartSpec[]
   variants?: VariantGroup[]
   /**
@@ -184,6 +193,25 @@ export function getSelectedVariantOptions(
       const option = group.options.find((o) => o.id === chosenId) ?? group.options[0]
       return { group, option }
     })
+}
+
+/**
+ * Händler-Auswahl als Text, z. B. „54cm Matte“ · Farbe nach Wunsch. Entfällt eine
+ * Unterauswahl (z. B. Innenlager aus dem Set), wird die erste Option eingesetzt
+ * und darauf hingewiesen, dass das Teil nicht gebraucht wird.
+ */
+export function getShopChoice(part: ConfigurablePart | undefined, selection: VariantSelection): string | undefined {
+  if (!part?.shopChoice) return undefined
+  const unused: string[] = []
+  const text = part.shopChoice.replace(/\{([\w.-]+)\}/g, (match, groupId: string) => {
+    const group = part.variants?.find((g) => g.id === groupId)
+    if (!group) return match
+    const chosenId = selection[groupId] === NOT_APPLICABLE ? undefined : (selection[groupId] ?? group.defaultOptionId)
+    if (selection[groupId] === NOT_APPLICABLE) unused.push(group.label)
+    const option = group.options.find((o) => o.id === chosenId) ?? group.options[0]
+    return option?.shopLabel ?? option?.id ?? ''
+  })
+  return unused.length > 0 ? `${text} (${unused.join(', ')} aus dem Set wird nicht gebraucht – egal welche Variante)` : text
 }
 
 /** Grundpreis plus Aufpreise der gewählten Unterauswahlen. */
@@ -746,9 +774,9 @@ export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
 
 /* ------------------------------ Katalog -------------------------------- */
 
-let frameCatalog = DEFAULT_FRAME_CATALOG
-let groupsetCatalog = DEFAULT_GROUPSET_CATALOG
-let wheelsCatalog = DEFAULT_WHEELS_CATALOG
+let frameCatalog = withShopChoices(DEFAULT_FRAME_CATALOG)
+let groupsetCatalog = withShopChoices(DEFAULT_GROUPSET_CATALOG)
+let wheelsCatalog = withShopChoices(DEFAULT_WHEELS_CATALOG)
 
 export type ProductCategory = 'frame' | 'groupset' | 'wheels'
 

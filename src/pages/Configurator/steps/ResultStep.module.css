@@ -185,6 +185,20 @@
   margin-top: 2px;
 }
 
+.rowShop {
+  display: inline-block;
+  font-size: 0.78rem;
+  color: var(--color-dark);
+  background: var(--color-sage-mist);
+  border-radius: var(--radius-sm);
+  padding: 3px 8px;
+  margin-top: 5px;
+}
+
+.rowShop strong {
+  font-weight: 600;
+}
+
 .rowWeight {
   display: block;
   font-size: 0.8rem;

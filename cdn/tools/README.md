@@ -16,7 +16,6 @@ Links, Versionen und Preise stehen in `src/config/tools.ts`.
 | 4 | Drehmomentschlüssel-Set 5–25 / 5–60 / 20–220 Nm | `drehmoment-set.webp` | MC9PCS | 61,39 € | https://s.click.aliexpress.com/e/_c4rCxTFj |
 | 5 | Innenlager-Schlüssel 44 mm / 16 Zähne | `innenlager-bsa24.webp` | 44-16 | 5,59 € | https://s.click.aliexpress.com/e/_c3XRe4t3 |
 | 6 | Innenlager-Schlüssel 46 mm / 24 Zähne (BSA-DUB) | `innenlager-dub.webp` | 46-24 | 5,59 € | https://s.click.aliexpress.com/e/_c3XRe4t3 |
-| 7 | ZRACE T47-Innenlager-Werkzeug | `innenlager-t47-zrace.webp` | tool | 10,19 € | https://s.click.aliexpress.com/e/_c3yXlbbL |
 | 8 | T47-Innenlager-Aufsatz (MUQZI) | `innenlager-t47.webp` | 1 Set (alle T47-Größen) – oder passende Einzelgröße ab 7,69 € | 28,59 € | https://s.click.aliexpress.com/e/_c3LUtLrx |
 | 9 | Kurbelkappen-Werkzeug (Hollowtech II) | `kurbel-kappe.webp` | – | 2,79 € | https://s.click.aliexpress.com/e/_c3T67sXr |
 | 10 | Kassetten-Werkzeug + Kettenpeitsche | `kassetten-werkzeug.webp` | Set | 8,19 € | https://s.click.aliexpress.com/e/_c34zBO4Z |

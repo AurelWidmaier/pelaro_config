@@ -22,6 +22,8 @@ export interface StandardPart {
   name: string
   /** Menge/Größe als Zusatzinfo, z. B. "2 × 700 × 28C" oder "VR 160 mm · HR 140 mm". */
   detail?: string
+  /** Was beim Händler genau auszuwählen ist (Variantennamen des Händlers). */
+  shopChoice?: string
   price: number
   /** Fehlt, wenn der Händler kein Gewicht angibt. */
   weight?: number
@@ -35,6 +37,8 @@ export interface SimplePart {
   weight?: number
   url: string
   detail?: string
+  /** Was beim Händler genau auszuwählen ist (Variantennamen des Händlers). */
+  shopChoice?: string
 }
 
 /**
@@ -51,10 +55,21 @@ export interface StandardPartsConfig {
     brand: string
     name: string
     url: string
-    options: { id: string; label: string; pricePerTire: number; weightPerTire?: number }[]
+    options: { id: string; label: string; pricePerTire: number; weightPerTire?: number; shopLabel?: string }[]
+    /** Farbe beim Händler, z. B. „Black“. */
+    shopColor?: string
   }
   /** Schläuche, Preis fürs Set, Gewicht je Schlauch. */
-  tubes: { name: string; url: string; price: number; weightRoad: number; weightGravel: number }
+  tubes: {
+    name: string
+    url: string
+    price: number
+    weightRoad: number
+    weightGravel: number
+    /** Händler-Varianten (Größe inkl. Stückzahl) für Rennrad und Gravel. */
+    shopRoad?: string
+    shopGravel?: string
+  }
   /** Bremsscheiben je Größe in mm, Preis/Gewicht je Scheibe. */
   rotors: { name: string; url: string; sizes: Record<string, { price: number; weight: number }> }
   /** Bremsscheiben VR/HR, wenn der Rahmen nichts anderes vorgibt. */
@@ -72,16 +87,19 @@ export const DEFAULT_STANDARD_PARTS: StandardPartsConfig = {
     price: 17.69,
     weight: 135,
     url: 'https://s.click.aliexpress.com/e/_c3ySK67f',
+    shopChoice: 'keine Auswahl nötig (nur eine Variante)',
   },
   barTape: {
     name: 'BUCKLOS Lenkerband',
     price: 6.59,
     weight: 75,
     url: 'https://s.click.aliexpress.com/e/_c33BMsXn',
+    shopChoice: 'Farbe nach Wunsch, z. B. „Black“',
   },
   roadTire: {
     name: 'Continental Grand Prix',
-    detail: '2 Stück, 700 × 25/28C',
+    detail: '2 Stück, 700 × 28C',
+    shopChoice: '„700x28 Tubelss“ (schwarz), Menge 2',
     price: 2 * 33.79,
     weight: 2 * 360,
     url: 'https://s.click.aliexpress.com/e/_c2I9HvhX',
@@ -90,9 +108,10 @@ export const DEFAULT_STANDARD_PARTS: StandardPartsConfig = {
     brand: 'Continental',
     name: 'Continental Terra Trail',
     url: 'https://s.click.aliexpress.com/e/_c3UiXXvX',
+    shopColor: 'Black',
     options: [
-      { id: '40', label: '700 × 40C', pricePerTire: 40.39, weightPerTire: 460 },
-      { id: '45', label: '700 × 45C', pricePerTire: 38.19, weightPerTire: 495 },
+      { id: '40', label: '700 × 40C', pricePerTire: 40.39, weightPerTire: 460, shopLabel: '700x40c' },
+      { id: '45', label: '700 × 45C', pricePerTire: 38.19, weightPerTire: 495, shopLabel: '700x45c' },
     ],
   },
   tubes: {
@@ -101,6 +120,8 @@ export const DEFAULT_STANDARD_PARTS: StandardPartsConfig = {
     price: 20.39,
     weightRoad: 24,
     weightGravel: 45,
+    shopRoad: '24g 700x18-28C 2pc',
+    shopGravel: '45g 700x32-47C 2pc',
   },
   rotors: {
     name: 'Bremsscheiben',
@@ -114,21 +135,30 @@ export const DEFAULT_STANDARD_PARTS: StandardPartsConfig = {
   },
   defaultRotors: [160, 160],
   // Die ER7 hat ein BSA-24-Lager im Set, GRT12 und R9 wahlweise BSA, BB86/92,
-  // PF30 oder BB30, und der BXT Pro-145 bringt sein T47-Lager selbst mit.
+  // PF30 oder BB30. Der BXT Pro-145 hat T47 mit 86 mm breitem Gehäuse – dafür
+  // kommt ein T47-Lager für 86–92 mm dazu (24-mm-Achse für die ER7, DUB für GRT12/R9).
+  // T47-Lager für 68/73 mm (z. B. ZRACE ZR-T47) passen dort nicht.
   bottomBrackets: {
+    'frame-bxt-pro-145|groupset-ltwoo-er7': {
+      name: 'KOCEVLO Innenlager T47 86–92 mm',
+      detail: 'T47 für 86-mm-Gehäuse, 24-mm-Achse',
+      shopChoice: '„86-92 24mm Axle“',
+      price: 18.99,
+      url: 'https://de.aliexpress.com/item/1005011557312415.html',
+    },
     'frame-bxt-pro-145|groupset-ltwoo-grt12': {
-      name: 'ZRACE Innenlager T47-DUB',
-      detail: 'T47, 29-mm-Achse',
-      price: 22.19,
-      weight: 129,
-      url: 'https://s.click.aliexpress.com/e/_c3yXlbbL',
+      name: 'KOCEVLO Innenlager T47 86–92 mm',
+      detail: 'T47 für 86-mm-Gehäuse, 29-mm-Achse (DUB)',
+      shopChoice: '„86-92 29mm Axle“',
+      price: 18.99,
+      url: 'https://de.aliexpress.com/item/1005011557312415.html',
     },
     'frame-bxt-pro-145|groupset-ltwoo-r9': {
-      name: 'ZRACE Innenlager T47-DUB',
-      detail: 'T47, 29-mm-Achse',
-      price: 22.19,
-      weight: 129,
-      url: 'https://s.click.aliexpress.com/e/_c3yXlbbL',
+      name: 'KOCEVLO Innenlager T47 86–92 mm',
+      detail: 'T47 für 86-mm-Gehäuse, 29-mm-Achse (DUB)',
+      shopChoice: '„86-92 29mm Axle“',
+      price: 18.99,
+      url: 'https://de.aliexpress.com/item/1005011557312415.html',
     },
   },
 }
@@ -166,12 +196,26 @@ export function getGravelTire() {
   }
 }
 
+function gravelTireShopChoice(tireVariants: VariantSelection): string {
+  const tire = config.gravelTire
+  const option = tire.options.find((o) => o.id === tireVariants.tireWidth) ?? tire.options[0]
+  return [tire.shopColor && `„${tire.shopColor}“`, `„${option?.shopLabel ?? option?.label}“`, 'Menge 2']
+    .filter(Boolean)
+    .join(' · ')
+}
+
 /** Ventillänge der Schläuche passend zur Felgenhöhe. */
 function valveLength(rimDepth: number | undefined): string {
   if (rimDepth === undefined) return 'Ventil passend zur Felgenhöhe'
   if (rimDepth <= 45) return '65-mm-Ventil'
   if (rimDepth <= 60) return '85-mm-Ventil'
   return '85-mm-Ventil + Ventilverlängerung'
+}
+
+/** Ventillänge als Händler-Variante (45, 65 oder 85 mm). */
+function shopValve(rimDepth: number | undefined): string {
+  if (rimDepth !== undefined && rimDepth > 45) return '„85mm“'
+  return '„65mm“'
 }
 
 function selectedRim(wheels: CatalogWheelset | undefined, wheelsVariants: VariantSelection) {
@@ -228,6 +272,7 @@ export function getStandardParts(
           label: 'Reifen',
           name: gravelTire.name,
           detail: `2 Stück, ${getSelectedVariantOptions(gravelTire, tireVariants)[0]?.option.label ?? ''}`,
+          shopChoice: gravelTireShopChoice(tireVariants),
           price: getConfiguredPrice(gravelTire, tireVariants),
           weight: getConfiguredWeight(gravelTire, tireVariants),
           url: gravelTire.url,
@@ -237,10 +282,15 @@ export function getStandardParts(
       id: 'tubes',
       label: 'Schläuche',
       name: config.tubes.name,
-      detail: `2 Stück, ${gravel ? 'Gravel 32–47C' : 'Rennrad 18–32C'}, ${valveLength(rim ? Number(rim.id) : undefined)}`,
+      detail: `2 Stück, ${gravel ? 'Gravel 32–47C' : 'Rennrad 18–28C'}, ${valveLength(rim ? Number(rim.id) : undefined)}`,
       price: config.tubes.price,
       weight: 2 * (gravel ? config.tubes.weightGravel : config.tubes.weightRoad),
       url: config.tubes.url,
+      shopChoice: [
+        '„Presta Valve“',
+        `„${gravel ? (config.tubes.shopGravel ?? '') : (config.tubes.shopRoad ?? '')}“`,
+        shopValve(rim ? Number(rim.id) : undefined),
+      ].join(' · '),
     },
     // Bringt die Schaltgruppe Bremsscheiben mit, braucht es keine zusätzlichen.
     ...(groupset?.includesRotors
@@ -254,6 +304,7 @@ export function getStandardParts(
             price: rotor(front).price + rotor(rear).price,
             weight: rotor(front).weight + rotor(rear).weight,
             url: config.rotors.url,
+            shopChoice: front === rear ? `„${front}“, Menge 2` : `1 × „${front}“ (VR) und 1 × „${rear}“ (HR)`,
           },
         ]),
     ...(bottomBracket ? [{ id: 'bottomBracket', label: 'Innenlager', ...bottomBracket }] : []),

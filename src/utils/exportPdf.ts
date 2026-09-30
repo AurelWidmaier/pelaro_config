@@ -5,6 +5,8 @@ export interface PdfPartRow {
   name: string
   /** Unterauswahl bzw. Menge, z. B. "Rahmengröße 54 cm · Matt". */
   detail?: string
+  /** Was beim Händler genau auszuwählen ist. */
+  shop?: string
   price?: number
   weight?: number
   url?: string
@@ -35,7 +37,7 @@ const MARGIN = 16
 const CONTENT_W = PAGE_W - 2 * MARGIN
 
 /** jsPDF-Standardschriften kennen keine schmalen Leerzeichen aus Intl. */
-const pdfText = (text: string) => text.replace(/[  ]/g, ' ')
+const pdfText = (text: string) => text.replace(/[  ]/g, ' ').replace(/[„“”]/g, '"')
 
 /**
  * Lädt ein Bild und rendert es auf einen Canvas mit Kachel-Hintergrund.
@@ -127,7 +129,12 @@ export async function exportBikePdf(data: BikePdfData): Promise<void> {
   }
 
   const partRow = (row: PdfPartRow) => {
-    const rowH = row.detail || row.weight !== undefined ? 14 : 10
+    const textW = CONTENT_W - 40
+    doc.setFontSize(8)
+    const detailLines: string[] = row.detail ? doc.splitTextToSize(pdfText(row.detail), textW) : []
+    const shopLines: string[] = row.shop ? doc.splitTextToSize(pdfText(`Beim Händler wählen: ${row.shop}`), textW) : []
+    const extraLines = Math.max(detailLines.length + shopLines.length, row.weight !== undefined ? 1 : 0)
+    const rowH = 10 + extraLines * 3.8
     ensureSpace(rowH)
     const top = y
 
@@ -148,11 +155,15 @@ export async function exportBikePdf(data: BikePdfData): Promise<void> {
       doc.line(MARGIN, top + 9.3, MARGIN + nameW, top + 9.3)
     }
 
-    if (row.detail) {
-      doc.setFont('helvetica', 'normal')
-      doc.setFontSize(8)
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(8)
+    if (detailLines.length > 0) {
       doc.setTextColor(...MUTED)
-      doc.text(pdfText(row.detail), MARGIN, top + 12.5, { maxWidth: CONTENT_W - 40 })
+      doc.text(detailLines, MARGIN, top + 12.5, { lineHeightFactor: 1.35 })
+    }
+    if (shopLines.length > 0) {
+      doc.setTextColor(...DARK)
+      doc.text(shopLines, MARGIN, top + 12.5 + detailLines.length * 3.8, { lineHeightFactor: 1.35 })
     }
 
     doc.setFont('helvetica', 'bold')

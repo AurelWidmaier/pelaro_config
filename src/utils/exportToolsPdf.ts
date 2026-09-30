@@ -12,7 +12,7 @@ const PAGE_H = 297
 const MARGIN = 16
 const CONTENT_W = PAGE_W - 2 * MARGIN
 
-const pdfText = (text: string) => text.replace(/[  ]/g, ' ')
+const pdfText = (text: string) => text.replace(/[  ]/g, ' ').replace(/[„“”]/g, '"')
 
 export interface ToolsPdfData {
   bikeName: string
@@ -69,7 +69,7 @@ export async function exportToolsPdf({ bikeName, list }: ToolsPdfData): Promise<
 
   const row = (tool: Tool, note?: string) => {
     const descLines = doc.splitTextToSize(pdfText(note ? `${note} ${tool.description}` : tool.description), CONTENT_W - 18)
-    const variantParts = [tool.variant ? `Version: ${tool.variant}` : '', tool.price !== undefined ? formatPrice(tool.price) : '']
+    const variantParts = [tool.variant ? `Beim Händler wählen: ${tool.variant}` : '', tool.price !== undefined ? formatPrice(tool.price) : '']
       .filter(Boolean)
       .join(' · ')
     const variantLines = variantParts ? doc.splitTextToSize(pdfText(variantParts), CONTENT_W - 18) : []

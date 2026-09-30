@@ -8,6 +8,7 @@ import {
   getFrameById,
   getGroupsetById,
   getSelectedVariantOptions,
+  getShopChoice,
   getWheelsById,
   type VariantSelection,
 } from '../../../config/parts'
@@ -62,6 +63,7 @@ export function ResultStep() {
       price: frame ? getConfiguredPrice(frame, frameVariants) : undefined,
       weight: getConfiguredWeight(frame, frameVariants),
       variants: describeVariants(frame, frameVariants),
+      shop: getShopChoice(frame, frameVariants),
     },
     {
       label: 'Schaltgruppe',
@@ -70,6 +72,7 @@ export function ResultStep() {
       price: groupset ? getConfiguredPrice(groupset, groupsetVariants) : undefined,
       weight: getConfiguredWeight(groupset, groupsetVariants),
       variants: describeVariants(groupset, groupsetVariants),
+      shop: getShopChoice(groupset, groupsetVariants),
     },
     {
       label: 'Laufräder',
@@ -78,6 +81,7 @@ export function ResultStep() {
       price: wheels ? getConfiguredPrice(wheels, wheelsVariants) : undefined,
       weight: getConfiguredWeight(wheels, wheelsVariants),
       variants: describeVariants(wheels, wheelsVariants),
+      shop: getShopChoice(wheels, wheelsVariants),
     },
   ]
 
@@ -88,6 +92,7 @@ export function ResultStep() {
     price: part.price,
     weight: part.weight,
     variants: part.detail ?? '',
+    shop: part.shopChoice,
   }))
 
   async function handleExport() {
@@ -100,6 +105,7 @@ export function ResultStep() {
         label: row.label,
         name: row.option?.name ?? '—',
         detail: row.variants || undefined,
+        shop: row.shop,
         price: row.price,
         weight: row.weight,
         url: row.url,
@@ -242,9 +248,11 @@ interface ResultRow {
   price?: number
   weight?: number
   variants: string
+  /** Was beim Händler genau auszuwählen ist. */
+  shop?: string
 }
 
-function renderRow({ label, option, url, price, weight, variants }: ResultRow) {
+function renderRow({ label, option, url, price, weight, variants, shop }: ResultRow) {
   const content = (
     <>
       <div>
@@ -258,6 +266,11 @@ function renderRow({ label, option, url, price, weight, variants }: ResultRow) {
           )}
         </span>
         {variants && <span className={styles.rowVariants}>{variants}</span>}
+        {shop && (
+          <span className={styles.rowShop}>
+            Beim Händler wählen: <strong>{shop}</strong>
+          </span>
+        )}
       </div>
       <span className={styles.rowPrice}>
         {price !== undefined ? formatPrice(price) : ''}

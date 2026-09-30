@@ -89,16 +89,6 @@ export const TOOLS: Tool[] = [
     essential: true,
   },
   {
-    id: 'innenlager-t47-zrace',
-    name: 'ZRACE T47-Innenlager-Werkzeug',
-    description: 'Original-Werkzeug für das ZRACE T47-DUB-Innenlager – gleicher Link wie das Lager.',
-    image: 'innenlager-t47-zrace.webp',
-    url: `${ALI}_c3yXlbbL`,
-    price: 10.19,
-    variant: 'tool',
-    essential: true,
-  },
-  {
     id: 'innenlager-t47',
     name: 'T47-Innenlager-Aufsatz (MUQZI)',
     description:
@@ -106,7 +96,7 @@ export const TOOLS: Tool[] = [
     image: 'innenlager-t47.webp',
     url: `${ALI}_c3LUtLrx`,
     price: 28.59,
-    variant: '1 Set (alle T47-Größen) – oder passende Einzelgröße ab 7,69 €',
+    variant: '„1 Set Black“ (alle T47-Größen, passt sicher) – Einzelgrößen wie „T47-49-12T Black“ ab 7,69 €',
     essential: true,
   },
   {
@@ -115,6 +105,7 @@ export const TOOLS: Tool[] = [
     description: 'Stellt bei 24-mm-Kurbeln das Lagerspiel über die Kunststoffkappe ein.',
     image: 'kurbel-kappe.webp',
     url: `${ALI}_c3T67sXr`,
+    variant: '„black“ (einzige Variante)',
     price: 2.79,
     essential: true,
   },
@@ -165,6 +156,7 @@ export const TOOLS: Tool[] = [
     description: 'Schneidet die Hydraulik-Bremsleitung sauber und gerade ab – ohne sie zu quetschen.',
     image: 'leitungsschneider.webp',
     url: `${ALI}_c3lsno7R`,
+    variant: '„Jagwir 01“ (einzige Variante)',
     price: 7.39,
     essential: true,
   },
@@ -184,6 +176,7 @@ export const TOOLS: Tool[] = [
     description: 'Kürzt Schaltzüge und -hüllen der mechanischen Schaltung sauber, ohne sie zu quetschen.',
     image: 'zugschneider.webp',
     url: `${ALI}_c4UcsYs1`,
+    variant: '„2510160“ (einzige Variante)',
     price: 16.39,
     essential: true,
   },
@@ -223,6 +216,7 @@ export const TOOLS: Tool[] = [
     description: 'Verhindert Rutschen bei Carbon-Klemmungen, damit du nicht zu fest anziehen musst.',
     image: 'carbon-paste.webp',
     url: `${ALI}_c3VFJzoV`,
+    variant: '„as shows“ (einzige Variante)',
     price: 2.25,
     essential: true,
   },
@@ -242,6 +236,7 @@ export const TOOLS: Tool[] = [
     description: 'Zum Aufziehen der Reifen und Einlegen der Schläuche.',
     image: 'reifenheber.webp',
     url: `${ALI}_c4nGJsbn`,
+    variant: '„bicycle accessories“ (einzige Variante)',
     price: 4.59,
     essential: true,
   },
@@ -320,11 +315,10 @@ export function getToolList(
         : { tool: tool('innenlager-bsa24'), reason: `${frame.name} hat ein BSA-Gewindetretlager.` },
     )
   } else if (frame?.bottomBracket === 't47') {
-    specific.push(
-      isDub
-        ? { tool: tool('innenlager-t47-zrace'), reason: `${frame.name} hat T47 – dafür kommt das ZRACE T47-DUB-Innenlager dazu.` }
-        : { tool: tool('innenlager-t47'), reason: `${frame.name} hat T47, das Innenlager liegt dem Rahmen bei.` },
-    )
+    specific.push({
+      tool: tool('innenlager-t47'),
+      reason: `${frame.name} hat T47 (86 mm) – dafür kommt das KOCEVLO-T47-Innenlager mit ${isDub ? '29-mm-Achse (DUB)' : '24-mm-Achse'} dazu.`,
+    })
   }
 
   if (groupset && HOLLOWTECH_GROUPSETS.includes(groupset.id)) {
