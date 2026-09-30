@@ -669,7 +669,7 @@ export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
 
   {
     id: 'wheels-elitewheels-slr-gravel',
-    imageKey: 'slrGravel',
+    imageKey: 'slr',
     bikeTypes: ['gravel', 'race-gravel'],
     material: 'carbon',
     brand: 'Elitewheels',

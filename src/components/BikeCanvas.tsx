@@ -1,6 +1,7 @@
-import { motion } from 'framer-motion'
+import { useState, type CSSProperties } from 'react'
+import { AnimatePresence, motion, type PanInfo } from 'framer-motion'
 import { getFrameById, getGroupsetById, getWheelsById } from '../config/parts'
-import { useCompleteBikeImage } from '../config/bikeImages'
+import { useCompleteBikeImages } from '../config/bikeImages'
 import { LAYER_POSITIONS, type LayerSlot } from '../config/layerPositions'
 import styles from './BikeCanvas.module.css'
 
@@ -9,21 +10,31 @@ interface BikeCanvasProps {
   groupsetId?: string | null
   wheelsId?: string | null
   className?: string
+  /**
+   * Innenabstand des umgebenden Rahmens in px. Das Foto (JPG) ragt um diesen
+   * Wert hinaus und füllt so die ganze Bildfläche; die Rundung kommt vom Rahmen.
+   */
+  bleed?: number
 }
+
+/** Mindestweg in px, ab dem ein Wischen als Bildwechsel zählt. */
+const SWIPE_THRESHOLD = 50
 
 /**
  * Setzt das Bike-Bild aus einzelnen, freigestellten Layern zusammen:
  * Rahmen (Basis) -> Laufräder -> optionale Anbauteile (z. B. Schaltgruppe).
  * Die Position jedes Layers kommt aus `layerPositions.ts` und ist pro
  * Bike-Typ (Rahmengeometrie) konfigurierbar.
- * Gibt es in cdn/bikes/ ein fertiges Bild für genau diese Kombination,
- * wird stattdessen dieses gezeigt (siehe config/bikeImages.ts).
+ * Gibt es in cdn/bikes/ fertige Bilder für genau diese Kombination, werden
+ * stattdessen diese gezeigt: erst das freigestellte PNG, per Klick oder Wischen
+ * das Foto aus cdn/bikes/jpg/ (siehe config/bikeImages.ts).
  */
-export function BikeCanvas({ frameId, groupsetId, wheelsId, className }: BikeCanvasProps) {
+export function BikeCanvas({ frameId, groupsetId, wheelsId, className, bleed = 0 }: BikeCanvasProps) {
   const frame = getFrameById(frameId)
   const groupset = getGroupsetById(groupsetId ?? null)
   const wheels = getWheelsById(wheelsId ?? null)
-  const completeImage = useCompleteBikeImage(frame?.imageKey, wheels?.imageKey, groupset?.imageKey)
+  const { cutout, photo } = useCompleteBikeImages(frame?.imageKey, wheels?.imageKey, groupset?.imageKey)
+  const [slideState, setSlideState] = useState<{ key: string; index: number }>({ key: '', index: 0 })
 
   if (!frame) {
     return (
@@ -33,20 +44,66 @@ export function BikeCanvas({ frameId, groupsetId, wheelsId, className }: BikeCan
     )
   }
 
-  // Fertiges Komplettbike-Foto für genau diese Kombination hat Vorrang vor den Layern.
-  if (completeImage) {
+  // Fertige Komplettbike-Bilder für genau diese Kombination haben Vorrang vor den Layern.
+  const slides = [
+    ...(cutout ? [{ src: cutout, kind: 'cutout' as const }] : []),
+    ...(photo ? [{ src: photo, kind: 'photo' as const }] : []),
+  ]
+  if (slides.length > 0) {
+    const slidesKey = slides.map((s) => s.src).join('|')
+    // Neue Auswahl -> wieder beim ersten Bild anfangen
+    const index = slideState.key === slidesKey ? Math.min(slideState.index, slides.length - 1) : 0
+    const slide = slides[index]
+    const hasGallery = slides.length > 1
+    const go = (next: number) => setSlideState({ key: slidesKey, index: (next + slides.length) % slides.length })
+    const onDragEnd = (_: unknown, info: PanInfo) => {
+      if (info.offset.x < -SWIPE_THRESHOLD) go(index + 1)
+      else if (info.offset.x > SWIPE_THRESHOLD) go(index - 1)
+    }
+
     return (
-      <div className={`${styles.canvas} ${className ?? ''}`}>
-        <motion.img
-          key={completeImage}
-          src={completeImage}
-          alt={frame.name}
-          className={styles.base}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        />
+      <div
+        className={`${styles.canvas} ${bleed ? styles.canvasBleed : ''} ${className ?? ''}`}
+        style={{ '--bleed': `${bleed}px` } as CSSProperties}
+      >
+        <AnimatePresence initial={false} mode="popLayout">
+          <motion.img
+            key={slide.src}
+            src={slide.src}
+            alt={frame.name}
+            draggable={false}
+            className={`${slide.kind === 'photo' ? styles.photo : styles.base} ${hasGallery ? styles.clickable : ''}`}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            {...(hasGallery
+              ? {
+                  drag: 'x' as const,
+                  dragConstraints: { left: 0, right: 0 },
+                  dragElastic: 0.4,
+                  onDragEnd,
+                  onTap: () => go(index + 1),
+                }
+              : {})}
+          />
+        </AnimatePresence>
         <span className={styles.aiNote}>KI-Bild · nur Vorschau · Gewicht geschätzt</span>
+        {hasGallery && (
+          <div className={styles.dots} role="tablist" aria-label="Bilder">
+            {slides.map((s, i) => (
+              <button
+                key={s.src}
+                type="button"
+                role="tab"
+                aria-selected={i === index}
+                aria-label={s.kind === 'photo' ? 'Foto' : 'Freigestellt'}
+                className={`${styles.dot} ${i === index ? styles.dotActive : ''}`}
+                onClick={() => go(i)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     )
   }

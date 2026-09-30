@@ -13,6 +13,57 @@
   object-fit: contain;
 }
 
+/* Foto mit Hintergrund: füllt die ganze Fläche, bei --bleed auch den Innenabstand des Rahmens */
+.photo {
+  position: absolute;
+  top: calc(-1 * var(--bleed, 0px));
+  left: calc(-1 * var(--bleed, 0px));
+  width: calc(100% + 2 * var(--bleed, 0px));
+  height: calc(100% + 2 * var(--bleed, 0px));
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.canvasBleed {
+  overflow: visible;
+}
+
+.canvasBleed .photo {
+  /* Rundung kommt vom umgebenden Rahmen (overflow: hidden) */
+  border-radius: 0;
+}
+
+.clickable {
+  cursor: pointer;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.dots {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: rgba(36, 72, 85, 0.75);
+  z-index: 2;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(251, 233, 208, 0.45);
+}
+
+.dotActive {
+  background: var(--color-cream);
+}
+
 .layer {
   position: absolute;
   transform: translate(-50%, -50%);

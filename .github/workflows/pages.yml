@@ -26,14 +26,19 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
-      - name: Manifeste der Komplettbike- und Export-Bilder erzeugen
+      - name: Manifeste der Komplettbike-, Foto- und Export-Bilder erzeugen
         run: |
-          for dir in cdn/bikes cdn/exports; do
+          for dir in cdn/bikes cdn/bikes/jpg cdn/exports; do
             mkdir -p "$dir"
             find "$dir" -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) \
               -printf '%f\n' | sort | jq -R . | jq -s . > "$dir/manifest.json"
             cat "$dir/manifest.json"
           done
+          # Echte Fotos liegen je Rahmen in einem Unterordner: real/<rahmen>/<datei>
+          mkdir -p cdn/bikes/real
+          find cdn/bikes/real -mindepth 2 -maxdepth 2 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) \
+            -printf '%P\n' | sort | jq -R . | jq -s . > cdn/bikes/real/manifest.json
+          cat cdn/bikes/real/manifest.json
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:

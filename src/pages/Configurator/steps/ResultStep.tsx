@@ -12,12 +12,15 @@ import {
   type VariantSelection,
 } from '../../../config/parts'
 import { getStandardParts } from '../../../config/standardParts'
-import { findExportBikeImage } from '../../../config/bikeImages'
+import { findExportBikeImage, useRealFrameImages } from '../../../config/bikeImages'
 import { exportBikePdf, type PdfPartRow } from '../../../utils/exportPdf'
 import { SHIPPING_NOTE, formatPrice, formatWeight } from '../../../utils/format'
 import { BikeCanvas } from '../../../components/BikeCanvas'
 import { StepShell } from '../StepShell'
 import styles from './ResultStep.module.css'
+
+/** Innenabstand der Bildfläche in px – das Foto ragt darüber bis an den Rand. */
+const VISUAL_PADDING = 24
 
 export function ResultStep() {
   const {
@@ -44,6 +47,7 @@ export function ResultStep() {
   const standardParts = getStandardParts(bikeType, { frame, groupset, wheels, wheelsVariants, tireVariants })
   const overBudget = totalPrice > budget
   const [exporting, setExporting] = useState(false)
+  const realImages = useRealFrameImages(frame?.imageKey)
 
   const partRows: ResultRow[] = [
     { label: 'Bike-Typ', option: bikeTypeInfo, url: undefined, price: undefined, weight: undefined, variants: '' },
@@ -129,7 +133,7 @@ export function ResultStep() {
     >
       <div className={styles.layout}>
         <div className={styles.visual}>
-          <BikeCanvas frameId={frameId} groupsetId={groupsetId} wheelsId={wheelsId} />
+          <BikeCanvas frameId={frameId} groupsetId={groupsetId} wheelsId={wheelsId} bleed={VISUAL_PADDING} />
         </div>
 
         <div className={styles.summary}>
@@ -175,6 +179,22 @@ export function ResultStep() {
           </div>
         </div>
       </div>
+
+      {realImages.length > 0 && (
+        <section className={styles.real}>
+          <h3 className={styles.realTitle}>So sieht dein Rahmen in verschiedenen Builds in echt aus</h3>
+          <p className={styles.realIntro}>
+            Echte Fotos des {frame?.name} – teils mit anderen Teilen aufgebaut als in deiner Konfiguration.
+          </p>
+          <div className={styles.realGrid}>
+            {realImages.map((src, i) => (
+              <a key={src} href={src} target="_blank" rel="noreferrer" className={styles.realItem}>
+                <img src={src} alt={`${frame?.name} – echtes Foto ${i + 1}`} loading="lazy" />
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
     </StepShell>
   )
 }
