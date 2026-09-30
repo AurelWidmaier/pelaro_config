@@ -28,6 +28,7 @@ export function GroupsetStep() {
     weightIncomplete,
     groupsetId,
     groupsetVariants,
+    groupsetLocks,
     selectGroupset,
     setGroupsetVariant,
     canGoNext,
@@ -90,7 +91,12 @@ export function GroupsetStep() {
         ))}
       </div>
       {selectedGroupset && (
-        <PartDetails part={selectedGroupset} selection={groupsetVariants} onChange={setGroupsetVariant} />
+        <PartDetails
+          part={selectedGroupset}
+          selection={groupsetVariants}
+          onChange={setGroupsetVariant}
+          locked={groupsetLocks}
+        />
       )}
     </StepShell>
   )

@@ -32,6 +32,7 @@ export function ResultStep() {
     groupsetVariants,
     wheelsId,
     wheelsVariants,
+    tireVariants,
     goBack,
     reset,
   } = useConfigurator()
@@ -40,7 +41,7 @@ export function ResultStep() {
   const frame = getFrameById(frameId)
   const groupset = getGroupsetById(groupsetId)
   const wheels = getWheelsById(wheelsId)
-  const standardParts = getStandardParts(bikeType, frame)
+  const standardParts = getStandardParts(bikeType, frame, tireVariants, groupset)
   const overBudget = totalPrice > budget
   const [exporting, setExporting] = useState(false)
 

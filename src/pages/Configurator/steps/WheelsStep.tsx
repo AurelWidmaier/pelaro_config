@@ -1,5 +1,6 @@
 import { useConfigurator } from '../../../context/ConfiguratorContext'
 import { getConfiguredPrice, getConfiguredWeight, getPriceBracket, getWheelsById, suggestWheels } from '../../../config/parts'
+import { GRAVEL_TIRE } from '../../../config/standardParts'
 import { OptionCard } from '../../../components/OptionCard'
 import { PartDetails } from '../../../components/PartDetails'
 import { BudgetBar } from '../../../components/BudgetBar'
@@ -18,8 +19,11 @@ export function WheelsStep() {
     weightIncomplete,
     wheelsId,
     wheelsVariants,
+    wheelsLocks,
+    tireVariants,
     selectWheels,
     setWheelsVariant,
+    setTireVariant,
     canGoNext,
     goNext,
     goBack,
@@ -80,7 +84,15 @@ export function WheelsStep() {
         ))}
       </div>
       {selectedWheels && (
-        <PartDetails part={selectedWheels} selection={wheelsVariants} onChange={setWheelsVariant} />
+        <PartDetails
+          part={selectedWheels}
+          selection={wheelsVariants}
+          onChange={setWheelsVariant}
+          locked={wheelsLocks}
+        />
+      )}
+      {(bikeType === 'gravel' || bikeType === 'race-gravel') && (
+        <PartDetails part={GRAVEL_TIRE} selection={tireVariants} onChange={setTireVariant} />
       )}
     </StepShell>
   )

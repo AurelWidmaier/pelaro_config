@@ -6,7 +6,9 @@ import {
   getDefaultVariants,
   getFrameById,
   getGroupsetById,
+  getGroupsetLocks,
   getWheelsById,
+  getWheelsLocks,
   type BikeType,
   type VariantSelection,
 } from '../config/parts'
@@ -28,6 +30,8 @@ interface ConfiguratorState {
   wheelsId: string | null
   /** Unterauswahlen der Laufräder, z. B. { rimDepth: '50', bearing: 'steel' }. */
   wheelsVariants: VariantSelection
+  /** Unterauswahl der Gravel-Reifen (Standardkomponente), z. B. { tireWidth: '40' }. */
+  tireVariants: VariantSelection
 }
 
 interface ConfiguratorContextValue extends ConfiguratorState {
@@ -39,6 +43,10 @@ interface ConfiguratorContextValue extends ConfiguratorState {
   /** true, wenn mindestens ein gewähltes Teil keine Gewichtsangabe hat. */
   weightIncomplete: boolean
   remainingBudget: number
+  /** Vom Rahmen festgelegte Unterauswahlen der Schaltgruppe (z. B. Tretlager). */
+  groupsetLocks: VariantSelection
+  /** Von der Schaltgruppe festgelegte Unterauswahlen der Laufräder (z. B. Freilauf). */
+  wheelsLocks: VariantSelection
   setBikeType: (type: BikeType) => void
   setBudget: (value: number) => void
   selectFrame: (id: string) => void
@@ -47,6 +55,7 @@ interface ConfiguratorContextValue extends ConfiguratorState {
   setFrameVariant: (groupId: string, optionId: string) => void
   setGroupsetVariant: (groupId: string, optionId: string) => void
   setWheelsVariant: (groupId: string, optionId: string) => void
+  setTireVariant: (groupId: string, optionId: string) => void
   goNext: () => void
   goBack: () => void
   goToStep: (step: StepId) => void
@@ -64,6 +73,7 @@ const initialState: ConfiguratorState = {
   groupsetVariants: {},
   wheelsId: null,
   wheelsVariants: {},
+  tireVariants: {},
 }
 
 const ConfiguratorContext = createContext<ConfiguratorContextValue | null>(null)
@@ -73,32 +83,51 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
 
   const stepIndex = STEP_ORDER.indexOf(state.step)
 
+  // Vorgaben anderer Teile (Tretlager vom Rahmen, Freilauf von der Kassette)
+  // überschreiben die gespeicherte Auswahl – so passen sie auch nach einem Rahmenwechsel.
+  const frame = getFrameById(state.frameId)
+  const groupset = getGroupsetById(state.groupsetId)
+  const wheels = getWheelsById(state.wheelsId)
+  const groupsetLocks = useMemo(() => getGroupsetLocks(groupset, frame), [groupset, frame])
+  const wheelsLocks = useMemo(() => getWheelsLocks(wheels, groupset), [wheels, groupset])
+  const groupsetVariants = useMemo(
+    () => ({ ...state.groupsetVariants, ...groupsetLocks }),
+    [state.groupsetVariants, groupsetLocks],
+  )
+  const wheelsVariants = useMemo(
+    () => ({ ...state.wheelsVariants, ...wheelsLocks }),
+    [state.wheelsVariants, wheelsLocks],
+  )
+
   const { totalPrice, totalWeight, weightIncomplete } = useMemo(() => {
     const selected = [
-      { part: getFrameById(state.frameId), variants: state.frameVariants },
-      { part: getGroupsetById(state.groupsetId), variants: state.groupsetVariants },
-      { part: getWheelsById(state.wheelsId), variants: state.wheelsVariants },
+      { part: frame, variants: state.frameVariants },
+      { part: groupset, variants: groupsetVariants },
+      { part: wheels, variants: wheelsVariants },
     ].filter((entry) => entry.part)
 
-    const weights = selected.map(({ part, variants }) => getConfiguredWeight(part, variants))
     // Sattel, Reifen & Co. sind immer dabei und zählen von Anfang an mit.
-    const standardParts = getStandardParts(state.bikeType, getFrameById(state.frameId))
+    const standardParts = getStandardParts(state.bikeType, frame, state.tireVariants, groupset)
+    const weights = [
+      ...selected.map(({ part, variants }) => getConfiguredWeight(part, variants)),
+      ...standardParts.map((p) => p.weight),
+    ]
     return {
       totalPrice:
         selected.reduce((sum, { part, variants }) => sum + getConfiguredPrice(part, variants), 0) +
         standardParts.reduce((sum, p) => sum + p.price, 0),
-      totalWeight:
-        weights.reduce<number>((sum, w) => sum + (w ?? 0), 0) + standardParts.reduce((sum, p) => sum + p.weight, 0),
+      totalWeight: weights.reduce<number>((sum, w) => sum + (w ?? 0), 0),
       weightIncomplete: weights.some((w) => w === undefined),
     }
   }, [
     state.bikeType,
-    state.frameId,
     state.frameVariants,
-    state.groupsetId,
-    state.groupsetVariants,
-    state.wheelsId,
-    state.wheelsVariants,
+    state.tireVariants,
+    frame,
+    groupset,
+    wheels,
+    groupsetVariants,
+    wheelsVariants,
   ])
 
   const canGoNext = useMemo(() => {
@@ -120,6 +149,10 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
 
   const value: ConfiguratorContextValue = {
     ...state,
+    groupsetVariants,
+    wheelsVariants,
+    groupsetLocks,
+    wheelsLocks,
     stepIndex,
     totalSteps: STEP_ORDER.length,
     totalPrice,
@@ -138,6 +171,7 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
         groupsetVariants: {},
         wheelsId: null,
         wheelsVariants: {},
+        tireVariants: {},
       })),
     setBudget: (value) => setState((s) => ({ ...s, budget: value })),
     // Erneutes Anklicken desselben Teils behält die Unterauswahl, ein Wechsel setzt die Defaults.
@@ -161,6 +195,8 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
       setState((s) => ({ ...s, groupsetVariants: { ...s.groupsetVariants, [groupId]: optionId } })),
     setWheelsVariant: (groupId, optionId) =>
       setState((s) => ({ ...s, wheelsVariants: { ...s.wheelsVariants, [groupId]: optionId } })),
+    setTireVariant: (groupId, optionId) =>
+      setState((s) => ({ ...s, tireVariants: { ...s.tireVariants, [groupId]: optionId } })),
     goNext: () =>
       setState((s) => {
         const idx = STEP_ORDER.indexOf(s.step)

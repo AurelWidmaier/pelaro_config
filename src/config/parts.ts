@@ -1,4 +1,4 @@
-import { partImage } from './assets'
+import { ASSET_BASE, partImage } from './assets'
 import frameRennradAlu from '../assets/parts/frame/frame-rennrad-alu.svg'
 import frameGravelAlu from '../assets/parts/frame/frame-gravel-alu.svg'
 import frameGravelCarbon from '../assets/parts/frame/frame-gravel-carbon.svg'
@@ -18,7 +18,11 @@ const frameSpcycleR088 = partImage('frame/spcycle-r088.png')
 const frameBxtPro145 = partImage('frame/bxt-pro-145.png')
 const frameBxtGravel135 = partImage('frame/bxt-gravel-135.png')
 const wheelsEliteEnt20 = partImage('wheels/elitewheels-ent-2-0.png')
+const wheelsEliteSlrGravel = partImage('wheels/elitewheels-slr-gravel.png')
 const groupsetLtwooEr7 = partImage('groupset/ltwoo-er7.png')
+
+// Komplettbike-Bild als Vorschau für die Bike-Typ-Auswahl
+const previewRennrad = `${ASSET_BASE}/bikes/bxtPro145_ent2_er7.png`
 
 /**
  * Datenmodell für den Konfigurator.
@@ -44,7 +48,7 @@ export const BIKE_TYPES: BikeTypeInfo[] = [
     id: 'rennrad',
     name: 'Rennrad',
     description: 'Schnell auf Asphalt, sportliche Sitzposition – ideal für Straße und Tempo.',
-    image: frameRennradAlu,
+    image: previewRennrad,
   },
   {
     id: 'gravel',
@@ -169,6 +173,40 @@ export function getConfiguredWeight(
   )
 }
 
+/**
+ * Setzt eine Unterauswahl fest, wenn das Teil diese Option überhaupt anbietet –
+ * z. B. das Tretlager der Kurbel passend zum Rahmen.
+ */
+function lockIfOffered(
+  locks: VariantSelection,
+  part: ConfigurablePart | undefined,
+  groupId: string,
+  optionId: string | undefined,
+) {
+  const group = part?.variants?.find((g) => g.id === groupId)
+  if (optionId && group?.options.some((o) => o.id === optionId)) locks[groupId] = optionId
+}
+
+/** Unterauswahlen der Schaltgruppe, die der Rahmen vorgibt (Tretlager). */
+export function getGroupsetLocks(
+  groupset: CatalogGroupset | undefined,
+  frame: CatalogFrame | undefined,
+): VariantSelection {
+  const locks: VariantSelection = {}
+  lockIfOffered(locks, groupset, 'bottomBracket', frame?.bottomBracket)
+  return locks
+}
+
+/** Unterauswahlen der Laufräder, die die Schaltgruppe vorgibt (Freilauf passend zur Kassette). */
+export function getWheelsLocks(
+  wheels: CatalogWheelset | undefined,
+  groupset: CatalogGroupset | undefined,
+): VariantSelection {
+  const locks: VariantSelection = {}
+  lockIfOffered(locks, wheels, 'freehub', groupset?.freehub)
+  return locks
+}
+
 function sizeOptions(sizesCm: number[]): VariantOption[] {
   return sizesCm.map((cm) => ({ id: `${cm}`, label: `${cm} cm` }))
 }
@@ -185,6 +223,8 @@ const FINISH_GROUP: VariantGroup = {
 /* ------------------------------- Rahmen ------------------------------- */
 
 export type FrameMaterial = 'alu' | 'carbon'
+
+export type BottomBracket = 'bsa' | 'bb86' | 'pf30' | 'bb30' | 't47'
 
 export interface CatalogFrame extends ConfigurablePart {
   id: string
@@ -205,6 +245,8 @@ export interface CatalogFrame extends ConfigurablePart {
   photo?: boolean
   /** Bremsscheiben-Größen VR/HR in mm für die Standardkomponenten (sonst 160/160). */
   brakeRotors?: [number, number]
+  /** Tretlager-Standard; legt bei Kurbeln mit Tretlager-Auswahl die passende Variante fest. */
+  bottomBracket?: BottomBracket
 }
 
 export const FRAME_CATALOG: CatalogFrame[] = [
@@ -221,6 +263,7 @@ export const FRAME_CATALOG: CatalogFrame[] = [
     description: 'Aero-Rennradrahmen aus Carbon inkl. Gabel, Sattelstütze und integriertem Cockpit.',
     price: 555,
     url: 'https://s.click.aliexpress.com/e/_c36p0Pxx',
+    bottomBracket: 't47',
     // Rahmen 1050 + Lenker 390 + Gabel 430 + Sattelstütze 195
     weight: 2065,
     image: frameBxtPro145,
@@ -228,7 +271,8 @@ export const FRAME_CATALOG: CatalogFrame[] = [
     specs: [
       { label: 'Einsatz', value: 'Aero-Rennrad' },
       { label: 'Material', value: 'Carbon' },
-      { label: 'Lieferumfang', value: 'Rahmen, Gabel, Sattelstütze, Lenker' },
+      { label: 'Lieferumfang', value: 'Rahmen, Gabel, Sattelstütze, Lenker, Innenlager' },
+      { label: 'Tretlager', value: 'T47-Gewinde, 86 mm breit – Innenlager liegt bei' },
     ],
     variants: [
       { id: 'size', label: 'Rahmengröße', options: sizeOptions([47, 50, 52, 54, 56, 58]), defaultOptionId: '54' },
@@ -245,6 +289,7 @@ export const FRAME_CATALOG: CatalogFrame[] = [
     description: 'Leichtes Carbon-Set aus Rahmen, Gabel und Sattelstütze für agiles, direktes Fahrverhalten.',
     price: 650,
     url: 'https://s.click.aliexpress.com/e/_c2vvvYDL',
+    bottomBracket: 'bsa',
     // Rahmen 780 (± 50) + Gabel 395 + Sattelstütze 175
     weight: 1350,
     image: frameSpcycleR088,
@@ -253,6 +298,7 @@ export const FRAME_CATALOG: CatalogFrame[] = [
       { label: 'Einsatz', value: 'Rennrad' },
       { label: 'Material', value: 'Carbon' },
       { label: 'Lieferumfang', value: 'Rahmen, Gabel, Sattelstütze' },
+      { label: 'Tretlager', value: 'BSA-Gewinde' },
     ],
     variants: [
       { id: 'size', label: 'Rahmengröße', options: sizeOptions([44, 49, 52, 54, 56, 58]), defaultOptionId: '54' },
@@ -274,6 +320,7 @@ export const FRAME_CATALOG: CatalogFrame[] = [
     price: 546,
     url: 'https://s.click.aliexpress.com/e/_c3AqSCXf',
     brakeRotors: [160, 140],
+    bottomBracket: 'bsa',
     // Rahmen 1140 (52 cm) + Lenker/Vorbau 380 + Gabel 490 + Sattelstütze 140
     weight: 2150,
     image: frameBxtGravel135,
@@ -333,7 +380,11 @@ export interface CatalogGroupset extends ConfigurablePart {
    * Auswahlkarte gezeigt, nicht über den Rahmen auf die Bike-Canvas gelegt.
    */
   photo?: boolean
+  /** Freilauf-Standard der Kassette; legt bei Laufrädern mit Freilauf-Auswahl die Variante fest. */
+  freehub?: Freehub
 }
+
+export type Freehub = 'shimano-hg' | 'sram-xdr' | 'shimano-ms'
 
 export const GROUPSET_CATALOG: CatalogGroupset[] = [
   // Mechanisch, 2-fach – passend für Rennrad, Gravel, Race-Gravel
@@ -357,7 +408,9 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
     description: 'Elektronische 2x12-Gruppe mit App-Einstellung, Scheibenbremsen und 50/34-Kurbel.',
     price: 567,
     url: 'https://s.click.aliexpress.com/e/_c4VO1vKZ',
-    weight: 2650,
+    // ca. Gesamtgewicht der Gruppe
+    weight: 2300,
+    freehub: 'shimano-hg',
     image: groupsetLtwooEr7,
     photo: true,
     specs: [
@@ -368,6 +421,7 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
       { label: 'Stromversorgung', value: 'Akku in der Sattelstütze, Laden per USB-C' },
       { label: 'Kassette', value: 'ZRACE 12-fach, 11–32T, Shimano HG, Alu-Spider' },
       { label: 'Kurbel', value: 'L-TWOO (SENICX), 50/34T, 24-mm-Stahlachse' },
+      { label: 'Bremsen', value: 'Bremssättel 198 g, Schalt-/Bremshebel 500 g (je Paar)' },
     ],
     variants: [
       {
@@ -377,6 +431,63 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
         options: [
           { id: '165', label: '165 mm' },
           { id: '170', label: '170 mm' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'groupset-ltwoo-grt12',
+    imageKey: 'grt12',
+    bikeTypes: ['gravel', 'race-gravel'],
+    kind: 'mechanisch-1x',
+    brand: 'LTWOO',
+    name: 'LTWOO GRT12 1x12',
+    description: 'Mechanische 1x12-Gravelgruppe mit hydraulischen Scheibenbremsen und großer Kassette bis 50T.',
+    price: 356.99,
+    url: 'https://s.click.aliexpress.com/e/_c4Nf8s9j',
+    weight: 2600,
+    image: groupsetPerformance,
+    specs: [
+      { label: 'Typ', value: 'Mechanisch, 1 × 12-fach, GRX-Style' },
+      { label: 'Bremsen', value: 'Hydraulische Scheibenbremsen' },
+      { label: 'Material', value: 'Aluminium' },
+    ],
+    variants: [
+      {
+        id: 'cassette',
+        label: 'Farbe / Kassette',
+        options: [
+          { id: 'black-11-50', label: 'Schwarz, 11–50T' },
+          { id: 'gold-11-50', label: 'Gold, 11–50T' },
+          { id: 'silver-11-46', label: 'Silber, 11–46T' },
+          { id: 'silver-11-50', label: 'Silber, 11–50T' },
+        ],
+      },
+      {
+        id: 'chainring',
+        label: 'Kettenblatt',
+        defaultOptionId: '40',
+        options: ['38', '40', '42', '44'].map((teeth) => ({ id: teeth, label: `${teeth}T` })),
+      },
+      {
+        id: 'bottomBracket',
+        label: 'Tretlager',
+        options: [
+          { id: 'bsa', label: 'BSA' },
+          { id: 'bb86', label: 'BB86/92' },
+          { id: 'pf30', label: 'PF30' },
+          { id: 'bb30', label: 'BB30' },
+        ],
+      },
+      {
+        id: 'crankLength',
+        label: 'Kurbellänge',
+        defaultOptionId: '170',
+        options: [
+          { id: '165', label: '165 mm' },
+          { id: '170', label: '170 mm' },
+          { id: '172.5', label: '172,5 mm' },
+          { id: '175', label: '175 mm' },
         ],
       },
     ],
@@ -464,6 +575,8 @@ export const WHEELS_CATALOG: CatalogWheelset[] = [
         label: 'Freilauf',
         options: [
           { id: 'shimano-hg', label: 'Shimano HG 10/11/12-fach' },
+          { id: 'sram-xdr', label: 'SRAM XDR 12-fach' },
+          { id: 'shimano-ms', label: 'Shimano Micro Spline 12-fach' },
         ],
       },
     ],
@@ -483,6 +596,50 @@ export const WHEELS_CATALOG: CatalogWheelset[] = [
   },
   { id: 'wheels-rennrad-carbon-aero', bikeTypes: ['rennrad'], material: 'carbon', name: 'Carbon-Laufräder Aero', description: 'Aerodynamische Carbon-Laufräder für maximale Performance.', price: 649, image: wheelsAero },
 
+  {
+    id: 'wheels-elitewheels-slr-gravel',
+    imageKey: 'slrGravel',
+    bikeTypes: ['gravel', 'race-gravel'],
+    material: 'carbon',
+    brand: 'Elitewheels',
+    name: 'Elitewheels SLR Gravel',
+    description: 'Breiter Tubeless-Carbon-Laufradsatz für Gravel mit 24–25 mm Innenweite und Platz für bis zu 50-mm-Reifen.',
+    price: 446.99,
+    url: 'https://s.click.aliexpress.com/e/_c3hizf8z',
+    // Laufradsatz-Gewicht (± 4 %) hängt von der Felgenhöhe ab, siehe Optionen; 38 mm als Basis.
+    weight: 1558,
+    image: wheelsEliteSlrGravel,
+    photo: true,
+    specs: [
+      { label: 'Material', value: 'Carbon' },
+      { label: 'Laufradgröße', value: '700C' },
+    ],
+    variants: [
+      {
+        id: 'rimDepth',
+        label: 'Felgenhöhe',
+        defaultOptionId: '38',
+        options: [
+          { id: '35', label: '35 mm', weight: 1581, specs: rimSpecs('34 mm', '25 mm', '569 mm', '700 × 32–50C') },
+          { id: '38', label: '38 mm', weight: 1558, specs: rimSpecs('32,5 mm', '25 mm', '563 mm', '700 × 32–50C') },
+          { id: '45', label: '45 mm', weight: 1629, specs: rimSpecs('34 mm', '24 mm', '549 mm', '700 × 28–45C') },
+        ],
+      },
+      {
+        id: 'bearing',
+        label: 'Lager',
+        options: [
+          { id: 'steel', label: 'Stahllager' },
+          { id: 'ceramic', label: 'Keramiklager', priceDelta: 37.4 },
+        ],
+      },
+      {
+        id: 'freehub',
+        label: 'Freilauf',
+        options: [{ id: 'shimano-hg', label: 'Shimano HG 10/11/12-fach' }],
+      },
+    ],
+  },
   { id: 'wheels-gravel-alu-basic', bikeTypes: ['gravel'], material: 'alu', name: 'Alu-Laufräder Alltag', description: 'Stabile Alu-Laufräder für den Alltag – langlebig und pflegeleicht.', price: 139, image: wheelsAlltag },
   { id: 'wheels-gravel-alu-sport', bikeTypes: ['gravel'], material: 'alu', name: 'Alu-Laufräder Sport', description: 'Leichtere Alu-Laufräder für spürbar agileres Fahrverhalten.', price: 249, image: wheelsSport },
   { id: 'wheels-gravel-carbon-aero', bikeTypes: ['gravel'], material: 'carbon', name: 'Carbon-Laufräder Aero', description: 'Aerodynamische Carbon-Laufräder für maximale Performance.', price: 699, image: wheelsAero },

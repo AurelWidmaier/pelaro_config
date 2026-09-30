@@ -88,6 +88,16 @@
   color: var(--color-cream);
 }
 
+.pill:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.lockedHint {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+
 .specs {
   display: grid;
   grid-template-columns: 1fr;

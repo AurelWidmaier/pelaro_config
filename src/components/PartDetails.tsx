@@ -23,6 +23,8 @@ interface PartDetailsProps {
   part: PartDetailsPart
   selection: VariantSelection
   onChange: (groupId: string, optionId: string) => void
+  /** Von anderen Teilen festgelegte Unterauswahlen – nur die passende Option ist wählbar. */
+  locked?: VariantSelection
 }
 
 /**
@@ -30,7 +32,7 @@ interface PartDetailsProps {
  * plus Unterauswahlen (Größe, Oberfläche, Felgenhöhe, …). Specs einer
  * gewählten Option (z. B. Gewicht je Felgenhöhe) werden mit angezeigt.
  */
-export function PartDetails({ part, selection, onChange }: PartDetailsProps) {
+export function PartDetails({ part, selection, onChange, locked = {} }: PartDetailsProps) {
   const selected = getSelectedVariantOptions(part, selection)
   const optionSpecs = selected.flatMap(({ option }) => option.specs ?? [])
   const weight = getConfiguredWeight(part, selection)
@@ -62,7 +64,10 @@ export function PartDetails({ part, selection, onChange }: PartDetailsProps) {
 
       {selected.map(({ group, option: activeOption }) => (
         <fieldset key={group.id} className={styles.group}>
-          <legend className={styles.groupLabel}>{group.label}</legend>
+          <legend className={styles.groupLabel}>
+            {group.label}
+            {locked[group.id] && <span className={styles.lockedHint}> · passend zu deiner Auswahl</span>}
+          </legend>
           <div className={styles.pills}>
             {group.options.map((option) => {
               const active = option.id === activeOption.id
@@ -72,6 +77,7 @@ export function PartDetails({ part, selection, onChange }: PartDetailsProps) {
                   type="button"
                   className={`${styles.pill} ${active ? styles.pillActive : ''}`}
                   aria-pressed={active}
+                  disabled={Boolean(locked[group.id]) && !active}
                   onClick={() => onChange(group.id, option.id)}
                 >
                   {option.label}
