@@ -6,6 +6,7 @@ import { PartDetails } from '../../../components/PartDetails'
 import { BudgetBar } from '../../../components/BudgetBar'
 import { PriceBracketNote } from '../../../components/PriceBracketNote'
 import { StepShell } from '../StepShell'
+import { BeginnerTip } from '../../../components/BeginnerTip'
 import styles from './OptionGrid.module.css'
 
 const MATERIAL_LABEL = { alu: 'Alu', carbon: 'Carbon' } as const
@@ -71,6 +72,10 @@ export function WheelsStep() {
         />
       </div>
       <PriceBracketNote label="Laufräder" min={bracket.min} max={bracket.max} />
+      <BeginnerTip>
+        Laufräder sind das Tuning-Teil Nummer 1. Nimm <strong>Carbon</strong>, wenn du ein spürbar leichteres, schnelleres
+        Bike willst, und <strong>Alu</strong>, wenn du günstig starten willst – aufrüsten kannst du später immer noch.
+      </BeginnerTip>
       <div className={styles.grid} style={{ marginTop: 20 }}>
         {options.map((option) => (
           <OptionCard

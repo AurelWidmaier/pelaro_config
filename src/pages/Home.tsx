@@ -12,7 +12,7 @@ const STEPS = [
   {
     n: '02',
     title: 'Budget setzen',
-    text: 'Sag uns, wie viel du ausgeben willst – zwischen 300€ und 2.000€.',
+    text: 'Sag uns, wie viel du ausgeben willst – der Regler zeigt dir, was mit unseren Teilen möglich ist.',
   },
   {
     n: '03',

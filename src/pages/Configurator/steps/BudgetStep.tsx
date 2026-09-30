@@ -1,11 +1,14 @@
 import { useConfigurator } from '../../../context/ConfiguratorContext'
-import { BUDGET_RANGE } from '../../../config/parts'
+import { clampBudget, getBudgetRange } from '../../../config/budget'
+import { BeginnerTip } from '../../../components/BeginnerTip'
 import { formatPrice } from '../../../utils/format'
 import { StepShell } from '../StepShell'
 import styles from './BudgetStep.module.css'
 
 export function BudgetStep() {
-  const { budget, setBudget, goNext, goBack } = useConfigurator()
+  const { bikeType, budget, setBudget, goNext, goBack } = useConfigurator()
+  const range = getBudgetRange(bikeType)
+  const value = clampBudget(budget, range)
 
   return (
     <StepShell
@@ -24,39 +27,40 @@ export function BudgetStep() {
       }
     >
       <div className={styles.card}>
-        <div className={styles.amount}>{formatPrice(budget)}</div>
+        <div className={styles.amount}>{formatPrice(value)}</div>
 
         <input
           type="range"
-          min={BUDGET_RANGE.min}
-          max={BUDGET_RANGE.max}
-          step={BUDGET_RANGE.step}
-          value={budget}
+          min={range.min}
+          max={range.max}
+          step={range.step}
+          value={value}
           onChange={(e) => setBudget(Number(e.target.value))}
           className={styles.slider}
           aria-label="Budget in Euro"
         />
 
         <div className={styles.rangeLabels}>
-          <span>{formatPrice(BUDGET_RANGE.min)}</span>
-          <span>{formatPrice(BUDGET_RANGE.max)}</span>
+          <span>
+            {formatPrice(range.min)}
+            <small>günstigstes Bike</small>
+          </span>
+          <span className={styles.right}>
+            {formatPrice(range.max)}
+            <small>teuerstes Bike</small>
+          </span>
         </div>
-
-        <label className={styles.numberField}>
-          Genauer Betrag
-          <input
-            type="number"
-            min={BUDGET_RANGE.min}
-            max={BUDGET_RANGE.max}
-            step={BUDGET_RANGE.step}
-            value={budget}
-            onChange={(e) => {
-              const value = Number(e.target.value)
-              if (!Number.isNaN(value)) setBudget(value)
-            }}
-          />
-        </label>
+        <p className={styles.rangeNote}>
+          Die Spanne reicht vom günstigsten bis zum teuersten Bike, das du aus unseren Teilen zusammenstellen kannst –
+          ohne Versand.
+        </p>
       </div>
+
+      <BeginnerTip>
+        Nimm eher <strong>den unteren Bereich</strong>, wenn du einsteigst oder erst mal schauen willst, ob dir der Sport
+        liegt – auch dort bekommst du ein solides Carbon-Bike. Nimm <strong>den oberen Bereich</strong>, wenn dir
+        geringes Gewicht, elektronisches Schalten und schnelle Laufräder wichtig sind.
+      </BeginnerTip>
     </StepShell>
   )
 }

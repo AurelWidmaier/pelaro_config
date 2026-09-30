@@ -2,6 +2,7 @@ import { useConfigurator } from '../../../context/ConfiguratorContext'
 import { BIKE_TYPES } from '../../../config/parts'
 import { BikeTypeCard } from '../../../components/BikeTypeCard'
 import { StepShell } from '../StepShell'
+import { BeginnerTip } from '../../../components/BeginnerTip'
 import styles from './OptionGrid.module.css'
 
 export function BikeTypeStep() {
@@ -31,6 +32,10 @@ export function BikeTypeStep() {
           />
         ))}
       </div>
+      <BeginnerTip>
+        Du bist unsicher? Nimm <strong>Gravel</strong> – damit fährst du auf Straße und Schotter, sitzt etwas aufrechter
+        und bist für fast alles gerüstet.
+      </BeginnerTip>
     </StepShell>
   )
 }

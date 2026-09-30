@@ -60,6 +60,14 @@
   margin-bottom: 8px;
 }
 
+.variantHint {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin: -2px 0 8px;
+  max-width: 70ch;
+}
+
 .pills {
   display: flex;
   flex-wrap: wrap;

@@ -1,0 +1,45 @@
+.tip {
+  margin-top: 20px;
+  max-width: 68ch;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  background: rgba(230, 72, 51, 0.07);
+  border-left: 3px solid var(--color-accent);
+}
+
+.compact {
+  margin-top: 0;
+  padding: 8px 12px;
+  gap: 2px;
+}
+
+.label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.text {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--color-dark);
+}
+
+.compact .text {
+  font-size: 0.8rem;
+}
+
+.text ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  list-style: disc;
+}
+
+.text li + li {
+  margin-top: 3px;
+}

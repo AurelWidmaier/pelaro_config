@@ -11,6 +11,7 @@ import { PartDetails } from '../../../components/PartDetails'
 import { BudgetBar } from '../../../components/BudgetBar'
 import { PriceBracketNote } from '../../../components/PriceBracketNote'
 import { StepShell } from '../StepShell'
+import { BeginnerTip } from '../../../components/BeginnerTip'
 import styles from './OptionGrid.module.css'
 
 const KIND_LABEL = {
@@ -77,6 +78,21 @@ export function GroupsetStep() {
         />
       </div>
       <PriceBracketNote label="eine Schaltgruppe" min={bracket.min} max={bracket.max} />
+      <BeginnerTip>
+        <ul>
+          <li>
+            Nimm <strong>elektronisch</strong>, wenn du bequem per Knopfdruck schalten und möglichst wenig einstellen
+            willst.
+          </li>
+          <li>
+            Nimm <strong>mechanisch</strong>, wenn du Geld sparen und selbst schrauben willst.
+          </li>
+          <li>
+            Nimm <strong>1-fach (1x)</strong> für Gravel, wenn es simpel und robust sein soll – <strong>2-fach
+            (2x)</strong>, wenn du feinere Gangsprünge für die Straße willst.
+          </li>
+        </ul>
+      </BeginnerTip>
       <div className={styles.grid} style={{ marginTop: 20 }}>
         {options.map((option) => (
           <OptionCard

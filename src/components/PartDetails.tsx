@@ -8,6 +8,7 @@ import {
   type VariantSelection,
 } from '../config/parts'
 import { formatPrice, formatWeight } from '../utils/format'
+import { VARIANT_HINTS } from '../config/hints'
 import styles from './PartDetails.module.css'
 
 interface PartDetailsPart {
@@ -68,6 +69,7 @@ export function PartDetails({ part, selection, onChange, locked = {} }: PartDeta
             {group.label}
             {locked[group.id] && <span className={styles.lockedHint}> · passend zu deiner Auswahl</span>}
           </legend>
+          {VARIANT_HINTS[group.id] && <p className={styles.variantHint}>{VARIANT_HINTS[group.id]}</p>}
           <div className={styles.pills}>
             {group.options.map((option) => {
               const active = option.id === activeOption.id

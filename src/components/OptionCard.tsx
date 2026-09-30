@@ -8,6 +8,7 @@ interface OptionCardOption {
   description: string
   price: number
   image: string
+  hint?: string
 }
 
 interface OptionCardProps {
@@ -43,6 +44,7 @@ export function OptionCard({ option, selected, onSelect, overBudget, badge, weig
           {selected && <span className={styles.check}>✓</span>}
         </div>
         <p className={styles.description}>{option.description}</p>
+        {option.hint && <p className={styles.hint}>{option.hint}</p>}
         <div className={styles.priceRow}>
           <span className={styles.price}>
             {formatPrice(option.price)}

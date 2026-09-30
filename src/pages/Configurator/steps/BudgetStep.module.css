@@ -54,25 +54,24 @@
   color: var(--text-muted);
 }
 
-.numberField {
+.rangeLabels span {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 0.85rem;
-  color: var(--text-muted);
-  margin-top: 8px;
-}
-
-.numberField input {
-  border: 1.5px solid rgba(36, 72, 85, 0.18);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  font-size: 1rem;
-  font-family: var(--font-body);
+  font-weight: 600;
   color: var(--color-dark);
 }
 
-.numberField input:focus {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 1px;
+.rangeLabels small {
+  font-weight: 400;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.rangeLabels .right {
+  text-align: right;
+}
+
+.rangeNote {
+  font-size: 0.78rem;
+  color: var(--text-muted);
 }

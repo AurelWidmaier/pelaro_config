@@ -249,6 +249,16 @@ export function ProductEditor() {
             <input className={styles.input} value={str('brand')} onChange={(e) => set('brand', e.target.value)} />
           </label>
           <label className={`${styles.field} ${styles.fieldWide}`}>
+            Einsteiger-Tipp
+            <input
+              className={styles.input}
+              value={str('hint')}
+              placeholder="Nimm das, wenn …"
+              onChange={(e) => set('hint', e.target.value)}
+            />
+            <span className={styles.hint}>Erscheint auf der Auswahlkarte, z. B. „Nimm das, wenn du viel bergauf fährst.“</span>
+          </label>
+          <label className={`${styles.field} ${styles.fieldWide}`}>
             Beschreibung
             <textarea
               className={styles.textarea}

@@ -5,6 +5,9 @@ import { PartDetails } from '../../../components/PartDetails'
 import { BudgetBar } from '../../../components/BudgetBar'
 import { PriceBracketNote } from '../../../components/PriceBracketNote'
 import { StepShell } from '../StepShell'
+import { BeginnerTip } from '../../../components/BeginnerTip'
+import { FrameSizeAdvisor } from '../../../components/FrameSizeAdvisor'
+import { getFrameSizes } from '../../../config/frameSize'
 import styles from './OptionGrid.module.css'
 
 const MATERIAL_LABEL = { alu: 'Alu', carbon: 'Carbon' } as const
@@ -20,6 +23,8 @@ export function FrameStep() {
     frameVariants,
     selectFrame,
     setFrameVariant,
+    rider,
+    setRider,
     canGoNext,
     goNext,
     goBack,
@@ -66,6 +71,11 @@ export function FrameStep() {
         />
       </div>
       <PriceBracketNote label="einen Rahmen" min={bracket.min} max={bracket.max} />
+      <BeginnerTip>
+        Der Rahmen bestimmt Sitzposition und Gewicht. Nimm einen <strong>Aero-Rahmen</strong>, wenn du schnell in der
+        Ebene fahren willst, und einen <strong>leichten Rahmen</strong>, wenn du viele Höhenmeter machst. Am wichtigsten
+        ist aber die richtige Größe – der Größenrechner hilft dir, sobald du einen Rahmen gewählt hast.
+      </BeginnerTip>
       <div className={styles.grid} style={{ marginTop: 20 }}>
         {options.map((option) => (
           <OptionCard
@@ -82,6 +92,16 @@ export function FrameStep() {
       </div>
       {selectedFrame && (
         <PartDetails part={selectedFrame} selection={frameVariants} onChange={setFrameVariant} />
+      )}
+      {selectedFrame && getFrameSizes(selectedFrame).length > 0 && (
+        <FrameSizeAdvisor
+          key={selectedFrame.id}
+          frame={selectedFrame}
+          currentSize={frameVariants.size}
+          rider={rider}
+          onRiderChange={setRider}
+          onApply={(size) => setFrameVariant('size', size)}
+        />
       )}
     </StepShell>
   )

@@ -26,6 +26,7 @@ export function BikeTypeCard({ bikeType, selected, onSelect }: BikeTypeCardProps
           {selected && <span className={styles.check}>✓</span>}
         </div>
         <p className={styles.description}>{bikeType.description}</p>
+        <p className={styles.hint}>{bikeType.hint}</p>
       </div>
     </motion.button>
   )

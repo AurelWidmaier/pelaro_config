@@ -72,6 +72,8 @@ export interface BikeTypeInfo {
   name: string
   description: string
   image: string
+  /** Einsteiger-Tipp: „Nimm das, wenn …“ */
+  hint: string
 }
 
 export const BIKE_TYPES: BikeTypeInfo[] = [
@@ -80,18 +82,21 @@ export const BIKE_TYPES: BikeTypeInfo[] = [
     name: 'Rennrad',
     description: 'Schnell auf Asphalt, sportliche Sitzposition – ideal für Straße und Tempo.',
     image: previewRennrad,
+    hint: 'Nimm das, wenn du fast nur auf Asphalt fährst und es dir um Tempo und lange Ausfahrten geht.',
   },
   {
     id: 'gravel',
     name: 'Gravel / Race-Gravel',
     description: 'Vom vielseitigen Allrounder bis zum schnellen Race-Gravel – für Asphalt, Schotter und Waldwege.',
     image: previewGravel,
+    hint: 'Nimm das, wenn du auch Schotter- und Waldwege fahren willst oder noch unsicher bist – der vielseitigste Einstieg.',
   },
   {
     id: 'hardtail-mtb',
     name: 'Hardtail-MTB',
     description: 'Robustes Mountainbike mit Federgabel – für Trails und unebenes Gelände.',
     image: frameHardtailAlu,
+    hint: 'Nimm das, wenn du vor allem im Gelände, auf Trails und Wurzelwegen unterwegs bist.',
   },
 ]
 
@@ -134,6 +139,8 @@ export type VariantSelection = Record<string, string>
 
 interface ConfigurablePart {
   price: number
+  /** Einsteiger-Tipp auf der Auswahlkarte: „Nimm das, wenn …“ */
+  hint?: string
   /**
    * Gesamtgewicht in Gramm – immer als Summe aller mitgelieferten Teile
    * (z. B. Rahmen + Gabel + Stütze + Cockpit), keine Einzelgewichte.
@@ -274,6 +281,11 @@ export interface CatalogFrame extends ConfigurablePart {
   brakeRotors?: [number, number]
   /** Tretlager-Standard; legt bei Kurbeln mit Tretlager-Auswahl die passende Variante fest. */
   bottomBracket?: BottomBracket
+  /**
+   * Größentabelle des Herstellers: Körpergröße in cm je Rahmengröße (Options-ID
+   * der Variante „size“). Fehlt sie, rechnet der Größenrechner mit Richtwerten.
+   */
+  sizeChart?: { size: string; minHeight?: number; maxHeight?: number }[]
 }
 
 export const DEFAULT_FRAME_CATALOG: CatalogFrame[] = [
@@ -816,9 +828,3 @@ export function suggestWheels(bikeType: BikeType, budget: number): Suggestion<Ca
   return suggestByBracket(matches, getPriceBracket('wheels', budget))
 }
 
-export const BUDGET_RANGE = {
-  min: 300,
-  max: 2000,
-  step: 50,
-  default: 900,
-}

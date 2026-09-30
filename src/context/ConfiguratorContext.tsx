@@ -1,6 +1,5 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
 import {
-  BUDGET_RANGE,
   getConfiguredPrice,
   getConfiguredWeight,
   getDefaultVariants,
@@ -13,6 +12,8 @@ import {
   type VariantSelection,
 } from '../config/parts'
 import { getStandardParts } from '../config/standardParts'
+import { clampBudget, getBudgetRange } from '../config/budget'
+import type { RiderMeasures } from '../config/frameSize'
 
 export const STEP_ORDER = ['biketype', 'budget', 'frame', 'groupset', 'wheels', 'result'] as const
 export type StepId = (typeof STEP_ORDER)[number]
@@ -21,6 +22,8 @@ interface ConfiguratorState {
   step: StepId
   bikeType: BikeType | null
   budget: number
+  /** true, sobald jemand das Budget selbst eingestellt hat. */
+  budgetTouched: boolean
   frameId: string | null
   /** Unterauswahlen des Rahmens, z. B. { size: '54', finish: 'matt' }. */
   frameVariants: VariantSelection
@@ -32,6 +35,8 @@ interface ConfiguratorState {
   wheelsVariants: VariantSelection
   /** Unterauswahl der Gravel-Reifen (Standardkomponente), z. B. { tireWidth: '40' }. */
   tireVariants: VariantSelection
+  /** Körpermaße für den Größenrechner (optional). */
+  rider: RiderMeasures
 }
 
 interface ConfiguratorContextValue extends ConfiguratorState {
@@ -56,6 +61,7 @@ interface ConfiguratorContextValue extends ConfiguratorState {
   setGroupsetVariant: (groupId: string, optionId: string) => void
   setWheelsVariant: (groupId: string, optionId: string) => void
   setTireVariant: (groupId: string, optionId: string) => void
+  setRider: (rider: RiderMeasures) => void
   goNext: () => void
   goBack: () => void
   goToStep: (step: StepId) => void
@@ -66,7 +72,8 @@ interface ConfiguratorContextValue extends ConfiguratorState {
 const initialState: ConfiguratorState = {
   step: 'biketype',
   bikeType: null,
-  budget: BUDGET_RANGE.default,
+  budget: 900,
+  budgetTouched: false,
   frameId: null,
   frameVariants: {},
   groupsetId: null,
@@ -74,6 +81,7 @@ const initialState: ConfiguratorState = {
   wheelsId: null,
   wheelsVariants: {},
   tireVariants: {},
+  rider: {},
 }
 
 const ConfiguratorContext = createContext<ConfiguratorContextValue | null>(null)
@@ -170,6 +178,8 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
       setState((s) => ({
         ...s,
         bikeType: type,
+        // Budget in die Preisspanne des Bike-Typs holen – ohne eigene Wahl die Mitte.
+        budget: clampBudget(s.budgetTouched ? s.budget : null, getBudgetRange(type)),
         // Bike-Typ-Wechsel invalidiert evtl. bereits gewählte, nicht mehr passende Teile.
         frameId: null,
         frameVariants: {},
@@ -179,7 +189,7 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
         wheelsVariants: {},
         tireVariants: {},
       })),
-    setBudget: (value) => setState((s) => ({ ...s, budget: value })),
+    setBudget: (value) => setState((s) => ({ ...s, budget: value, budgetTouched: true })),
     // Erneutes Anklicken desselben Teils behält die Unterauswahl, ein Wechsel setzt die Defaults.
     selectFrame: (id) =>
       setState((s) =>
@@ -201,6 +211,7 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
       setState((s) => ({ ...s, groupsetVariants: { ...s.groupsetVariants, [groupId]: optionId } })),
     setWheelsVariant: (groupId, optionId) =>
       setState((s) => ({ ...s, wheelsVariants: { ...s.wheelsVariants, [groupId]: optionId } })),
+    setRider: (rider) => setState((s) => ({ ...s, rider })),
     setTireVariant: (groupId, optionId) =>
       setState((s) => ({ ...s, tireVariants: { ...s.tireVariants, [groupId]: optionId } })),
     goNext: () =>
