@@ -590,7 +590,7 @@ export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
   {
     id: 'wheels-elitewheels-ent-2-0',
     imageKey: 'ent2',
-    bikeTypes: ['rennrad', 'gravel'],
+    bikeTypes: ['rennrad'],
     material: 'carbon',
     brand: 'Elitewheels',
     name: 'Elitewheels ENT 2.0',
