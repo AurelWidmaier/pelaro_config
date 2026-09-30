@@ -41,7 +41,7 @@ export function PartDetails({ part, selection, onChange, locked = {} }: PartDeta
     ...(weight !== undefined ? [{ label: 'Gesamtgewicht', value: formatWeight(weight) }] : []),
     ...(part.specs ?? []),
     ...optionSpecs,
-  ]
+  ].filter((spec, i, all) => all.findIndex((s) => s.label === spec.label) === i)
 
   if (selected.length === 0 && specs.length === 0) return null
 

@@ -1,3 +1,5 @@
+// Muss vor React geladen werden: macht die Seite robust gegen die Browser-Übersetzung
+import './lib/translateFix'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
