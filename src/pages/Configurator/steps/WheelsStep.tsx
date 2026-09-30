@@ -40,7 +40,7 @@ export function WheelsStep() {
     )
   }
 
-  const options = suggestWheels(bikeType, budget)
+  const { options, recommendedId } = suggestWheels(bikeType, budget)
   const bracket = getPriceBracket('wheels', budget)
   const selectedWheels = getWheelsById(wheelsId)
   const otherTotal = totalPrice - getConfiguredPrice(selectedWheels, wheelsVariants)
@@ -78,6 +78,7 @@ export function WheelsStep() {
             option={option}
             badge={MATERIAL_LABEL[option.material]}
             selected={option.id === wheelsId}
+            recommended={option.id === recommendedId}
             onSelect={selectWheels}
             weight={getConfiguredWeight(option, option.id === wheelsId ? wheelsVariants : {})}
             overBudget={otherTotal + option.price > budget}

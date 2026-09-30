@@ -47,7 +47,7 @@ export function GroupsetStep() {
     )
   }
 
-  const options = suggestGroupsets(bikeType, budget)
+  const { options, recommendedId } = suggestGroupsets(bikeType, budget)
   const bracket = getPriceBracket('groupset', budget)
   const selectedGroupset = getGroupsetById(groupsetId)
   const otherTotal = totalPrice - getConfiguredPrice(selectedGroupset, groupsetVariants)
@@ -84,6 +84,7 @@ export function GroupsetStep() {
             option={option}
             badge={KIND_LABEL[option.kind]}
             selected={option.id === groupsetId}
+            recommended={option.id === recommendedId}
             onSelect={selectGroupset}
             weight={getConfiguredWeight(option, option.id === groupsetId ? groupsetVariants : {})}
             overBudget={otherTotal + option.price > budget}

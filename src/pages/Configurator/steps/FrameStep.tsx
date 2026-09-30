@@ -36,7 +36,7 @@ export function FrameStep() {
     )
   }
 
-  const options = suggestFrames(bikeType, budget)
+  const { options, recommendedId } = suggestFrames(bikeType, budget)
   const bracket = getPriceBracket('frame', budget)
   const selectedFrame = getFrameById(frameId)
   const otherTotal = totalPrice - getConfiguredPrice(selectedFrame, frameVariants)
@@ -73,6 +73,7 @@ export function FrameStep() {
             option={option}
             badge={MATERIAL_LABEL[option.material]}
             selected={option.id === frameId}
+            recommended={option.id === recommendedId}
             onSelect={selectFrame}
             weight={getConfiguredWeight(option, option.id === frameId ? frameVariants : {})}
             overBudget={otherTotal + option.price > budget}

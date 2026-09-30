@@ -19,19 +19,22 @@ interface OptionCardProps {
   badge?: string
   /** Gesamtgewicht des Teils in Gramm (inkl. gewählter Unterauswahl). */
   weight?: number
+  /** Passt am besten zum Budget – wird hervorgehoben. */
+  recommended?: boolean
 }
 
-export function OptionCard({ option, selected, onSelect, overBudget, badge, weight }: OptionCardProps) {
+export function OptionCard({ option, selected, onSelect, overBudget, badge, weight, recommended }: OptionCardProps) {
   return (
     <motion.button
       type="button"
-      className={`${styles.card} ${selected ? styles.cardSelected : ''}`}
+      className={`${styles.card} ${recommended ? styles.cardRecommended : ''} ${selected ? styles.cardSelected : ''}`}
       onClick={() => onSelect(option.id)}
       whileTap={{ scale: 0.98 }}
       aria-pressed={selected}
     >
       <div className={styles.imageWrap}>
         {badge && <span className={styles.badge}>{badge}</span>}
+        {recommended && <span className={styles.recommended}>Passt zu deinem Budget</span>}
         <img src={option.image} alt="" className={styles.image} />
       </div>
       <div className={styles.body}>
@@ -45,7 +48,7 @@ export function OptionCard({ option, selected, onSelect, overBudget, badge, weig
             {formatPrice(option.price)}
             {weight !== undefined && <span className={styles.weight}> · {formatWeight(weight)}</span>}
           </span>
-          {overBudget && <span className={styles.warning}>sprengt dein Budget</span>}
+          {overBudget && !recommended && <span className={styles.warning}>sprengt dein Budget</span>}
         </div>
       </div>
     </motion.button>

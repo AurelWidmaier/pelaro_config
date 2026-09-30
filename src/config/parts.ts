@@ -785,43 +785,41 @@ export function getPriceBracket(category: 'frame' | 'groupset' | 'wheels', budge
   return { min: Math.round(budget * alloc.min), max: Math.round(budget * alloc.max) }
 }
 
-/**
- * Filtert Katalog-Einträge auf die Preisspanne (mit etwas Puffer nach oben,
- * damit "eine Stufe teurer" noch als Option sichtbar bleibt).
- *
- * Gibt es darin zu wenige Treffer (0 oder 1) – etwa an den Rändern des
- * Budget-Reglers – wird stattdessen das dem Preisspannen-Mittelwert
- * nächstgelegene Modell plus seine direkten Nachbarn (eine Stufe günstiger/
- * teurer) gezeigt. So bleibt die Auswahl immer eine kleine, relevante
- * Teilmenge statt entweder leer oder immer der komplette Katalog.
- */
-function suggestByBracket<T extends { price: number }>(items: T[], bracket: PriceBracket): T[] {
-  const sorted = [...items].sort((a, b) => a.price - b.price)
-  const upperLimit = bracket.max * 1.6
-  const inBracket = sorted.filter((item) => item.price >= bracket.min && item.price <= upperLimit)
-
-  if (inBracket.length >= 2) return inBracket
-
-  const center = (bracket.min + bracket.max) / 2
-  const anchorIndex = sorted.reduce(
-    (closest, item, i) =>
-      Math.abs(item.price - center) < Math.abs(sorted[closest].price - center) ? i : closest,
-    0,
-  )
-  return sorted.slice(Math.max(0, anchorIndex - 1), Math.min(sorted.length, anchorIndex + 2))
+export interface Suggestion<T> {
+  /** Alle passenden Teile, günstigste zuerst. */
+  options: T[]
+  /** Das Teil, das am besten zur Preisspanne des Budgets passt. */
+  recommendedId?: string
 }
 
-export function suggestFrames(bikeType: BikeType, budget: number): CatalogFrame[] {
+/**
+ * Zeigt immer alle Teile des Bike-Typs, nach Preis aufsteigend (günstiger
+ * links, teurer rechts). Empfohlen wird das Teil, dessen Preis am nächsten an
+ * der Mitte der Budget-Preisspanne liegt – bevorzugt eines innerhalb der Spanne.
+ */
+function suggestByBracket<T extends { id: string; price: number }>(items: T[], bracket: PriceBracket): Suggestion<T> {
+  const options = [...items].sort((a, b) => a.price - b.price)
+  const center = (bracket.min + bracket.max) / 2
+  const inBracket = options.filter((item) => item.price >= bracket.min && item.price <= bracket.max)
+  const candidates = inBracket.length > 0 ? inBracket : options
+  const recommended = candidates.reduce<T | undefined>(
+    (best, item) => (!best || Math.abs(item.price - center) < Math.abs(best.price - center) ? item : best),
+    undefined,
+  )
+  return { options, recommendedId: recommended?.id }
+}
+
+export function suggestFrames(bikeType: BikeType, budget: number): Suggestion<CatalogFrame> {
   const matches = frameCatalog.filter((f) => f.bikeType === bikeType)
   return suggestByBracket(matches, getPriceBracket('frame', budget))
 }
 
-export function suggestGroupsets(bikeType: BikeType, budget: number): CatalogGroupset[] {
+export function suggestGroupsets(bikeType: BikeType, budget: number): Suggestion<CatalogGroupset> {
   const matches = groupsetCatalog.filter((g) => g.bikeTypes.includes(bikeType))
   return suggestByBracket(matches, getPriceBracket('groupset', budget))
 }
 
-export function suggestWheels(bikeType: BikeType, budget: number): CatalogWheelset[] {
+export function suggestWheels(bikeType: BikeType, budget: number): Suggestion<CatalogWheelset> {
   const matches = wheelsCatalog.filter((w) => w.bikeTypes.includes(bikeType))
   return suggestByBracket(matches, getPriceBracket('wheels', budget))
 }

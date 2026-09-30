@@ -12,8 +12,9 @@ export function PriceBracketNote({
 }) {
   return (
     <p className={styles.note}>
-      Passend zu deinem Budget schlagen wir {label} in etwa zwischen{' '}
-      <strong>{formatPrice(min)}</strong> und <strong>{formatPrice(max)}</strong> vor.
+      Für dein Budget empfehlen wir {label} für etwa <strong>{formatPrice(min)}</strong> bis{' '}
+      <strong>{formatPrice(max)}</strong>. Die passendste Option ist hervorgehoben – links findest du Günstigeres,
+      rechts Teureres.
     </p>
   )
 }
