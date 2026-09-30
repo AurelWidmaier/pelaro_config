@@ -1,6 +1,6 @@
 import { useConfigurator } from '../../../context/ConfiguratorContext'
 import { getConfiguredPrice, getConfiguredWeight, getPriceBracket, getWheelsById, suggestWheels } from '../../../config/parts'
-import { GRAVEL_TIRE, getTireWarning } from '../../../config/standardParts'
+import { getGravelTire, getTireWarning } from '../../../config/standardParts'
 import { OptionCard } from '../../../components/OptionCard'
 import { PartDetails } from '../../../components/PartDetails'
 import { BudgetBar } from '../../../components/BudgetBar'
@@ -93,7 +93,7 @@ export function WheelsStep() {
         />
       )}
       {(bikeType === 'gravel' || bikeType === 'race-gravel') && (
-        <PartDetails part={GRAVEL_TIRE} selection={tireVariants} onChange={setTireVariant} />
+        <PartDetails part={getGravelTire()} selection={tireVariants} onChange={setTireVariant} />
       )}
       {(bikeType === 'gravel' || bikeType === 'race-gravel') && tireWarning && (
         <p className={styles.warning}>⚠ {tireWarning}</p>

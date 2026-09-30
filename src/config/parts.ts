@@ -27,13 +27,42 @@ const previewRennrad = `${ASSET_BASE}/bikes/bxtPro145_ent2_er7.png`
 const previewGravel = `${ASSET_BASE}/bikes/bxtgravel135_slr_grt12.png`
 
 /**
+ * Lokale Platzhalter-Grafiken. In der Datenbank werden sie als
+ * `local:<key>` gespeichert, weil sich die gebündelte URL bei jedem Build ändert.
+ */
+export const LOCAL_IMAGES: Record<string, string> = {
+  'frame-rennrad-alu': frameRennradAlu,
+  'frame-gravel-alu': frameGravelAlu,
+  'frame-gravel-carbon': frameGravelCarbon,
+  'frame-race-gravel-alu': frameRaceGravelAlu,
+  'frame-race-gravel-carbon': frameRaceGravelCarbon,
+  'frame-hardtail-mtb-alu': frameHardtailAlu,
+  'frame-hardtail-mtb-carbon': frameHardtailCarbon,
+  'wheels-alltag': wheelsAlltag,
+  'wheels-sport': wheelsSport,
+  'wheels-aero': wheelsAero,
+  'groupset-einsteiger': groupsetEinsteiger,
+  'groupset-mittelklasse': groupsetMittelklasse,
+  'groupset-performance': groupsetPerformance,
+}
+
+/** `local:<key>` -> gebündelte Asset-URL, alles andere bleibt (http-URL). */
+export function resolveImage(value: string): string {
+  return value.startsWith('local:') ? (LOCAL_IMAGES[value.slice(6)] ?? '') : value
+}
+
+/** Umkehrung von resolveImage: gebündelte Asset-URL -> `local:<key>`. */
+export function toStoredImage(url: string): string {
+  const key = Object.keys(LOCAL_IMAGES).find((k) => LOCAL_IMAGES[k] === url)
+  return key ? `local:${key}` : url
+}
+
+/**
  * Datenmodell für den Konfigurator.
  *
- * Alle "CATALOG"-Arrays simulieren die spätere Datenbank: In Produktion
- * würden diese Listen per API/DB-Abfrage kommen (gefiltert nach Bike-Typ
- * und Preisspanne). Für den Prototyp reicht ein statisches, aber
- * realistisch strukturiertes Mock-Sortiment – neue Modelle einfach als
- * weiteren Eintrag ergänzen.
+ * Die DEFAULT_*-Listen sind der mitgelieferte Katalog. Sobald die Datenbank
+ * (Supabase, Tabelle `products`) geladen ist, ersetzt applyCatalog() sie –
+ * gepflegt wird das Sortiment dann im Admin unter /admin.
  */
 
 export type BikeType = 'rennrad' | 'gravel' | 'race-gravel' | 'hardtail-mtb'
@@ -253,7 +282,7 @@ export interface CatalogFrame extends ConfigurablePart {
   bottomBracket?: BottomBracket
 }
 
-export const FRAME_CATALOG: CatalogFrame[] = [
+export const DEFAULT_FRAME_CATALOG: CatalogFrame[] = [
   // Rennrad
   { id: 'frame-rennrad-alu-basic', bikeType: 'rennrad', material: 'alu', name: 'Alu Race Einstieg', description: 'Leichter Alu-Rennradrahmen für den unkomplizierten Einstieg.', price: 199, image: frameRennradAlu },
   { id: 'frame-rennrad-alu-sport', bikeType: 'rennrad', material: 'alu', name: 'Alu Race Sport', description: 'Steiferes Rohrset für bessere Kraftübertragung bei flotter Fahrweise.', price: 349, image: frameRennradAlu },
@@ -415,7 +444,7 @@ export interface CatalogGroupset extends ConfigurablePart {
 
 export type Freehub = 'shimano-hg' | 'sram-xdr' | 'shimano-ms'
 
-export const GROUPSET_CATALOG: CatalogGroupset[] = [
+export const DEFAULT_GROUPSET_CATALOG: CatalogGroupset[] = [
   // Mechanisch, 2-fach – passend für Rennrad, Gravel, Race-Gravel
   { id: 'groupset-2x-einsteiger', bikeTypes: ['rennrad', 'gravel', 'race-gravel'], kind: 'mechanisch-2x', name: '2x Einsteiger-Schaltung', description: 'Zuverlässige 2-fach Schaltung mit großer Bandbreite – einfach zu warten.', price: 139, image: groupsetEinsteiger },
   { id: 'groupset-2x-mittelklasse', bikeTypes: ['rennrad', 'gravel', 'race-gravel'], kind: 'mechanisch-2x', name: '2x Mittelklasse-Schaltung', description: 'Präzisere Gangwechsel und geringeres Gewicht als die Einsteigerstufe.', price: 299, image: groupsetMittelklasse },
@@ -566,7 +595,7 @@ function rimSpecs(outer: string, inner: string, erd: string, tires: string): Par
   ]
 }
 
-export const WHEELS_CATALOG: CatalogWheelset[] = [
+export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
   { id: 'wheels-rennrad-alu-basic', bikeTypes: ['rennrad'], material: 'alu', name: 'Alu-Laufräder Alltag', description: 'Stabile Alu-Laufräder für den Alltag – langlebig und pflegeleicht.', price: 119, image: wheelsAlltag },
   { id: 'wheels-rennrad-alu-sport', bikeTypes: ['rennrad'], material: 'alu', name: 'Alu-Laufräder Sport', description: 'Leichtere Alu-Laufräder für spürbar agileres Fahrverhalten.', price: 219, image: wheelsSport },
   {
@@ -698,18 +727,39 @@ export const WHEELS_CATALOG: CatalogWheelset[] = [
   { id: 'wheels-hardtail-carbon-race', bikeTypes: ['hardtail-mtb'], material: 'carbon', name: 'Carbon-Laufräder Race', description: 'Renntaugliche Carbon-Laufräder für maximale Effizienz im Wettkampf.', price: 719, image: wheelsAero },
 ]
 
+/* ------------------------------ Katalog -------------------------------- */
+
+let frameCatalog = DEFAULT_FRAME_CATALOG
+let groupsetCatalog = DEFAULT_GROUPSET_CATALOG
+let wheelsCatalog = DEFAULT_WHEELS_CATALOG
+
+export type ProductCategory = 'frame' | 'groupset' | 'wheels'
+
+export interface CatalogData {
+  frames: CatalogFrame[]
+  groupsets: CatalogGroupset[]
+  wheels: CatalogWheelset[]
+}
+
+/** Ersetzt den Katalog, z. B. durch die Produkte aus der Datenbank. */
+export function applyCatalog(data: CatalogData) {
+  frameCatalog = data.frames
+  groupsetCatalog = data.groupsets
+  wheelsCatalog = data.wheels
+}
+
 /* ------------------------------ Lookups -------------------------------- */
 
 export function getFrameById(id: string | null): CatalogFrame | undefined {
-  return FRAME_CATALOG.find((f) => f.id === id)
+  return frameCatalog.find((f) => f.id === id)
 }
 
 export function getGroupsetById(id: string | null): CatalogGroupset | undefined {
-  return GROUPSET_CATALOG.find((g) => g.id === id)
+  return groupsetCatalog.find((g) => g.id === id)
 }
 
 export function getWheelsById(id: string | null): CatalogWheelset | undefined {
-  return WHEELS_CATALOG.find((w) => w.id === id)
+  return wheelsCatalog.find((w) => w.id === id)
 }
 
 /* -------------------------- Preisspannen-Logik -------------------------- */
@@ -762,17 +812,17 @@ function suggestByBracket<T extends { price: number }>(items: T[], bracket: Pric
 }
 
 export function suggestFrames(bikeType: BikeType, budget: number): CatalogFrame[] {
-  const matches = FRAME_CATALOG.filter((f) => f.bikeType === bikeType)
+  const matches = frameCatalog.filter((f) => f.bikeType === bikeType)
   return suggestByBracket(matches, getPriceBracket('frame', budget))
 }
 
 export function suggestGroupsets(bikeType: BikeType, budget: number): CatalogGroupset[] {
-  const matches = GROUPSET_CATALOG.filter((g) => g.bikeTypes.includes(bikeType))
+  const matches = groupsetCatalog.filter((g) => g.bikeTypes.includes(bikeType))
   return suggestByBracket(matches, getPriceBracket('groupset', budget))
 }
 
 export function suggestWheels(bikeType: BikeType, budget: number): CatalogWheelset[] {
-  const matches = WHEELS_CATALOG.filter((w) => w.bikeTypes.includes(bikeType))
+  const matches = wheelsCatalog.filter((w) => w.bikeTypes.includes(bikeType))
   return suggestByBracket(matches, getPriceBracket('wheels', budget))
 }
 

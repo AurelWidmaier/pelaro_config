@@ -28,57 +28,135 @@ export interface StandardPart {
   url: string
 }
 
+/** Ein einzelnes Händlerprodukt mit Preis/Gewicht fürs ganze Bike. */
+export interface SimplePart {
+  name: string
+  price: number
+  weight?: number
+  url: string
+  detail?: string
+}
+
+/**
+ * Pflegbare Daten der Standardkomponenten. Im Admin als Einstellung
+ * `standard_parts` gespeichert; fehlt sie, gelten DEFAULT_STANDARD_PARTS.
+ */
+export interface StandardPartsConfig {
+  saddle: SimplePart
+  barTape: SimplePart
+  /** Rennrad-Reifen, Preis/Gewicht für beide Reifen. */
+  roadTire: SimplePart
+  /** Gravel-Reifen mit wählbarer Breite, Preis/Gewicht je Reifen. */
+  gravelTire: {
+    brand: string
+    name: string
+    url: string
+    options: { id: string; label: string; pricePerTire: number; weightPerTire?: number }[]
+  }
+  /** Schläuche, Preis fürs Set, Gewicht je Schlauch. */
+  tubes: { name: string; url: string; price: number; weightRoad: number; weightGravel: number }
+  /** Bremsscheiben je Größe in mm, Preis/Gewicht je Scheibe. */
+  rotors: { name: string; url: string; sizes: Record<string, { price: number; weight: number }> }
+  /** Bremsscheiben VR/HR, wenn der Rahmen nichts anderes vorgibt. */
+  defaultRotors: [number, number]
+  /**
+   * Zusätzliches Innenlager je `<rahmen-id>|<schaltgruppen-id>`. Wird nur
+   * gebraucht, wenn die Schaltgruppe kein passendes Lager mitbringt.
+   */
+  bottomBrackets: Record<string, SimplePart>
+}
+
+export const DEFAULT_STANDARD_PARTS: StandardPartsConfig = {
+  saddle: {
+    name: 'Elitaone Carbon-Sattel',
+    price: 17.69,
+    weight: 135,
+    url: 'https://s.click.aliexpress.com/e/_c3ySK67f',
+  },
+  barTape: {
+    name: 'BUCKLOS Lenkerband',
+    price: 6.59,
+    weight: 75,
+    url: 'https://s.click.aliexpress.com/e/_c33BMsXn',
+  },
+  roadTire: {
+    name: 'Continental Grand Prix',
+    detail: '2 Stück, 700 × 25/28C',
+    price: 2 * 33.79,
+    weight: 2 * 360,
+    url: 'https://s.click.aliexpress.com/e/_c2I9HvhX',
+  },
+  gravelTire: {
+    brand: 'Continental',
+    name: 'Continental Terra Trail',
+    url: 'https://s.click.aliexpress.com/e/_c3UiXXvX',
+    options: [
+      { id: '40', label: '700 × 40C', pricePerTire: 40.39, weightPerTire: 460 },
+      { id: '45', label: '700 × 45C', pricePerTire: 38.19, weightPerTire: 495 },
+    ],
+  },
+  tubes: {
+    name: 'Ridenow 700C TPU-Schläuche',
+    url: 'https://s.click.aliexpress.com/e/_c3BJpVR3',
+    price: 20.39,
+    weightRoad: 24,
+    weightGravel: 45,
+  },
+  rotors: {
+    name: 'Bremsscheiben',
+    url: 'https://s.click.aliexpress.com/e/_c3afRncd',
+    sizes: {
+      '140': { price: 11, weight: 121 },
+      '160': { price: 7.89, weight: 143 },
+      '180': { price: 14, weight: 160 },
+      '203': { price: 15, weight: 190 },
+    },
+  },
+  defaultRotors: [160, 160],
+  // Die ER7 hat ein BSA-24-Lager im Set, die GRT12 wahlweise BSA, BB86/92,
+  // PF30 oder BB30, und der BXT Pro-145 bringt sein T47-Lager selbst mit.
+  bottomBrackets: {
+    'frame-bxt-pro-145|groupset-ltwoo-grt12': {
+      name: 'ZRACE Innenlager T47-DUB',
+      detail: 'T47, 29-mm-Achse',
+      price: 22.19,
+      weight: 129,
+      url: 'https://s.click.aliexpress.com/e/_c3yXlbbL',
+    },
+  },
+}
+
+let config: StandardPartsConfig = DEFAULT_STANDARD_PARTS
+
+/** Ersetzt die Standardkomponenten, z. B. durch die Einstellung aus der Datenbank. */
+export function applyStandardParts(value: StandardPartsConfig) {
+  config = value
+}
+
 /** Bike-Typen mit Straßen-/Gravel-Ausstattung (700C, Rennlenker). */
 const SUPPORTED_BIKE_TYPES: BikeType[] = ['rennrad', 'gravel', 'race-gravel']
 
-const ROTORS: Record<number, { price: number; weight: number }> = {
-  140: { price: 11, weight: 121 },
-  160: { price: 7.89, weight: 143 },
-  180: { price: 14, weight: 160 },
-  203: { price: 15, weight: 190 },
-}
-
-/**
- * Gravel-Reifen (Gravel & Race-Gravel) mit wählbarer Breite. Preise gelten
- * je Reifen, das Bike bekommt zwei (40C ca. 460 g, 45C ca. 495 g).
- */
-export const GRAVEL_TIRE = {
-  brand: 'Continental',
-  name: 'Continental Terra Trail',
-  url: 'https://s.click.aliexpress.com/e/_c3UiXXvX',
-  price: 2 * 40.39,
-  weight: 2 * 460,
-  variants: [
-    {
-      id: 'tireWidth',
-      label: 'Reifenbreite',
-      options: [
-        { id: '40', label: '700 × 40C', weight: 2 * 460 },
-        { id: '45', label: '700 × 45C', weight: 2 * 495 },
-      ],
-    },
-  ] as VariantGroup[],
-  priceTable: [
-    { when: { tireWidth: '40' }, price: 2 * 40.39 },
-    { when: { tireWidth: '45' }, price: 2 * 38.19 },
-  ],
-}
-
-/**
- * Zusätzliches Innenlager je Rahmen × Schaltgruppe. Wird nur gebraucht, wenn
- * die Schaltgruppe kein passendes Lager mitbringt: Die ER7 hat ein BSA-24-Lager
- * im Set, die GRT12 wahlweise BSA, BB86/92, PF30 oder BB30, und der BXT Pro-145
- * bringt sein T47-Lager selbst mit.
- */
-const BOTTOM_BRACKETS: Record<string, Omit<StandardPart, 'id' | 'label'>> = {
-  // T47 ist nicht unter den GRT12-Lagern
-  'frame-bxt-pro-145|groupset-ltwoo-grt12': {
-    name: 'ZRACE Innenlager T47-DUB',
-    detail: 'T47, 29-mm-Achse',
-    price: 22.19,
-    weight: 129,
-    url: 'https://s.click.aliexpress.com/e/_c3yXlbbL',
-  },
+/** Gravel-Reifen als wählbares Teil (Preis/Gewicht für beide Reifen). */
+export function getGravelTire() {
+  const tire = config.gravelTire
+  return {
+    brand: tire.brand,
+    name: tire.name,
+    url: tire.url,
+    price: 2 * (tire.options[0]?.pricePerTire ?? 0),
+    variants: [
+      {
+        id: 'tireWidth',
+        label: 'Reifenbreite',
+        options: tire.options.map((o) => ({
+          id: o.id,
+          label: o.label,
+          weight: o.weightPerTire !== undefined ? 2 * o.weightPerTire : undefined,
+        })),
+      },
+    ] as VariantGroup[],
+    priceTable: tire.options.map((o) => ({ when: { tireWidth: o.id }, price: 2 * o.pricePerTire })),
+  }
 }
 
 /** Ventillänge der Schläuche passend zur Felgenhöhe. */
@@ -103,8 +181,8 @@ export function getTireWarning(
   tireVariants: VariantSelection,
 ): string | undefined {
   const max = selectedRim(wheels, wheelsVariants)?.maxTireWidth
-  const width = Number(getSelectedVariantOptions(GRAVEL_TIRE, tireVariants)[0].option.id)
-  if (!wheels || max === undefined || width <= max) return undefined
+  const width = Number(getSelectedVariantOptions(getGravelTire(), tireVariants)[0]?.option.id)
+  if (!wheels || max === undefined || !(width > max)) return undefined
   return `${wheels.name} empfiehlt Reifen bis ${max} mm – ${width} mm liegt darüber.`
 }
 
@@ -116,8 +194,9 @@ export interface StandardPartsContext {
   tireVariants?: VariantSelection
 }
 
-/** Bremsscheiben VR/HR, wenn der Rahmen nichts anderes vorgibt. */
-const DEFAULT_ROTORS: [number, number] = [160, 160]
+function rotor(size: number) {
+  return config.rotors.sizes[String(size)] ?? { price: 0, weight: 0 }
+}
 
 export function getStandardParts(
   bikeType: BikeType | null,
@@ -125,57 +204,36 @@ export function getStandardParts(
 ): StandardPart[] {
   if (!bikeType || !SUPPORTED_BIKE_TYPES.includes(bikeType)) return []
 
-  const gravelTubes = bikeType !== 'rennrad'
+  const gravel = bikeType !== 'rennrad'
   const rim = selectedRim(wheels, wheelsVariants)
-  const [front, rear] = frame?.brakeRotors ?? DEFAULT_ROTORS
+  const [front, rear] = frame?.brakeRotors ?? config.defaultRotors
   // Bringt die Schaltgruppe ein zum Rahmen passendes Lager mit, braucht es kein zusätzliches.
   const bottomBracketInSet = Boolean(getGroupsetLocks(groupset, frame).bottomBracket)
-  const bottomBracket = bottomBracketInSet ? undefined : BOTTOM_BRACKETS[`${frame?.id}|${groupset?.id}`]
+  const bottomBracket = bottomBracketInSet ? undefined : config.bottomBrackets[`${frame?.id}|${groupset?.id}`]
+  const gravelTire = getGravelTire()
 
   return [
-    {
-      id: 'saddle',
-      label: 'Sattel',
-      name: 'Elitaone Carbon-Sattel',
-      price: 17.69,
-      weight: 135,
-      url: 'https://s.click.aliexpress.com/e/_c3ySK67f',
-    },
-    {
-      id: 'bartape',
-      label: 'Lenkerband',
-      name: 'BUCKLOS Lenkerband',
-      price: 6.59,
-      weight: 75,
-      url: 'https://s.click.aliexpress.com/e/_c33BMsXn',
-    },
-    gravelTubes
+    { id: 'saddle', label: 'Sattel', ...config.saddle },
+    { id: 'bartape', label: 'Lenkerband', ...config.barTape },
+    gravel
       ? {
           id: 'tires',
           label: 'Reifen',
-          name: GRAVEL_TIRE.name,
-          detail: `2 Stück, ${getSelectedVariantOptions(GRAVEL_TIRE, tireVariants)[0].option.label}`,
-          price: getConfiguredPrice(GRAVEL_TIRE, tireVariants),
-          weight: getConfiguredWeight(GRAVEL_TIRE, tireVariants),
-          url: GRAVEL_TIRE.url,
+          name: gravelTire.name,
+          detail: `2 Stück, ${getSelectedVariantOptions(gravelTire, tireVariants)[0]?.option.label ?? ''}`,
+          price: getConfiguredPrice(gravelTire, tireVariants),
+          weight: getConfiguredWeight(gravelTire, tireVariants),
+          url: gravelTire.url,
         }
-      : {
-          id: 'tires',
-          label: 'Reifen',
-          name: 'Continental Grand Prix',
-          detail: '2 Stück, 700 × 25/28C',
-          price: 2 * 33.79,
-          weight: 2 * 360,
-          url: 'https://s.click.aliexpress.com/e/_c2I9HvhX',
-        },
+      : { id: 'tires', label: 'Reifen', ...config.roadTire },
     {
       id: 'tubes',
       label: 'Schläuche',
-      name: 'Ridenow 700C TPU-Schläuche',
-      detail: `2 Stück, ${gravelTubes ? 'Gravel 32–47C' : 'Rennrad 18–32C'}, ${valveLength(rim ? Number(rim.id) : undefined)}`,
-      price: 20.39,
-      weight: 2 * (gravelTubes ? 45 : 24),
-      url: 'https://s.click.aliexpress.com/e/_c3BJpVR3',
+      name: config.tubes.name,
+      detail: `2 Stück, ${gravel ? 'Gravel 32–47C' : 'Rennrad 18–32C'}, ${valveLength(rim ? Number(rim.id) : undefined)}`,
+      price: config.tubes.price,
+      weight: 2 * (gravel ? config.tubes.weightGravel : config.tubes.weightRoad),
+      url: config.tubes.url,
     },
     // Bringt die Schaltgruppe Bremsscheiben mit, braucht es keine zusätzlichen.
     ...(groupset?.includesRotors
@@ -184,11 +242,11 @@ export function getStandardParts(
           {
             id: 'rotors',
             label: 'Bremsscheiben',
-            name: 'Bremsscheiben',
+            name: config.rotors.name,
             detail: `VR ${front} mm · HR ${rear} mm`,
-            price: ROTORS[front].price + ROTORS[rear].price,
-            weight: ROTORS[front].weight + ROTORS[rear].weight,
-            url: 'https://s.click.aliexpress.com/e/_c3afRncd',
+            price: rotor(front).price + rotor(rear).price,
+            weight: rotor(front).weight + rotor(rear).weight,
+            url: config.rotors.url,
           },
         ]),
     ...(bottomBracket ? [{ id: 'bottomBracket', label: 'Innenlager', ...bottomBracket }] : []),
