@@ -81,7 +81,8 @@
 
 .imageWrap {
   aspect-ratio: 4 / 3;
-  background: var(--bg-card-media);
+  /* Händlerfotos haben meist weißen Hintergrund */
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
