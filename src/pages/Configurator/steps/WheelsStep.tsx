@@ -1,6 +1,6 @@
 import { useConfigurator } from '../../../context/ConfiguratorContext'
 import { getConfiguredPrice, getConfiguredWeight, getPriceBracket, getWheelsById, suggestWheels } from '../../../config/parts'
-import { GRAVEL_TIRE } from '../../../config/standardParts'
+import { GRAVEL_TIRE, getTireWarning } from '../../../config/standardParts'
 import { OptionCard } from '../../../components/OptionCard'
 import { PartDetails } from '../../../components/PartDetails'
 import { BudgetBar } from '../../../components/BudgetBar'
@@ -44,6 +44,7 @@ export function WheelsStep() {
   const bracket = getPriceBracket('wheels', budget)
   const selectedWheels = getWheelsById(wheelsId)
   const otherTotal = totalPrice - getConfiguredPrice(selectedWheels, wheelsVariants)
+  const tireWarning = getTireWarning(selectedWheels, wheelsVariants, tireVariants)
 
   return (
     <StepShell
@@ -93,6 +94,9 @@ export function WheelsStep() {
       )}
       {(bikeType === 'gravel' || bikeType === 'race-gravel') && (
         <PartDetails part={GRAVEL_TIRE} selection={tireVariants} onChange={setTireVariant} />
+      )}
+      {(bikeType === 'gravel' || bikeType === 'race-gravel') && tireWarning && (
+        <p className={styles.warning}>⚠ {tireWarning}</p>
       )}
     </StepShell>
   )

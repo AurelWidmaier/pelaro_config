@@ -1,4 +1,4 @@
-import { formatPrice, formatWeight } from './format'
+import { SHIPPING_NOTE, formatPrice, formatWeight } from './format'
 
 export interface PdfPartRow {
   label: string
@@ -214,6 +214,8 @@ export async function exportBikePdf(data: BikePdfData): Promise<void> {
     MARGIN,
     y,
   )
+  y += 5
+  doc.text(pdfText(SHIPPING_NOTE), MARGIN, y)
 
   // Fußzeile auf jeder Seite
   const pages = doc.getNumberOfPages()

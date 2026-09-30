@@ -3,6 +3,12 @@
   margin-bottom: 24px;
 }
 
+.warning {
+  margin-top: 16px;
+  font-size: 0.88rem;
+  color: var(--color-accent);
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;

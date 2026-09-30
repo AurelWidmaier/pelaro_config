@@ -93,6 +93,8 @@ export interface VariantOption {
   weight?: number
   /** Specs, die nur für diese Option gelten (z. B. Felgenbreite je Felgenhöhe). */
   specs?: PartSpec[]
+  /** Maximal empfohlene Reifenbreite in mm (Laufräder, je Felgenhöhe). */
+  maxTireWidth?: number
 }
 
 /** Eine Unterauswahl eines Teils, z. B. "Rahmengröße" oder "Felgenhöhe". */
@@ -263,7 +265,7 @@ export const FRAME_CATALOG: CatalogFrame[] = [
     brand: 'BXT',
     name: 'BXT Pro-145 Aero',
     description: 'Aero-Rennradrahmen aus Carbon inkl. Gabel, Sattelstütze und integriertem Cockpit.',
-    price: 555,
+    price: 557.39,
     url: 'https://s.click.aliexpress.com/e/_c36p0Pxx',
     bottomBracket: 't47',
     // Rahmen 1050 + Lenker 390 + Gabel 430 + Sattelstütze 195
@@ -275,6 +277,9 @@ export const FRAME_CATALOG: CatalogFrame[] = [
       { label: 'Material', value: 'Carbon' },
       { label: 'Lieferumfang', value: 'Rahmen, Gabel, Sattelstütze, Lenker, Innenlager' },
       { label: 'Tretlager', value: 'T47-Gewinde, 86 mm breit – Innenlager liegt bei' },
+      { label: 'Achsen VR/HR', value: '12 × 100 mm / 12 × 142 mm Steckachse' },
+      { label: 'Bremsen', value: 'Flat Mount' },
+      { label: 'Reifenfreiheit', value: 'max. 700 × 32C' },
     ],
     variants: [
       { id: 'size', label: 'Rahmengröße', options: sizeOptions([47, 50, 52, 54, 56, 58]), defaultOptionId: '54' },
@@ -288,23 +293,43 @@ export const FRAME_CATALOG: CatalogFrame[] = [
     material: 'carbon',
     brand: 'Spcycle',
     name: 'Spcycle R088',
-    description: 'Leichtes Carbon-Set aus Rahmen, Gabel und Sattelstütze für agiles, direktes Fahrverhalten.',
-    price: 650,
-    url: 'https://s.click.aliexpress.com/e/_c2vvvYDL',
+    description: 'Leichtes Carbon-Set aus Rahmen, Gabel, Sattelstütze und integriertem Cockpit für agiles, direktes Fahrverhalten.',
+    price: 629.39,
+    url: 'https://s.click.aliexpress.com/e/_c4oN7F05',
     bottomBracket: 'bsa',
-    // Rahmen 780 (± 50) + Gabel 395 + Sattelstütze 175
-    weight: 1350,
+    // Rahmen 780 (± 50) + Gabel 395 + Sattelstütze 175 + Lenker HB-05 360 (± 20)
+    weight: 1710,
     image: frameSpcycleR088,
     photo: true,
     specs: [
       { label: 'Einsatz', value: 'Rennrad' },
       { label: 'Material', value: 'Carbon' },
-      { label: 'Lieferumfang', value: 'Rahmen, Gabel, Sattelstütze' },
-      { label: 'Tretlager', value: 'BSA-Gewinde' },
+      {
+        label: 'Lieferumfang',
+        value: 'Rahmen, Gabel, Sattelstütze, Lenker/Vorbau (HB-05), Steuersatz, Sattelklemme, Steckachsen, UDH-Schaltauge, Di2-Akkuhalter',
+      },
+      { label: 'Lenker/Vorbau', value: 'HB-05, integriert, 130 mm Drop, 75 mm Reach' },
+      { label: 'Tretlager', value: 'BSA-Gewinde, 68 mm' },
+      { label: 'Achsen VR/HR', value: '12 × 100 mm / 12 × 142 mm Steckachse' },
+      { label: 'Bremsen', value: 'Flat Mount, 140 oder 160 mm' },
+      { label: 'Reifenfreiheit', value: 'max. 700 × 32C' },
     ],
     variants: [
       { id: 'size', label: 'Rahmengröße', options: sizeOptions([44, 49, 52, 54, 56, 58]), defaultOptionId: '54' },
       FINISH_GROUP,
+      {
+        id: 'color',
+        label: 'Farbe',
+        options: [
+          { id: 'black', label: 'Schwarz' },
+          { id: 'ud-carbon', label: 'UD Carbon' },
+          { id: 'solid', label: 'Uni-Lackierung', priceDelta: 22.6 },
+          { id: 'metallic', label: 'Metallic', priceDelta: 32.3 },
+          { id: 'chameleon-blue', label: 'Chameleon Blau', priceDelta: 54.6 },
+          { id: 'chameleon-green', label: 'Chameleon Grün', priceDelta: 54.6 },
+          { id: 'chameleon-purple', label: 'Chameleon Lila', priceDelta: 54.6 },
+        ],
+      },
     ],
   },
 
@@ -318,8 +343,8 @@ export const FRAME_CATALOG: CatalogFrame[] = [
     material: 'carbon',
     brand: 'BXT',
     name: 'BXT Gravel-135',
-    description: 'T1000-Carbon-Gravelrahmen mit Platz für 45-mm-Reifen, Steckachsen und Cockpit inklusive.',
-    price: 546,
+    description: 'T1000-Carbon-Gravelrahmen mit Platz für 47-mm-Reifen, Steckachsen und Cockpit inklusive.',
+    price: 548.39,
     url: 'https://s.click.aliexpress.com/e/_c3AqSCXf',
     brakeRotors: [160, 140],
     bottomBracket: 'bsa',
@@ -340,7 +365,7 @@ export const FRAME_CATALOG: CatalogFrame[] = [
       { label: 'Bremsen', value: 'Flat-Mount-Scheibenbremse VR/HR' },
       { label: 'Schaltung', value: 'mechanisch & Di2 kompatibel' },
       { label: 'Tretlager', value: 'BSA-Gewinde, 68 mm' },
-      { label: 'Reifenfreiheit', value: '700C × 45 mm oder 27,5" × 2,1"' },
+      { label: 'Reifenfreiheit', value: '700C × 47 mm oder 27,5" × 2,1"' },
     ],
     variants: [
       { id: 'size', label: 'Rahmengröße', options: sizeOptions([49, 52, 54, 56, 58]), defaultOptionId: '54' },
@@ -410,7 +435,7 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
     brand: 'LTWOO',
     name: 'LTWOO ER7 2x12',
     description: 'Elektronische 2x12-Gruppe mit App-Einstellung, Scheibenbremsen und 50/34-Kurbel.',
-    price: 567,
+    price: 568.39,
     url: 'https://s.click.aliexpress.com/e/_c4VO1vKZ',
     // ca. Gesamtgewicht der Gruppe
     weight: 2300,
@@ -419,12 +444,17 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
     photo: true,
     specs: [
       { label: 'Typ', value: 'Elektronisch, 2 × 12-fach' },
-      { label: 'Lieferumfang', value: 'Schaltwerk, Umwerfer, Kassette, Kurbel, Bremssättel, Schalt-/Bremshebel' },
+      {
+        label: 'Lieferumfang',
+        value: 'Schaltwerk, Umwerfer, Kassette, Kurbel, Innenlager BSA24, Kette, Akku, Bremssättel, Schalt-/Bremshebel',
+      },
       { label: 'Schaltwerk', value: '10–12-fach per App, Kassette 11–32T, IPX7' },
       { label: 'Umwerfer', value: 'max. 54T, Kapazität 16T, Kettenlinie 44,5–46,5 mm, 61–66°' },
       { label: 'Stromversorgung', value: 'Akku in der Sattelstütze, Laden per USB-C' },
       { label: 'Kassette', value: 'ZRACE 12-fach, 11–32T, Shimano HG, Alu-Spider' },
       { label: 'Kurbel', value: 'L-TWOO (SENICX), 50/34T, 24-mm-Stahlachse' },
+      { label: 'Innenlager', value: 'BSA-24 (98 g) im Set' },
+      { label: 'Kette', value: 'L-TWOO 12-fach, 126 Glieder (KMC)' },
       { label: 'Bremsen', value: 'Bremssättel 198 g, Schalt-/Bremshebel 500 g (je Paar)' },
     ],
     variants: [
@@ -456,7 +486,11 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
     photo: true,
     specs: [
       { label: 'Typ', value: 'Mechanisch, 1 × 12-fach, GRX-Style' },
+      { label: 'Lieferumfang', value: 'Schalt-/Bremshebel, Bremssättel, Schaltwerk, Kurbel, Kassette, Kette, Innenlager, 2 Bremsscheiben' },
       { label: 'Innenlager', value: 'im Set, passend zum Rahmen (BSA, BB86/92, PF30 oder BB30)' },
+      { label: 'Kurbel', value: 'ZRACE, DUB-Achse 29 mm' },
+      { label: 'Bremsscheiben', value: '2 × Center Lock im Set' },
+      { label: 'Kassette', value: 'HG-Aufnahme – auf Rennrad-Freiläufen evtl. 1,85-mm-Spacer nötig' },
       { label: 'Bremsen', value: 'Hydraulische Scheibenbremsen inkl. Bremsscheiben' },
       { label: 'Material', value: 'Aluminium' },
     ],
@@ -465,10 +499,10 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
         id: 'cassette',
         label: 'Farbe / Kassette',
         options: [
-          { id: 'black-11-50', label: 'Schwarz, 11–50T' },
-          { id: 'gold-11-50', label: 'Gold, 11–50T' },
           { id: 'silver-11-46', label: 'Silber, 11–46T' },
-          { id: 'silver-11-50', label: 'Silber, 11–50T' },
+          { id: 'silver-11-50', label: 'Silber, 11–50T', priceDelta: 4.4 },
+          { id: 'black-11-50', label: 'Schwarz, 11–50T', priceDelta: 28.4 },
+          { id: 'gold-11-50', label: 'Gold, 11–50T', priceDelta: 40.4 },
         ],
       },
       {
@@ -562,12 +596,12 @@ export const WHEELS_CATALOG: CatalogWheelset[] = [
         label: 'Felgenhöhe',
         defaultOptionId: '50',
         options: [
-          { id: '30', label: '30 mm', weight: 1563, specs: rimSpecs('28 mm', '18,5 mm', '579 mm', '700 × 25–38C') },
-          { id: '38', label: '38 mm', weight: 1573, specs: rimSpecs('28 mm', '21 mm', '563 mm', '700 × 25–43C') },
-          { id: '50', label: '50 mm', weight: 1620, specs: rimSpecs('28 mm', '21 mm', '539 mm', '700 × 25–43C') },
-          { id: '55', label: '55 mm', weight: 1715, specs: rimSpecs('31 mm', '21 mm', '529 mm', '700 × 25–43C') },
-          { id: '60', label: '60 mm', weight: 1768, specs: rimSpecs('28 mm', '21 mm', '519 mm', '700 × 25–43C') },
-          { id: '82', label: '82 mm', weight: 1943, specs: rimSpecs('31 mm', '21 mm', '475 mm', '700 × 25–43C') },
+          { id: '30', label: '30 mm', weight: 1563, maxTireWidth: 38, specs: rimSpecs('28 mm', '18,5 mm', '579 mm', '700 × 25–38C') },
+          { id: '38', label: '38 mm', weight: 1573, maxTireWidth: 43, specs: rimSpecs('28 mm', '21 mm', '563 mm', '700 × 25–43C') },
+          { id: '50', label: '50 mm', weight: 1620, maxTireWidth: 43, specs: rimSpecs('28 mm', '21 mm', '539 mm', '700 × 25–43C') },
+          { id: '55', label: '55 mm', weight: 1715, maxTireWidth: 43, specs: rimSpecs('31 mm', '21 mm', '529 mm', '700 × 25–43C') },
+          { id: '60', label: '60 mm', weight: 1768, maxTireWidth: 43, specs: rimSpecs('28 mm', '21 mm', '519 mm', '700 × 25–43C') },
+          { id: '82', label: '82 mm', weight: 1943, maxTireWidth: 43, specs: rimSpecs('31 mm', '21 mm', '475 mm', '700 × 25–43C') },
         ],
       },
       {
@@ -591,7 +625,7 @@ export const WHEELS_CATALOG: CatalogWheelset[] = [
     // Preis je Felgenhöhe × Lager
     priceTable: [
       ...['30', '38', '50'].flatMap((rimDepth) => [
-        { when: { rimDepth, bearing: 'steel' }, price: 349 },
+        { when: { rimDepth, bearing: 'steel' }, price: 349.99 },
         { when: { rimDepth, bearing: 'ceramic' }, price: 394 },
       ]),
       ...['55', '60'].flatMap((rimDepth) => [
@@ -630,9 +664,9 @@ export const WHEELS_CATALOG: CatalogWheelset[] = [
         label: 'Felgenhöhe',
         defaultOptionId: '38',
         options: [
-          { id: '35', label: '35 mm', weight: 1581, specs: rimSpecs('34 mm', '25 mm', '569 mm', '700 × 32–50C') },
-          { id: '38', label: '38 mm', weight: 1558, specs: rimSpecs('32,5 mm', '25 mm', '563 mm', '700 × 32–50C') },
-          { id: '45', label: '45 mm', weight: 1629, specs: rimSpecs('34 mm', '24 mm', '549 mm', '700 × 28–45C') },
+          { id: '35', label: '35 mm', weight: 1581, maxTireWidth: 50, specs: rimSpecs('34 mm', '25 mm', '569 mm', '700 × 32–50C') },
+          { id: '38', label: '38 mm', weight: 1558, maxTireWidth: 50, specs: rimSpecs('32,5 mm', '25 mm', '563 mm', '700 × 32–50C') },
+          { id: '45', label: '45 mm', weight: 1629, maxTireWidth: 45, specs: rimSpecs('34 mm', '24 mm', '549 mm', '700 × 28–45C') },
         ],
       },
       {

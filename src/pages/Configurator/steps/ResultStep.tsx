@@ -14,7 +14,7 @@ import {
 import { getStandardParts } from '../../../config/standardParts'
 import { findExportBikeImage } from '../../../config/bikeImages'
 import { exportBikePdf, type PdfPartRow } from '../../../utils/exportPdf'
-import { formatPrice, formatWeight } from '../../../utils/format'
+import { SHIPPING_NOTE, formatPrice, formatWeight } from '../../../utils/format'
 import { BikeCanvas } from '../../../components/BikeCanvas'
 import { StepShell } from '../StepShell'
 import styles from './ResultStep.module.css'
@@ -41,7 +41,7 @@ export function ResultStep() {
   const frame = getFrameById(frameId)
   const groupset = getGroupsetById(groupsetId)
   const wheels = getWheelsById(wheelsId)
-  const standardParts = getStandardParts(bikeType, frame, tireVariants, groupset)
+  const standardParts = getStandardParts(bikeType, { frame, groupset, wheels, wheelsVariants, tireVariants })
   const overBudget = totalPrice > budget
   const [exporting, setExporting] = useState(false)
 
@@ -163,6 +163,7 @@ export function ResultStep() {
               ? `${formatPrice(totalPrice - budget)} über deinem Budget von ${formatPrice(budget)}`
               : `${formatPrice(budget - totalPrice)} unter deinem Budget von ${formatPrice(budget)}`}
           </div>
+          <div className={styles.budgetNote}>{SHIPPING_NOTE}</div>
 
           <div className={styles.actions}>
             <button type="button" className="btn btn-primary" onClick={handleExport} disabled={exporting}>

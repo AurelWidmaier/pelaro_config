@@ -17,6 +17,9 @@ export function formatPrice(value: number): string {
   return Number.isInteger(rounded) ? currencyFormatter.format(rounded) : centFormatter.format(rounded)
 }
 
+/** Hinweis zu allen Preisen: Händlerpreise ohne Versand, Zoll und Einfuhrabgaben. */
+export const SHIPPING_NOTE = 'Alle Preise ohne Versand – je nach Händler können noch Versandkosten und Zoll anfallen.'
+
 const kgFormatter = new Intl.NumberFormat('de-DE', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,

@@ -107,7 +107,13 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
     ].filter((entry) => entry.part)
 
     // Sattel, Reifen & Co. sind immer dabei und zählen von Anfang an mit.
-    const standardParts = getStandardParts(state.bikeType, frame, state.tireVariants, groupset)
+    const standardParts = getStandardParts(state.bikeType, {
+      frame,
+      groupset,
+      wheels,
+      wheelsVariants,
+      tireVariants: state.tireVariants,
+    })
     const weights = [
       ...selected.map(({ part, variants }) => getConfiguredWeight(part, variants)),
       ...standardParts.map((p) => p.weight),

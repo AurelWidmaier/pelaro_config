@@ -1,10 +1,12 @@
 import {
   getConfiguredPrice,
+  getConfiguredWeight,
   getGroupsetLocks,
   getSelectedVariantOptions,
   type BikeType,
   type CatalogFrame,
   type CatalogGroupset,
+  type CatalogWheelset,
   type VariantGroup,
   type VariantSelection,
 } from './parts'
@@ -31,14 +33,14 @@ const SUPPORTED_BIKE_TYPES: BikeType[] = ['rennrad', 'gravel', 'race-gravel']
 
 const ROTORS: Record<number, { price: number; weight: number }> = {
   140: { price: 11, weight: 121 },
-  160: { price: 7, weight: 143 },
+  160: { price: 7.89, weight: 143 },
   180: { price: 14, weight: 160 },
   203: { price: 15, weight: 190 },
 }
 
 /**
  * Gravel-Reifen (Gravel & Race-Gravel) mit wählbarer Breite. Preise gelten
- * je Reifen, das Bike bekommt zwei (je 460 g).
+ * je Reifen, das Bike bekommt zwei (40C ca. 460 g, 45C ca. 495 g).
  */
 export const GRAVEL_TIRE = {
   brand: 'Continental',
@@ -51,8 +53,8 @@ export const GRAVEL_TIRE = {
       id: 'tireWidth',
       label: 'Reifenbreite',
       options: [
-        { id: '40', label: '700 × 40C' },
-        { id: '45', label: '700 × 45C' },
+        { id: '40', label: '700 × 40C', weight: 2 * 460 },
+        { id: '45', label: '700 × 45C', weight: 2 * 495 },
       ],
     },
   ] as VariantGroup[],
@@ -64,18 +66,10 @@ export const GRAVEL_TIRE = {
 
 /**
  * Zusätzliches Innenlager je Rahmen × Schaltgruppe. Wird nur gebraucht, wenn
- * die Schaltgruppe kein passendes Lager mitbringt (GRT12: BSA, BB86/92, PF30,
- * BB30). Fehlt eine Kombination, liegt das Lager dem Rahmenset bei (BXT
- * Pro-145) oder ist noch offen.
+ * die Schaltgruppe kein passendes Lager mitbringt: Die ER7 hat ein BSA-24-Lager
+ * im Set, die GRT12 wahlweise BSA, BB86/92, PF30 oder BB30, und der BXT Pro-145
+ * bringt sein T47-Lager selbst mit.
  */
-const KACTUS_BSA24: Omit<StandardPart, 'id' | 'label'> = {
-  name: 'KACTUS Innenlager BSA24',
-  detail: 'BSA 68/73 mm, 24-mm-Achse',
-  price: 32.39,
-  weight: 149,
-  url: 'https://s.click.aliexpress.com/e/_c45TpIpF',
-}
-
 const BOTTOM_BRACKETS: Record<string, Omit<StandardPart, 'id' | 'label'>> = {
   // T47 ist nicht unter den GRT12-Lagern
   'frame-bxt-pro-145|groupset-ltwoo-grt12': {
@@ -85,9 +79,41 @@ const BOTTOM_BRACKETS: Record<string, Omit<StandardPart, 'id' | 'label'>> = {
     weight: 129,
     url: 'https://s.click.aliexpress.com/e/_c3yXlbbL',
   },
-  // BSA-Rahmen mit ER7-Kurbel (24-mm-Stahlachse)
-  'frame-spcycle-r088|groupset-ltwoo-er7': KACTUS_BSA24,
-  'frame-bxt-gravel-135|groupset-ltwoo-er7': KACTUS_BSA24,
+}
+
+/** Ventillänge der Schläuche passend zur Felgenhöhe. */
+function valveLength(rimDepth: number | undefined): string {
+  if (rimDepth === undefined) return 'Ventil passend zur Felgenhöhe'
+  if (rimDepth <= 45) return '65-mm-Ventil'
+  if (rimDepth <= 60) return '85-mm-Ventil'
+  return '85-mm-Ventil + Ventilverlängerung'
+}
+
+function selectedRim(wheels: CatalogWheelset | undefined, wheelsVariants: VariantSelection) {
+  return getSelectedVariantOptions(wheels, wheelsVariants).find(({ group }) => group.id === 'rimDepth')?.option
+}
+
+/**
+ * Warnung, wenn der Gravel-Reifen breiter ist, als die gewählte Felge
+ * empfiehlt (z. B. ENT 2.0: max. 43C).
+ */
+export function getTireWarning(
+  wheels: CatalogWheelset | undefined,
+  wheelsVariants: VariantSelection,
+  tireVariants: VariantSelection,
+): string | undefined {
+  const max = selectedRim(wheels, wheelsVariants)?.maxTireWidth
+  const width = Number(getSelectedVariantOptions(GRAVEL_TIRE, tireVariants)[0].option.id)
+  if (!wheels || max === undefined || width <= max) return undefined
+  return `${wheels.name} empfiehlt Reifen bis ${max} mm – ${width} mm liegt darüber.`
+}
+
+export interface StandardPartsContext {
+  frame?: CatalogFrame
+  groupset?: CatalogGroupset
+  wheels?: CatalogWheelset
+  wheelsVariants?: VariantSelection
+  tireVariants?: VariantSelection
 }
 
 /** Bremsscheiben VR/HR, wenn der Rahmen nichts anderes vorgibt. */
@@ -95,13 +121,12 @@ const DEFAULT_ROTORS: [number, number] = [160, 160]
 
 export function getStandardParts(
   bikeType: BikeType | null,
-  frame?: CatalogFrame,
-  tireSelection: VariantSelection = {},
-  groupset?: CatalogGroupset,
+  { frame, groupset, wheels, wheelsVariants = {}, tireVariants = {} }: StandardPartsContext = {},
 ): StandardPart[] {
   if (!bikeType || !SUPPORTED_BIKE_TYPES.includes(bikeType)) return []
 
   const gravelTubes = bikeType !== 'rennrad'
+  const rim = selectedRim(wheels, wheelsVariants)
   const [front, rear] = frame?.brakeRotors ?? DEFAULT_ROTORS
   // Bringt die Schaltgruppe ein zum Rahmen passendes Lager mit, braucht es kein zusätzliches.
   const bottomBracketInSet = Boolean(getGroupsetLocks(groupset, frame).bottomBracket)
@@ -129,16 +154,16 @@ export function getStandardParts(
           id: 'tires',
           label: 'Reifen',
           name: GRAVEL_TIRE.name,
-          detail: `2 Stück, ${getSelectedVariantOptions(GRAVEL_TIRE, tireSelection)[0].option.label}`,
-          price: getConfiguredPrice(GRAVEL_TIRE, tireSelection),
-          weight: GRAVEL_TIRE.weight,
+          detail: `2 Stück, ${getSelectedVariantOptions(GRAVEL_TIRE, tireVariants)[0].option.label}`,
+          price: getConfiguredPrice(GRAVEL_TIRE, tireVariants),
+          weight: getConfiguredWeight(GRAVEL_TIRE, tireVariants),
           url: GRAVEL_TIRE.url,
         }
       : {
           id: 'tires',
           label: 'Reifen',
           name: 'Continental Grand Prix',
-          detail: '2 Stück',
+          detail: '2 Stück, 700 × 25/28C',
           price: 2 * 33.79,
           weight: 2 * 360,
           url: 'https://s.click.aliexpress.com/e/_c2I9HvhX',
@@ -147,7 +172,7 @@ export function getStandardParts(
       id: 'tubes',
       label: 'Schläuche',
       name: 'Ridenow 700C TPU-Schläuche',
-      detail: gravelTubes ? '2 Stück, Gravel' : '2 Stück, Rennrad',
+      detail: `2 Stück, ${gravelTubes ? 'Gravel 32–47C' : 'Rennrad 18–32C'}, ${valveLength(rim ? Number(rim.id) : undefined)}`,
       price: 20.39,
       weight: 2 * (gravelTubes ? 45 : 24),
       url: 'https://s.click.aliexpress.com/e/_c3BJpVR3',

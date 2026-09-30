@@ -1,4 +1,4 @@
-import { formatPrice, formatWeight } from '../utils/format'
+import { SHIPPING_NOTE, formatPrice, formatWeight } from '../utils/format'
 import styles from './BudgetBar.module.css'
 
 interface BudgetBarProps {
@@ -40,6 +40,7 @@ export function BudgetBar({ budget, spent, weight, weightIncomplete }: BudgetBar
           style={{ width: `${percent}%` }}
         />
       </div>
+      <p className={styles.shippingNote}>{SHIPPING_NOTE}</p>
       {over && (
         <p className={styles.overNote}>
           Du liegst {formatPrice(spent - budget)} über deinem Budget – du kannst trotzdem
