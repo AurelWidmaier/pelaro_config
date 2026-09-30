@@ -237,13 +237,6 @@ export const TOOLS: Tool[] = [
     essential: true,
   },
   {
-    id: 'schraubensicherung',
-    name: 'Schraubensicherung mittelfest',
-    description: 'Für Bremsscheiben- und Bremssattelschrauben.',
-    image: 'schraubensicherung.webp',
-    essential: false,
-  },
-  {
     id: 'reifenheber',
     name: 'Reifenheber (10 Stück)',
     description: 'Zum Aufziehen der Reifen und Einlegen der Schläuche.',
@@ -293,7 +286,6 @@ const GENERAL_TOOL_IDS = [
   'reifenheber',
   'standpumpe',
   'montagestaender',
-  'schraubensicherung',
 ]
 
 /** Kurbeln mit 24-mm-Achse und Kunststoff-Einstellkappe (Hollowtech-Stil), Innenlager BSA-24. */

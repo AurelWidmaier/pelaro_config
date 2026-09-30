@@ -31,6 +31,5 @@ Links, Versionen und Preise stehen in `src/config/tools.ts`.
 | 19 | Bügelsäge 12" | `buegelsaege.webp` | 12 inch Hacksaw Bow | 17,89 € | https://s.click.aliexpress.com/e/_c34Dxskp |
 | 20 | Carbon-Montagepaste | `carbon-paste.webp` | – | 2,25 € | https://s.click.aliexpress.com/e/_c3VFJzoV |
 | 21 | Montagefett | `montagefett.webp` | 50g | 3,65 € | https://s.click.aliexpress.com/e/_c3NUi5Fb |
-| 22 | Schraubensicherung mittelfest | `schraubensicherung.webp` | – | – | **fehlt** |
-| 23 | Reifenheber (10 Stück) | `reifenheber.webp` | – | 4,59 € | https://s.click.aliexpress.com/e/_c4nGJsbn |
-| 24 | Standpumpe mit Manometer | `standpumpe.webp` | Long style-black | 30,99 € | https://s.click.aliexpress.com/e/_c3S8leK5 |
+| 22 | Reifenheber (10 Stück) | `reifenheber.webp` | – | 4,59 € | https://s.click.aliexpress.com/e/_c4nGJsbn |
+| 23 | Standpumpe mit Manometer | `standpumpe.webp` | Long style-black | 30,99 € | https://s.click.aliexpress.com/e/_c3S8leK5 |
