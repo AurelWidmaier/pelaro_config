@@ -16,6 +16,7 @@ import { findExportBikeImage, useRealFrameImages } from '../../../config/bikeIma
 import { exportBikePdf, type PdfPartRow } from '../../../utils/exportPdf'
 import { SHIPPING_NOTE, formatPrice, formatWeight } from '../../../utils/format'
 import { BikeCanvas } from '../../../components/BikeCanvas'
+import { Lightbox } from '../../../components/Lightbox'
 import { StepShell } from '../StepShell'
 import styles from './ResultStep.module.css'
 
@@ -48,6 +49,7 @@ export function ResultStep() {
   const overBudget = totalPrice > budget
   const [exporting, setExporting] = useState(false)
   const realImages = useRealFrameImages(frame?.imageKey)
+  const [realIndex, setRealIndex] = useState<number | null>(null)
 
   const partRows: ResultRow[] = [
     { label: 'Bike-Typ', option: bikeTypeInfo, url: undefined, price: undefined, weight: undefined, variants: '' },
@@ -188,11 +190,28 @@ export function ResultStep() {
           </p>
           <div className={styles.realGrid}>
             {realImages.map((src, i) => (
-              <a key={src} href={src} target="_blank" rel="noreferrer" className={styles.realItem}>
+              <button
+                key={src}
+                type="button"
+                className={styles.realItem}
+                onClick={() => setRealIndex(i)}
+                aria-label={`Foto ${i + 1} groß anzeigen`}
+              >
                 <img src={src} alt={`${frame?.name} – echtes Foto ${i + 1}`} loading="lazy" />
-              </a>
+                <span className={styles.realZoom} aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+                  </svg>
+                </span>
+              </button>
             ))}
           </div>
+          <Lightbox
+            images={realImages.map((src, i) => ({ src, alt: `${frame?.name} – echtes Foto ${i + 1}` }))}
+            index={realIndex}
+            onIndexChange={setRealIndex}
+            title={`${frame?.name} – in echt`}
+          />
         </section>
       )}
     </StepShell>

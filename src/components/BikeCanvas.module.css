@@ -41,6 +41,39 @@
   user-select: none;
 }
 
+.fullscreenButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: rgba(36, 72, 85, 0.75);
+  color: var(--color-cream);
+  transition: background-color 0.2s ease, transform 0.2s var(--ease-soft);
+}
+
+.fullscreenButton:hover {
+  background: var(--color-dark);
+  transform: scale(1.06);
+}
+
+.fullscreenButton svg {
+  width: 17px;
+  height: 17px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .dots {
   position: absolute;
   right: 10px;

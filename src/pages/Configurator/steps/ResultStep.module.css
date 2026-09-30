@@ -39,7 +39,11 @@
 }
 
 .realItem {
+  position: relative;
   display: block;
+  padding: 0;
+  border: none;
+  cursor: zoom-in;
   aspect-ratio: 4 / 3;
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -56,6 +60,48 @@
 
 .realItem:hover img {
   transform: scale(1.03);
+}
+
+.realItem:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+.realZoom {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(36, 72, 85, 0.75);
+  color: var(--color-cream);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.realItem:hover .realZoom,
+.realItem:focus-visible .realZoom {
+  opacity: 1;
+}
+
+.realZoom svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (hover: none) {
+  .realZoom {
+    opacity: 1;
+  }
 }
 
 .summary {

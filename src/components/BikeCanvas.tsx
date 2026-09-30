@@ -3,6 +3,7 @@ import { AnimatePresence, motion, type PanInfo } from 'framer-motion'
 import { getFrameById, getGroupsetById, getWheelsById } from '../config/parts'
 import { useCompleteBikeImages } from '../config/bikeImages'
 import { LAYER_POSITIONS, type LayerSlot } from '../config/layerPositions'
+import { Lightbox } from './Lightbox'
 import styles from './BikeCanvas.module.css'
 
 interface BikeCanvasProps {
@@ -35,6 +36,7 @@ export function BikeCanvas({ frameId, groupsetId, wheelsId, className, bleed = 0
   const wheels = getWheelsById(wheelsId ?? null)
   const { cutout, photo } = useCompleteBikeImages(frame?.imageKey, wheels?.imageKey, groupset?.imageKey)
   const [slideState, setSlideState] = useState<{ key: string; index: number }>({ key: '', index: 0 })
+  const [fullscreenIndex, setFullscreenIndex] = useState<number | null>(null)
 
   if (!frame) {
     return (
@@ -89,6 +91,25 @@ export function BikeCanvas({ frameId, groupsetId, wheelsId, className, bleed = 0
           />
         </AnimatePresence>
         <span className={styles.aiNote}>KI-Bild · nur Vorschau · Gewicht geschätzt</span>
+        <button
+          type="button"
+          className={styles.fullscreenButton}
+          onClick={() => setFullscreenIndex(index)}
+          aria-label="Bild im Vollbild anzeigen"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />
+          </svg>
+        </button>
+        <Lightbox
+          images={slides.map((s) => ({ src: s.src, alt: frame.name, cutout: s.kind === 'cutout' }))}
+          index={fullscreenIndex}
+          onIndexChange={(next) => {
+            setFullscreenIndex(next)
+            if (next !== null) go(next)
+          }}
+          title={`${frame.name} · KI-Vorschau`}
+        />
         {hasGallery && (
           <div className={styles.dots} role="tablist" aria-label="Bilder">
             {slides.map((s, i) => (
