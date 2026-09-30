@@ -452,6 +452,7 @@ export const GROUPSET_CATALOG: CatalogGroupset[] = [
     photo: true,
     specs: [
       { label: 'Typ', value: 'Mechanisch, 1 × 12-fach, GRX-Style' },
+      { label: 'Innenlager', value: 'im Set, passend zum Rahmen (BSA, BB86/92, PF30 oder BB30)' },
       { label: 'Bremsen', value: 'Hydraulische Scheibenbremsen' },
       { label: 'Material', value: 'Aluminium' },
     ],

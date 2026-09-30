@@ -1,5 +1,6 @@
 import {
   getConfiguredPrice,
+  getGroupsetLocks,
   getSelectedVariantOptions,
   type BikeType,
   type CatalogFrame,
@@ -62,8 +63,10 @@ export const GRAVEL_TIRE = {
 }
 
 /**
- * Passendes Innenlager je Rahmen × Schaltgruppe. Fehlt eine Kombination,
- * liegt das Innenlager dem Rahmenset bei (BXT Pro-145) oder ist noch offen.
+ * Zusätzliches Innenlager je Rahmen × Schaltgruppe. Wird nur gebraucht, wenn
+ * die Schaltgruppe kein passendes Lager mitbringt (GRT12: BSA, BB86/92, PF30,
+ * BB30). Fehlt eine Kombination, liegt das Lager dem Rahmenset bei (BXT
+ * Pro-145) oder ist noch offen.
  */
 const KACTUS_BSA24: Omit<StandardPart, 'id' | 'label'> = {
   name: 'KACTUS Innenlager BSA24',
@@ -74,12 +77,13 @@ const KACTUS_BSA24: Omit<StandardPart, 'id' | 'label'> = {
 }
 
 const BOTTOM_BRACKETS: Record<string, Omit<StandardPart, 'id' | 'label'>> = {
-  'frame-bxt-gravel-135|groupset-ltwoo-grt12': {
-    name: 'BUCKLOS Innenlager BSA',
-    detail: 'BSA 68/73 mm, SRAM DUB 29 mm',
-    price: 16.99,
-    weight: 74.7,
-    url: 'https://s.click.aliexpress.com/e/_c4oBaqDb',
+  // T47 ist nicht unter den GRT12-Lagern
+  'frame-bxt-pro-145|groupset-ltwoo-grt12': {
+    name: 'ZRACE Innenlager T47-DUB',
+    detail: 'T47, 29-mm-Achse',
+    price: 22.19,
+    weight: 129,
+    url: 'https://s.click.aliexpress.com/e/_c3yXlbbL',
   },
   // BSA-Rahmen mit ER7-Kurbel (24-mm-Stahlachse)
   'frame-spcycle-r088|groupset-ltwoo-er7': KACTUS_BSA24,
@@ -99,7 +103,9 @@ export function getStandardParts(
 
   const gravelTubes = bikeType !== 'rennrad'
   const [front, rear] = frame?.brakeRotors ?? DEFAULT_ROTORS
-  const bottomBracket = BOTTOM_BRACKETS[`${frame?.id}|${groupset?.id}`]
+  // Bringt die Schaltgruppe ein zum Rahmen passendes Lager mit, braucht es kein zusätzliches.
+  const bottomBracketInSet = Boolean(getGroupsetLocks(groupset, frame).bottomBracket)
+  const bottomBracket = bottomBracketInSet ? undefined : BOTTOM_BRACKETS[`${frame?.id}|${groupset?.id}`]
 
   return [
     {
