@@ -99,8 +99,8 @@ export const DEFAULT_STANDARD_PARTS: StandardPartsConfig = {
   roadTire: {
     name: 'Continental Grand Prix',
     detail: '2 Stück, 700 × 28C',
-    shopChoice: '„700x28 Tubelss“ (schwarz), Menge 2',
-    price: 2 * 33.79,
+    shopChoice: '„700x28 Tube type“ (schwarz), Menge 2',
+    price: 2 * 28.39,
     weight: 2 * 360,
     url: 'https://s.click.aliexpress.com/e/_c2I9HvhX',
   },
