@@ -192,26 +192,29 @@ function VideoCard({ video }: { video: TutorialVideo & { youtubeId: string } }) 
 
 export function Tutorial() {
   const location = useLocation()
-  const [openIds, setOpenIds] = useState<Set<string>>(new Set())
+  // Immer nur ein Dropdown gleichzeitig offen
+  const [openId, setOpenId] = useState<string | null>(null)
   const videos = TUTORIAL_VIDEOS.filter((v): v is TutorialVideo & { youtubeId: string } => Boolean(v.youtubeId))
 
   // Direktlink auf einen Abschnitt (#kette) klappt ihn auf
   useEffect(() => {
     const id = location.hash.slice(1)
     if (!id) return
-    setOpenIds((prev) => new Set(prev).add(id))
+    setOpenId(id)
     // kurz warten, bis das Dropdown aufgeklappt ist
     const timer = window.setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350)
     return () => window.clearTimeout(timer)
   }, [location.hash])
 
   function toggle(id: string) {
-    setOpenIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
+    const opening = openId !== id
+    setOpenId(opening ? id : null)
+    if (!opening) return
+    // Klappt ein langer Abschnitt darüber zu, rutscht der neue nach oben aus dem Bild – dann zurückholen
+    window.setTimeout(() => {
+      const el = document.getElementById(id)
+      if (el && el.getBoundingClientRect().top < 80) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 320)
   }
 
   return (
@@ -246,7 +249,7 @@ export function Tutorial() {
           <h2 className={styles.groupTitle}>{group.title}</h2>
           <div className={styles.sections}>
             {group.sections.map((section) => (
-              <Section key={section.id} section={section} open={openIds.has(section.id)} onToggle={() => toggle(section.id)} />
+              <Section key={section.id} section={section} open={openId === section.id} onToggle={() => toggle(section.id)} />
             ))}
           </div>
         </section>
