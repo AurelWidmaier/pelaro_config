@@ -1,6 +1,8 @@
 import { useSearchParams } from 'react-router-dom'
 import { TOOLS, toolImage } from '../config/tools'
 import { formatPrice } from '../utils/format'
+import { Seo } from '../components/Seo'
+import { PAGES } from '../seo/pages'
 import styles from './Shop.module.css'
 
 /** Shop-Kategorien – weitere (z. B. Pedale, Zubehör) später einfach ergänzen. */
@@ -24,6 +26,7 @@ export function Shop() {
 
   return (
     <div className={`container ${styles.page}`}>
+      <Seo meta={PAGES.shop} />
       <header className={styles.header}>
         <span className="eyebrow">Shop</span>
         <h1 className={styles.title}>Alles für deinen Aufbau</h1>
@@ -77,7 +80,7 @@ export function Shop() {
                   <div className={styles.footer}>
                     {tool.price !== undefined && <span className={styles.price}>{formatPrice(tool.price)}</span>}
                     {tool.url ? (
-                      <a className="btn btn-primary" href={tool.url} target="_blank" rel="noreferrer">
+                      <a className="btn btn-primary" href={tool.url} target="_blank" rel="noopener noreferrer sponsored">
                         Zum Händler
                       </a>
                     ) : (

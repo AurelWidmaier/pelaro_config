@@ -4,7 +4,8 @@ import { Navbar } from './components/Navbar'
 import { ConsentBanner } from './components/ConsentBanner'
 import { CatalogGate } from './components/CatalogGate'
 import { Home } from './pages/Home'
-import { Tutorial } from './pages/Tutorial'
+import { TutorialOverview } from './pages/tutorial/TutorialOverview'
+import { TutorialTopic } from './pages/tutorial/TutorialTopic'
 import { Shop } from './pages/Shop'
 import { ConfiguratorPage } from './pages/Configurator/ConfiguratorPage'
 import { ConfiguratorProvider } from './context/ConfiguratorContext'
@@ -19,6 +20,11 @@ function App() {
 
   useEffect(() => {
     trackPageView(pathname)
+  }, [pathname])
+
+  // Neue Seite beginnt oben – außer ein #Abschnitt soll angesprungen werden (nur beim Seitenwechsel)
+  useEffect(() => {
+    if (!window.location.hash) window.scrollTo({ top: 0, behavior: 'instant' })
   }, [pathname])
 
   if (isAdmin) {
@@ -37,7 +43,8 @@ function App() {
       <main style={{ flex: 1 }}>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/tutorial" element={<Tutorial />} />
+          <Route path="/tutorial" element={<TutorialOverview />} />
+          <Route path="/tutorial/:groupId" element={<TutorialTopic />} />
           <Route path="/shop" element={<Shop />} />
           <Route
             path="/konfigurator"

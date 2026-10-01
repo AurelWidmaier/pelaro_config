@@ -1,6 +1,8 @@
 import { AnimatePresence } from 'framer-motion'
 import { useConfigurator } from '../../context/ConfiguratorContext'
 import { ProgressSteps } from '../../components/ProgressSteps'
+import { Seo } from '../../components/Seo'
+import { PAGES } from '../../seo/pages'
 import { BikeTypeStep } from './steps/BikeTypeStep'
 import { BudgetStep } from './steps/BudgetStep'
 import { FrameStep } from './steps/FrameStep'
@@ -14,6 +16,7 @@ export function ConfiguratorPage() {
 
   return (
     <div className={styles.page}>
+      <Seo meta={PAGES.configurator} />
       <div className={`${styles.progressBar} container`}>
         <ProgressSteps current={step} />
       </div>

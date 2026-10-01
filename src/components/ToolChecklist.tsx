@@ -30,7 +30,7 @@ function ToolItem({ tool, reason }: { tool: Tool; reason?: string }) {
         )}
       </div>
       {tool.url ? (
-        <a className={styles.itemLink} href={tool.url} target="_blank" rel="noreferrer">
+        <a className={styles.itemLink} href={tool.url} target="_blank" rel="noopener noreferrer sponsored">
           Ansehen ↗
         </a>
       ) : (

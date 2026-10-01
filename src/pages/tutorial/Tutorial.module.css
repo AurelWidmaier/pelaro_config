@@ -77,22 +77,39 @@
 }
 
 .toggle {
-  width: 100%;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   padding: 18px 22px;
-  background: none;
-  border: none;
-  text-align: left;
   color: var(--color-dark);
 }
 
-.toggle:focus-visible {
+/* Der Button sitzt in der Überschrift, seine Klickfläche deckt aber die ganze Kopfzeile ab */
+.toggleButton {
+  padding: 0;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+}
+
+.toggleButton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+}
+
+.toggleButton:focus-visible {
+  outline: none;
+}
+
+.toggleButton:focus-visible::after {
   outline: 2px solid var(--color-accent);
   outline-offset: -4px;
-  border-radius: var(--radius-lg);
 }
 
 .toggleText {
@@ -162,7 +179,7 @@
   transition: transform 0.25s var(--ease-soft);
 }
 
-.chevronOpen {
+.panelOpen .chevron {
   transform: rotate(180deg);
 }
 
@@ -176,8 +193,28 @@
   stroke-linejoin: round;
 }
 
+/* Zugeklappt bleibt der Inhalt im HTML (für Suchmaschinen), nur auf Höhe 0 */
 .content {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.panelOpen .content {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.contentClip {
   overflow: hidden;
+  min-height: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .content {
+    transition: none;
+  }
 }
 
 .inner {
@@ -366,6 +403,168 @@
   color: var(--text-muted);
 }
 
+/* Übersicht: eine Karte pro Thema */
+.topicGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 18px;
+}
+
+.topicCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 22px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s var(--ease-soft), box-shadow 0.2s var(--ease-soft);
+}
+
+.topicCard:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-soft);
+}
+
+.topicTitle {
+  font-size: 1.2rem;
+  color: var(--color-dark);
+}
+
+/* Die ganze Karte ist klickbar */
+.topicLink::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+}
+
+.topicLink:focus-visible {
+  outline: none;
+}
+
+.topicLink:focus-visible::after {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.topicDesc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.topicSections {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.86rem;
+}
+
+.topicSections a {
+  position: relative;
+  z-index: 1;
+  color: var(--color-dark);
+}
+
+.topicSections a::before {
+  content: '› ';
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.topicSections a:hover {
+  color: var(--color-accent);
+}
+
+.topicMore {
+  margin-top: auto;
+  padding-top: 4px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+/* Themenseite */
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.breadcrumb li + li::before {
+  content: '›';
+  margin-right: 6px;
+}
+
+.breadcrumb a {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.pagerLink {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  color: var(--color-dark);
+  transition: background 0.2s var(--ease-soft), color 0.2s var(--ease-soft);
+}
+
+.pagerLink:hover {
+  background: var(--color-dark);
+  color: var(--color-cream);
+}
+
+.pagerNext {
+  grid-column: 2;
+  text-align: right;
+}
+
+.pagerLabel {
+  font-size: 0.78rem;
+  font-weight: 600;
+  opacity: 0.7;
+}
+
+.pagerTitle {
+  font-family: var(--font-heading);
+  font-weight: 700;
+}
+
+.cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px;
+  border-radius: var(--radius-lg);
+  background: var(--color-dark);
+  color: var(--color-cream);
+}
+
+.ctaTitle {
+  font-size: 1.3rem;
+}
+
+.ctaText {
+  margin-top: 4px;
+  opacity: 0.85;
+  max-width: 60ch;
+}
+
 /* Videos */
 .videoIntro {
   color: var(--text-muted);
@@ -464,7 +663,16 @@
     padding: 4px 16px 20px;
   }
 
-  .videoGrid {
+  .videoGrid,
+  .topicGrid {
     grid-template-columns: 1fr;
+  }
+
+  .pager {
+    grid-template-columns: 1fr;
+  }
+
+  .pagerNext {
+    grid-column: auto;
   }
 }

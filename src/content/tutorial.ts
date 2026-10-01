@@ -1,5 +1,6 @@
 /**
- * Inhalte der Tutorial-Seite. Jeder Abschnitt ist ein aufklappbares Dropdown.
+ * Inhalte der Tutorials. Jedes Überthema (Gruppe) hat eine eigene Seite,
+ * jeder Abschnitt darin ist ein aufklappbares Dropdown.
  * Text darf **fett** enthalten. Blöcke werden in TutorialSection gerendert.
  */
 export type TutorialBlock =
@@ -23,9 +24,18 @@ export interface TutorialSection {
   blocks: TutorialBlock[]
 }
 
+/** Ein Überthema – bekommt eine eigene Seite unter /tutorial/<id>. */
 export interface TutorialGroup {
+  /** Teil der URL – nicht mehr ändern, sobald die Seite bei Google ist */
   id: string
+  /** Kurzer Name für Navigation und Übersicht */
   title: string
+  /** Überschrift (h1) und Seitentitel der Themenseite */
+  heading: string
+  /** Meta-Description und Text der Karte in der Übersicht (ca. 120–160 Zeichen) */
+  description: string
+  /** Einleitung oben auf der Themenseite */
+  intro: string
   sections: TutorialSection[]
 }
 
@@ -33,6 +43,11 @@ export const TUTORIAL: TutorialGroup[] = [
   {
     id: 'grundlagen',
     title: 'Grundlagen',
+    heading: 'Grundlagen: Werkzeug, Sicherheit & Antrieb verstehen',
+    description:
+      'Welches Fahrradwerkzeug du wirklich brauchst, die wichtigsten Sicherheitsregeln und wie der Antrieb am Rennrad und Gravelbike funktioniert.',
+    intro:
+      'Bevor du schraubst: Hier lernst du, welches Werkzeug du für Aufbau und Wartung brauchst, worauf es bei Carbon und Drehmomenten ankommt und wie Kette, Kassette, Kurbel und Schaltung zusammenspielen. Ideal als Einstieg, wenn du dein erstes Bike selbst aufbaust.',
     sections: [
       {
         id: 'start',
@@ -148,8 +163,13 @@ export const TUTORIAL: TutorialGroup[] = [
     ],
   },
   {
-    id: 'aufbau',
+    id: 'fahrrad-aufbauen',
     title: 'Dein Bike aufbauen',
+    heading: 'Rennrad & Gravelbike selbst aufbauen',
+    description:
+      'Rennrad oder Gravelbike selbst aufbauen: Reihenfolge vom Rahmen zum fertigen Rad, innenverlegte Leitungen einfädeln, Carbon-Gabelschaft und Bremsleitungen kürzen.',
+    intro:
+      'Vom nackten Rahmen zum fahrbereiten Rad: die richtige Reihenfolge beim Aufbau, das Einfädeln innenverlegter Leitungen in voll integrierte Rahmen, das Kürzen des Carbon-Gabelschafts und der hydraulischen Bremsleitungen – Schritt für Schritt und einsteigerfreundlich erklärt.',
     sections: [
       {
         id: 'aufbau-reihenfolge',
@@ -276,8 +296,13 @@ export const TUTORIAL: TutorialGroup[] = [
     ],
   },
   {
-    id: 'antrieb',
+    id: 'antrieb-schaltung',
     title: 'Antrieb & Schaltung',
+    heading: 'Antrieb & Schaltung einstellen',
+    description:
+      'Kette kürzen und pflegen, Kassette wechseln, Schaltwerk einstellen, LTWOO R9, GRT12 und ER7 einrichten, Kurbel und Tretlager montieren – Anleitungen für Rennrad und Gravelbike.',
+    intro:
+      'Alles rund um den Antrieb: Kette prüfen, kürzen und schließen, Kassette und Freilauf, Schaltwerk und Schalthebel einstellen – mechanisch (LTWOO R9 & GRT12) und elektronisch (LTWOO ER7) – sowie Kurbel, Kettenblätter, Umwerfer und Tretlager.',
     sections: [
       {
         id: 'kette',
@@ -592,6 +617,11 @@ export const TUTORIAL: TutorialGroup[] = [
   {
     id: 'bremsen',
     title: 'Bremsen',
+    heading: 'Scheibenbremsen warten & entlüften',
+    description:
+      'Hydraulische Scheibenbremsen am Rennrad und Gravelbike: Bremsbeläge wechseln, schleifende Bremse ausrichten, Quietschen beheben und mit Mineralöl entlüften.',
+    intro:
+      'Gut funktionierende Bremsen sind das Wichtigste an deinem Rad. Hier lernst du, wie du Bremsbeläge wechselst, eine schleifende Scheibenbremse ausrichtest, Quietschen loswirst und hydraulische Bremsen mit Mineralöl entlüftest.',
     sections: [
       {
         id: 'scheibenbremsen',
@@ -672,8 +702,13 @@ export const TUTORIAL: TutorialGroup[] = [
     ],
   },
   {
-    id: 'laufraeder',
+    id: 'laufraeder-reifen',
     title: 'Laufräder & Reifen',
+    heading: 'Laufräder & Reifen: Wechseln, Tubeless, Zentrieren',
+    description:
+      'Laufrad mit Steckachse aus- und einbauen, Reifen und Schlauch wechseln, richtiger Luftdruck, Tubeless einrichten und Laufrad zentrieren.',
+    intro:
+      'Platten unterwegs, neue Reifen oder ein Achter im Laufrad: Hier findest du Anleitungen zum Aus- und Einbau mit Steckachse, zum Reifen- und Schlauchwechsel, Richtwerte für den Luftdruck, die Umrüstung auf Tubeless und das Zentrieren von Laufrädern.',
     sections: [
       {
         id: 'laufrad-einbau',
@@ -811,6 +846,11 @@ export const TUTORIAL: TutorialGroup[] = [
   {
     id: 'cockpit',
     title: 'Cockpit & Kontaktpunkte',
+    heading: 'Cockpit & Kontaktpunkte einstellen',
+    description:
+      'Steuersatz einstellen, Lenker, Vorbau, Sattelstütze und Sattel montieren, Pedale und Cleats richtig einstellen – für eine sichere und bequeme Sitzposition.',
+    intro:
+      'Lenker, Sattel und Pedale sind deine Kontaktpunkte zum Rad. Hier erfährst du, wie du den Steuersatz spielfrei einstellst, Lenker, Vorbau, Sattelstütze und Sattel (auch aus Carbon) richtig montierst und Pedale und Cleats einstellst.',
     sections: [
       {
         id: 'steuersatz',
@@ -930,6 +970,11 @@ export const TUTORIAL: TutorialGroup[] = [
   {
     id: 'nachschlagen',
     title: 'Zum Nachschlagen',
+    heading: 'Drehmoment-Tabelle, Wartung & Glossar',
+    description:
+      'Drehmoment-Tabelle für Fahrradschrauben, Wartungs-Checkliste für Rennrad und Gravelbike und ein Glossar mit allen wichtigen Fachbegriffen.',
+    intro:
+      'Zum schnellen Nachschlagen beim Schrauben: die wichtigsten Anzugsmomente in einer Tabelle, eine Wartungs-Checkliste für regelmäßige Kontrollen und ein Glossar, das Fachbegriffe rund ums Rad einfach erklärt.',
     sections: [
       {
         id: 'drehmoment',
@@ -1064,20 +1109,22 @@ export interface TutorialVideo {
   /** Kurzer Satz, was man im Video sieht */
   description: string
   youtubeId?: string
+  /** Überthema (Gruppen-id), auf dessen Seite das Video zusätzlich erscheint */
+  group?: string
 }
 
 export const TUTORIAL_VIDEOS: TutorialVideo[] = [
-  { title: 'Rennrad oder Gravelbike komplett aufbauen', description: 'Vom Rahmen zum fertigen Bike – der ganze Ablauf im Zeitraffer.' },
-  { title: 'Innenverlegte Leitungen einfädeln', description: 'Brems- und Schaltleitungen durch einen voll integrierten Rahmen.' },
-  { title: 'Carbon-Gabelschaft kürzen', description: 'Messen, Sägeführung, Expander einsetzen.' },
-  { title: 'Hydraulische Bremsleitung kürzen', description: 'Leitung schneiden, Stützhülse und Olive einpressen.' },
-  { title: 'Scheibenbremse entlüften (Mineralöl)', description: 'Trichter-Methode Schritt für Schritt.' },
-  { title: 'Kette kürzen und Kettenschloss schließen', description: 'Richtige Länge finden und die Kette verbinden.' },
-  { title: 'Schaltwerk einstellen (mechanisch)', description: 'H/L-Anschläge, B-Schraube und Indexierung.' },
-  { title: 'LTWOO ER7 einrichten', description: 'Koppeln, App verbinden und die Schaltung feinjustieren.' },
-  { title: 'Tretlager einbauen (BSA / T47)', description: 'Gewinde vorbereiten, Lager einschrauben, Drehmoment.' },
-  { title: 'Kassette montieren und wechseln', description: 'Kassetten-Werkzeug und Kettenpeitsche richtig einsetzen.' },
-  { title: 'Reifen und Schlauch wechseln', description: 'Platten beheben ohne eingeklemmten Schlauch.' },
-  { title: 'Lenkerband wickeln', description: 'Sauber und straff – auch um den Bremshebel.' },
-  { title: 'Sitzposition einstellen', description: 'Sitzhöhe, Sattelposition und Cleats.' },
+  { title: 'Rennrad oder Gravelbike komplett aufbauen', group: 'fahrrad-aufbauen', description: 'Vom Rahmen zum fertigen Bike – der ganze Ablauf im Zeitraffer.' },
+  { title: 'Innenverlegte Leitungen einfädeln', group: 'fahrrad-aufbauen', description: 'Brems- und Schaltleitungen durch einen voll integrierten Rahmen.' },
+  { title: 'Carbon-Gabelschaft kürzen', group: 'fahrrad-aufbauen', description: 'Messen, Sägeführung, Expander einsetzen.' },
+  { title: 'Hydraulische Bremsleitung kürzen', group: 'fahrrad-aufbauen', description: 'Leitung schneiden, Stützhülse und Olive einpressen.' },
+  { title: 'Scheibenbremse entlüften (Mineralöl)', group: 'bremsen', description: 'Trichter-Methode Schritt für Schritt.' },
+  { title: 'Kette kürzen und Kettenschloss schließen', group: 'antrieb-schaltung', description: 'Richtige Länge finden und die Kette verbinden.' },
+  { title: 'Schaltwerk einstellen (mechanisch)', group: 'antrieb-schaltung', description: 'H/L-Anschläge, B-Schraube und Indexierung.' },
+  { title: 'LTWOO ER7 einrichten', group: 'antrieb-schaltung', description: 'Koppeln, App verbinden und die Schaltung feinjustieren.' },
+  { title: 'Tretlager einbauen (BSA / T47)', group: 'antrieb-schaltung', description: 'Gewinde vorbereiten, Lager einschrauben, Drehmoment.' },
+  { title: 'Kassette montieren und wechseln', group: 'antrieb-schaltung', description: 'Kassetten-Werkzeug und Kettenpeitsche richtig einsetzen.' },
+  { title: 'Reifen und Schlauch wechseln', group: 'laufraeder-reifen', description: 'Platten beheben ohne eingeklemmten Schlauch.' },
+  { title: 'Lenkerband wickeln', group: 'cockpit', description: 'Sauber und straff – auch um den Bremshebel.' },
+  { title: 'Sitzposition einstellen', group: 'cockpit', description: 'Sitzhöhe, Sattelposition und Cleats.' },
 ]

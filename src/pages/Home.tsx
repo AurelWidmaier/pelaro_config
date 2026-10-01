@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom'
 import { Hero3DPlaceholder } from '../components/Hero3DPlaceholder'
 import { RevealOnScroll } from '../components/RevealOnScroll'
+import { Seo } from '../components/Seo'
+import { PAGES, SITE_NAME } from '../seo/pages'
+import { siteUrl } from '../seo/url'
 import styles from './Home.module.css'
 
 const STEPS = [
@@ -41,9 +44,22 @@ const FEATURES = [
   },
 ]
 
+/** Strukturierte Daten (schema.org WebSite) */
+function homeLd() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: siteUrl('/'),
+    description: PAGES.home.description,
+    inLanguage: 'de-DE',
+  }
+}
+
 export function Home() {
   return (
     <div>
+      <Seo meta={PAGES.home} jsonLd={homeLd()} />
       <section className={styles.hero}>
         <div className={`${styles.heroInner} container`}>
           <div className={styles.heroText}>
