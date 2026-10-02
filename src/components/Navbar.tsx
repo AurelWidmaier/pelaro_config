@@ -5,6 +5,7 @@ import styles from './Navbar.module.css'
 
 const LINKS = [
   { to: '/', label: 'Home' },
+  { to: '/konfigurator', label: 'Konfigurator' },
   { to: '/tutorial', label: 'Tutorial' },
   { to: '/shop', label: 'Shop' },
 ]

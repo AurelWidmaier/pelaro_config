@@ -403,6 +403,124 @@
   color: var(--text-muted);
 }
 
+/* Suche */
+.search {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.searchCount {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.hitList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hit {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  box-shadow: var(--shadow-card);
+  border: 2px solid transparent;
+  transition: border-color 0.15s var(--ease-soft), transform 0.15s var(--ease-soft);
+}
+
+.hitActive,
+.hit:focus-visible {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.hitMeta {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.hitTitle {
+  font-family: var(--font-heading);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-dark);
+}
+
+.hitSnippet {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.noHits {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.noHits button {
+  border: none;
+}
+
+.searchFooter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.searchShopLink {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+/* Werkzeug im Text → Affiliate-Link zum Händler */
+.toolLink {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+.toolLink:hover {
+  text-decoration-thickness: 2px;
+}
+
+.toolLink sup {
+  font-size: 0.7em;
+  margin-left: 1px;
+}
+
+.affiliateNote {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.affiliateNote a {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
 /* Übersicht: eine Karte pro Thema */
 .topicGrid {
   display: grid;
@@ -449,9 +567,13 @@
   outline-offset: 2px;
 }
 
+/* Beschreibung in Braun mit Trennlinie – hebt sich von der Themenliste ab */
 .topicDesc {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(135, 79, 65, 0.22);
   font-size: 0.9rem;
-  color: var(--text-muted);
+  line-height: 1.5;
+  color: var(--color-brown);
 }
 
 .topicSections {
@@ -590,6 +712,20 @@
 .videoTitle {
   font-size: 1.02rem;
   color: var(--color-dark);
+}
+
+.videoLang {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--color-sage-mist);
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  vertical-align: middle;
 }
 
 .player {

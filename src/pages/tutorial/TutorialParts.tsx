@@ -1,11 +1,39 @@
-import { useEffect, useState, type ReactNode } from 'react'
+import { Fragment, useEffect, useState, type ReactNode } from 'react'
 import { useLocation } from 'react-router-dom'
+import { TOOLS } from '../../config/tools'
 import type { TutorialBlock, TutorialSection, TutorialVideo } from '../../content/tutorial'
 import styles from './Tutorial.module.css'
 
-/** Wandelt **fett** im Text in <strong> um. */
+const TOOLS_BY_ID = new Map(TOOLS.map((tool) => [tool.id, tool]))
+
+/** Wandelt [[werkzeug-id|Text]] in einen Affiliate-Link zum Werkzeug um. */
+function toolLinks(text: string): ReactNode {
+  return text.split(/\[\[([\w-]+)\|(.+?)\]\]/g).reduce<ReactNode[]>((out, part, i, parts) => {
+    if (i % 3 === 0) {
+      if (part) out.push(part)
+    } else if (i % 3 === 1) {
+      const tool = TOOLS_BY_ID.get(part)
+      const label = parts[i + 1]
+      out.push(
+        tool?.url ? (
+          <a key={i} className={styles.toolLink} href={tool.url} target="_blank" rel="noopener noreferrer sponsored" title={`${tool.name} beim Händler ansehen (Affiliate-Link)`}>
+            {label}
+            <sup aria-hidden="true">*</sup>
+          </a>
+        ) : (
+          label
+        ),
+      )
+    }
+    return out
+  }, [])
+}
+
+/** Wandelt **fett** in <strong> und [[werkzeug-id|Text]] in Werkzeug-Links um. */
 function rich(text: string): ReactNode {
-  return text.split(/\*\*(.+?)\*\*/g).map((part, i) => (i % 2 === 1 ? <strong key={i}>{part}</strong> : part))
+  return text
+    .split(/\*\*(.+?)\*\*/g)
+    .map((part, i) => (i % 2 === 1 ? <strong key={i}>{toolLinks(part)}</strong> : <Fragment key={i}>{toolLinks(part)}</Fragment>))
 }
 
 function Block({ block }: { block: TutorialBlock }) {
@@ -109,7 +137,17 @@ function Block({ block }: { block: TutorialBlock }) {
  * Aufklappbarer Abschnitt. Der Inhalt bleibt auch zugeklappt im HTML (nur per CSS
  * eingeklappt), damit Suchmaschinen ihn lesen und der Seite zuordnen können.
  */
-function Section({ section, open, onToggle }: { section: TutorialSection; open: boolean; onToggle: () => void }) {
+function Section({
+  section,
+  videos,
+  open,
+  onToggle,
+}: {
+  section: TutorialSection
+  videos: PlayableVideo[]
+  open: boolean
+  onToggle: () => void
+}) {
   const contentId = `${section.id}-content`
   return (
     <section id={section.id} className={`${styles.panel} ${open ? styles.panelOpen : ''}`}>
@@ -139,6 +177,16 @@ function Section({ section, open, onToggle }: { section: TutorialSection; open: 
             {section.blocks.map((block, i) => (
               <Block key={i} block={block} />
             ))}
+            {videos.length > 0 && (
+              <div className={styles.block}>
+                <h3 className={styles.blockTitle}>{videos.length === 1 ? 'Video zur Anleitung' : 'Videos zur Anleitung'}</h3>
+                <div className={styles.videoGrid}>
+                  {videos.map((video) => (
+                    <VideoCard key={video.youtubeId} video={video} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -147,7 +195,7 @@ function Section({ section, open, onToggle }: { section: TutorialSection; open: 
 }
 
 /** Liste von Dropdowns – immer nur eins offen, #abschnitt in der URL klappt es auf. */
-export function SectionList({ sections }: { sections: TutorialSection[] }) {
+export function SectionList({ sections, videos }: { sections: TutorialSection[]; videos: TutorialVideo[] }) {
   const location = useLocation()
   const [openId, setOpenId] = useState<string | null>(null)
   const [lastHash, setLastHash] = useState<string | null>(null)
@@ -183,18 +231,34 @@ export function SectionList({ sections }: { sections: TutorialSection[] }) {
   return (
     <div className={styles.sections}>
       {sections.map((section) => (
-        <Section key={section.id} section={section} open={openId === section.id} onToggle={() => toggle(section.id)} />
+        <Section
+          key={section.id}
+          section={section}
+          videos={playable(videos).filter((v) => v.section === section.id)}
+          open={openId === section.id}
+          onToggle={() => toggle(section.id)}
+        />
       ))}
     </div>
   )
 }
 
+type PlayableVideo = TutorialVideo & { youtubeId: string }
+
+/** Nur Videos mit YouTube-ID – Platzhalter ohne ID werden nicht angezeigt. */
+function playable(videos: TutorialVideo[]): PlayableVideo[] {
+  return videos.filter((v): v is PlayableVideo => Boolean(v.youtubeId))
+}
+
 /** Zeigt erst das Vorschaubild – der YouTube-Player (nocookie) lädt erst nach Klick. */
-export function VideoCard({ video }: { video: TutorialVideo & { youtubeId: string } }) {
+function VideoCard({ video }: { video: PlayableVideo }) {
   const [playing, setPlaying] = useState(false)
   return (
     <article className={styles.video}>
-      <h3 className={styles.videoTitle}>{video.title}</h3>
+      <h3 className={styles.videoTitle}>
+        {video.title}
+        {video.language && <span className={styles.videoLang}>{video.language}</span>}
+      </h3>
       <div className={styles.player}>
         {playing ? (
           <iframe
@@ -214,20 +278,20 @@ export function VideoCard({ video }: { video: TutorialVideo & { youtubeId: strin
           </button>
         )}
       </div>
-      <p className={styles.videoDesc}>{video.description}</p>
+      <p className={styles.videoDesc}>{rich(video.description)}</p>
     </article>
   )
 }
 
 export function VideoGrid({ videos, title }: { videos: TutorialVideo[]; title: string }) {
-  const playable = videos.filter((v): v is TutorialVideo & { youtubeId: string } => Boolean(v.youtubeId))
-  if (playable.length === 0) return null
+  const list = playable(videos)
+  if (list.length === 0) return null
   return (
     <section id="videos" className={styles.group}>
       <h2 className={styles.groupTitle}>{title}</h2>
       <p className={styles.videoIntro}>Manches versteht man am besten, wenn man es einmal gesehen hat.</p>
       <div className={styles.videoGrid}>
-        {playable.map((video) => (
+        {list.map((video) => (
           <VideoCard key={video.youtubeId} video={video} />
         ))}
       </div>

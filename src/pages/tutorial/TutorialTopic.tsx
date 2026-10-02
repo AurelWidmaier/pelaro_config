@@ -5,11 +5,12 @@ import { TUTORIAL, TUTORIAL_VIDEOS } from '../../content/tutorial'
 import { breadcrumbLd, siteUrl } from '../../seo/url'
 import { PAGES, SITE_NAME, tutorialGroupMeta, tutorialGroupPath } from '../../seo/pages'
 import { SectionList, VideoGrid } from './TutorialParts'
+import { TutorialSearch } from './TutorialSearch'
 import styles from './Tutorial.module.css'
 
-/** **fett** entfernen – für Texte in strukturierten Daten. */
+/** **fett** und [[werkzeug|Links]] entfernen – für Texte in strukturierten Daten. */
 function plain(text: string): string {
-  return text.replace(/\*\*(.+?)\*\*/g, '$1')
+  return text.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\[\[[\w-]+\|(.+?)\]\]/g, '$1')
 }
 
 /** Eigene Seite pro Überthema (/tutorial/antrieb-schaltung) mit den Anleitungen als Dropdowns. */
@@ -23,6 +24,7 @@ export function TutorialTopic() {
   const prev = TUTORIAL[index - 1]
   const next = TUTORIAL[index + 1]
   const others = TUTORIAL.filter((g) => g.id !== group.id)
+  const videos = TUTORIAL_VIDEOS.filter((v) => v.group === group.id)
 
   const jsonLd = [
     {
@@ -70,9 +72,18 @@ export function TutorialTopic() {
         </header>
       </RevealOnScroll>
 
-      <SectionList sections={group.sections} />
+      <TutorialSearch />
 
-      <VideoGrid videos={TUTORIAL_VIDEOS.filter((v) => v.group === group.id)} title={`Videos: ${group.title}`} />
+      <SectionList sections={group.sections} videos={videos} />
+
+      {/\[\[[\w-]+\|/.test(JSON.stringify([group.sections, videos])) && (
+        <p className={styles.affiliateNote}>
+          * Werkzeug-Links sind Affiliate-Links: Kaufst du darüber ein, bekommen wir eine kleine Provision – für dich
+          ändert sich der Preis nicht. Alles Werkzeug auf einen Blick findest du im <Link to="/shop?kategorie=werkzeug">Shop</Link>.
+        </p>
+      )}
+
+      <VideoGrid videos={videos} title={`Alle Videos: ${group.title}`} />
 
       <nav className={styles.pager} aria-label="Weitere Tutorials">
         {prev ? (

@@ -5,14 +5,15 @@ import { TUTORIAL, TUTORIAL_VIDEOS } from '../../content/tutorial'
 import { breadcrumbLd, siteUrl } from '../../seo/url'
 import { PAGES, tutorialGroupPath } from '../../seo/pages'
 import { VideoGrid } from './TutorialParts'
+import { TutorialSearch } from './TutorialSearch'
 import styles from './Tutorial.module.css'
 
-/** Alte Links (/tutorial#kette, /tutorial#gruppe-bremsen) zeigen auf die neue Themenseite. */
 /** Manche Videos hängen an mehreren Anleitungen – in der Übersicht nur einmal zeigen. */
 const UNIQUE_VIDEOS = TUTORIAL_VIDEOS.filter(
   (video, i) => !video.youtubeId || TUTORIAL_VIDEOS.findIndex((v) => v.youtubeId === video.youtubeId) === i,
 )
 
+/** Alte Links (/tutorial#kette, /tutorial#gruppe-bremsen) zeigen auf die neue Themenseite. */
 function legacyTarget(hash: string): string | null {
   const id = hash.slice(1)
   if (!id) return null
@@ -68,6 +69,8 @@ export function TutorialOverview() {
           </p>
         </header>
       </RevealOnScroll>
+
+      <TutorialSearch />
 
       <div className={styles.topicGrid}>
         {TUTORIAL.map((group) => {
