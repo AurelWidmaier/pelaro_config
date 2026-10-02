@@ -1,3 +1,4 @@
+import type { jsPDF } from 'jspdf'
 import type { Tool, ToolList } from '../config/tools'
 import { formatPrice } from './format'
 
@@ -19,32 +20,12 @@ export interface ToolsPdfData {
   list: ToolList
 }
 
-/** Werkzeugliste als PDF – Spezialwerkzeug zuerst, dann allgemeines Werkzeug. */
-export async function exportToolsPdf({ bikeName, list }: ToolsPdfData): Promise<void> {
-  const { jsPDF } = await import('jspdf')
-  const doc = new jsPDF({ unit: 'mm', format: 'a4' })
-  let y = MARGIN
-
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(20)
-  doc.setTextColor(...DARK)
-  doc.text('pelaro', MARGIN, y + 6)
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(9)
-  doc.setTextColor(...MUTED)
-  doc.text(pdfText(new Date().toLocaleDateString('de-DE')), PAGE_W - MARGIN, y + 6, { align: 'right' })
-  y += 16
-
-  doc.setFont('helvetica', 'bold')
-  doc.setFontSize(16)
-  doc.setTextColor(...DARK)
-  doc.text('Werkzeugliste', MARGIN, y)
-  y += 6
-  doc.setFont('helvetica', 'normal')
-  doc.setFontSize(10)
-  doc.setTextColor(...MUTED)
-  doc.text(pdfText(`für dein ${bikeName}`), MARGIN, y)
-  y += 10
+/**
+ * Zeichnet die Werkzeugliste ab `startY` in ein bestehendes Dokument –
+ * genutzt vom Werkzeug-PDF und vom Bike-PDF.
+ */
+export function renderToolList(doc: jsPDF, list: ToolList, startY: number): void {
+  let y = startY
 
   const ensureSpace = (needed: number) => {
     if (y + needed > PAGE_H - MARGIN - 10) {
@@ -83,10 +64,17 @@ export async function exportToolsPdf({ bikeName, list }: ToolsPdfData): Promise<
     doc.roundedRect(MARGIN + 4, y + 3.5, 4, 4, 0.8, 0.8, 'S')
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(10)
-    doc.setTextColor(...DARK)
+    // Klickbare Namen orange und unterstrichen wie in der Teileliste
+    doc.setTextColor(...(tool.url ? ACCENT : DARK))
     const name = pdfText(tool.name + (tool.essential ? '' : ' (empfohlen)'))
-    if (tool.url) doc.textWithLink(name, MARGIN + 12, y + 6.8, { url: tool.url })
-    else doc.text(name, MARGIN + 12, y + 6.8)
+    doc.text(name, MARGIN + 12, y + 6.8)
+    if (tool.url) {
+      doc.setDrawColor(...ACCENT)
+      doc.setLineWidth(0.2)
+      doc.line(MARGIN + 12, y + 7.6, MARGIN + 12 + doc.getTextWidth(name), y + 7.6)
+      // Ganze Karte klickbar
+      doc.link(MARGIN, y, CONTENT_W, h, { url: tool.url })
+    }
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(8.5)
     doc.setTextColor(...MUTED)
@@ -105,6 +93,36 @@ export async function exportToolsPdf({ bikeName, list }: ToolsPdfData): Promise<
   }
   heading('Allgemeines Werkzeug', 'Brauchst du für jeden Aufbau.')
   list.general.forEach((tool) => row(tool))
+}
+
+/** Werkzeugliste als PDF – Spezialwerkzeug zuerst, dann allgemeines Werkzeug. */
+export async function exportToolsPdf({ bikeName, list }: ToolsPdfData): Promise<void> {
+  const { jsPDF } = await import('jspdf')
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' })
+  let y = MARGIN
+
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(20)
+  doc.setTextColor(...DARK)
+  doc.text('pelaro', MARGIN, y + 6)
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(9)
+  doc.setTextColor(...MUTED)
+  doc.text(pdfText(new Date().toLocaleDateString('de-DE')), PAGE_W - MARGIN, y + 6, { align: 'right' })
+  y += 16
+
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(16)
+  doc.setTextColor(...DARK)
+  doc.text('Werkzeugliste', MARGIN, y)
+  y += 6
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(10)
+  doc.setTextColor(...MUTED)
+  doc.text(pdfText(`für dein ${bikeName}`), MARGIN, y)
+  y += 10
+
+  renderToolList(doc, list, y)
 
   const pages = doc.getNumberOfPages()
   for (let i = 1; i <= pages; i++) {

@@ -50,6 +50,7 @@ export function ResultStep() {
   const wheels = getWheelsById(wheelsId)
   const standardParts = getStandardParts(bikeType, { frame, groupset, wheels, wheelsVariants, tireVariants })
   const overBudget = totalPrice > budget
+  const toolList = getToolList(frame, groupset, wheels)
   const [exporting, setExporting] = useState(false)
   const realImages = useRealFrameImages(frame?.imageKey)
   const [realIndex, setRealIndex] = useState<number | null>(null)
@@ -119,6 +120,7 @@ export function ResultStep() {
         totalWeight,
         weightIncomplete,
         budget,
+        tools: toolList,
       })
     } finally {
       setExporting(false)
@@ -191,7 +193,7 @@ export function ResultStep() {
       </div>
 
       <ToolChecklist
-        list={getToolList(frame, groupset, wheels)}
+        list={toolList}
         bikeName={[frame?.name, groupset?.name].filter(Boolean).join(' mit ') || 'Bike'}
       />
 

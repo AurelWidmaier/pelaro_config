@@ -1,4 +1,6 @@
+import type { ToolList } from '../config/tools'
 import { SHIPPING_NOTE, formatPrice, formatWeight } from './format'
+import { renderToolList } from './exportToolsPdf'
 
 export interface PdfPartRow {
   label: string
@@ -22,6 +24,8 @@ export interface BikePdfData {
   totalWeight: number
   weightIncomplete: boolean
   budget: number
+  /** Werkzeugliste passend zu Rahmen und Schaltgruppe – kommt auf eine eigene Seite. */
+  tools: ToolList
 }
 
 // Theme-Farben aus styles/variables.css
@@ -228,6 +232,21 @@ export async function exportBikePdf(data: BikePdfData): Promise<void> {
   y += 5
   doc.text(pdfText(SHIPPING_NOTE), MARGIN, y)
 
+  // Werkzeugliste auf eigener Seite
+  doc.addPage()
+  y = MARGIN
+  doc.setFont('helvetica', 'bold')
+  doc.setFontSize(16)
+  doc.setTextColor(...DARK)
+  doc.text('Werkzeugliste', MARGIN, y + 6)
+  y += 12
+  doc.setFont('helvetica', 'normal')
+  doc.setFontSize(10)
+  doc.setTextColor(...MUTED)
+  doc.text(pdfText(`für dein ${data.bikeTypeName ?? 'Bike'} · zum Abhaken`), MARGIN, y)
+  y += 10
+  renderToolList(doc, data.tools, y)
+
   // Fußzeile auf jeder Seite
   const pages = doc.getNumberOfPages()
   for (let i = 1; i <= pages; i++) {
@@ -236,7 +255,7 @@ export async function exportBikePdf(data: BikePdfData): Promise<void> {
     doc.setFontSize(7.5)
     doc.setTextColor(...MUTED)
     doc.text(
-      'Preise und Gewichte laut Händlerangaben, ohne Gewähr. Gewicht ist eine Schätzung. Links führen zum Händler (Affiliate-Links).',
+      'Preise und Gewichte laut Händlerangaben, ohne Gewähr. Gewicht ist eine Schätzung. Anzugsmomente nach Herstellerangabe. Links führen zum Händler (Affiliate-Links).',
       MARGIN,
       PAGE_H - 10,
       { maxWidth: CONTENT_W - 15 },
