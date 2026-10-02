@@ -132,7 +132,7 @@ export function FrameSizeAdvisor({ frame, currentSize, rider, onRiderChange, onA
                 oder {advice.alternativeId} cm –{' '}
                 {Number(advice.alternativeId) < Number(advice.sizeId)
                   ? 'kleiner fährt sich sportlicher und wendiger'
-                  : 'größer sitzt du gestreckter und etwas komfortabler'}
+                  : 'größer sitzt du gestreckter, mit höherer Front'}
               </span>
             )}
           </div>

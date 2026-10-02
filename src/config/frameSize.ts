@@ -1,11 +1,17 @@
 import type { CatalogFrame } from './parts'
+import { DEFAULT_SIZE_CHARTS, type SizeChart, type SizeChartRow } from './sizeCharts'
 
 /**
- * Größenrechner. Nutzt die Größentabelle des Herstellers (frame.sizeChart),
- * sonst Richtwerte für Rennrad/Gravel:
- * - Körpergröße: typische Mitte je Rahmengröße (cm Körpergröße)
- * - Schrittlänge: Rahmengröße ≈ Schrittlänge × 0,665 (Sitzrohr Mitte Tretlager bis Oberkante)
+ * Größenrechner. Nutzt die Größentabelle des Herstellers (frame.sizeChart bzw.
+ * sizeCharts.ts), sonst Richtwerte für Rennrad/Gravel.
+ *
+ * Körpergröße und Schrittlänge werden jeweils auf eine stufenlose Position
+ * zwischen den Rahmengrößen abgebildet und gemittelt. So fließt der Oberkörper
+ * mit ein: Lange Beine bei gleicher Körpergröße heißen kürzerer Oberkörper –
+ * also eher die kleinere Größe (kürzerer Reach).
  */
+
+/** Typische Körpergröße je Rahmengröße, wenn der Hersteller nichts angibt. */
 const HEIGHT_BY_SIZE: [number, number][] = [
   [44, 153],
   [47, 159],
@@ -18,7 +24,14 @@ const HEIGHT_BY_SIZE: [number, number][] = [
   [60, 192],
 ]
 
-const INSEAM_FACTOR = 0.665
+/**
+ * Schrittlänge ÷ Körpergröße bei durchschnittlichem Körperbau
+ * (Mittelwert der BXT-Tabelle mit beiden Maßen).
+ */
+const LEG_RATIO = 0.46
+
+/** Anteil des Oberkörpers an der Empfehlung, wenn beide Maße vorliegen. */
+const TORSO_WEIGHT = 0.4
 
 export const RIDER_LIMITS = {
   height: { min: 140, max: 210 },
@@ -42,6 +55,8 @@ export interface SizeAdvice {
   reasons: string[]
 }
 
+type Range = [number, number]
+
 /** Typische Körpergröße für eine Rahmengröße (linear interpoliert). */
 function typicalHeight(sizeCm: number): number {
   const table = HEIGHT_BY_SIZE
@@ -59,82 +74,134 @@ export function getFrameSizes(frame: CatalogFrame | undefined): string[] {
   return frame?.variants?.find((g) => g.id === 'size')?.options.map((o) => o.id) ?? []
 }
 
-/** Nächstgelegene Größe (nach Abstand) plus zweitbeste, wenn sie fast gleich gut passt. */
-function nearest(sizes: string[], distance: (size: string) => number, tolerance: number) {
-  const ranked = [...sizes].sort((a, b) => distance(a) - distance(b))
-  const [best, second] = ranked
-  const close = second !== undefined && distance(second) - distance(best) < tolerance
-  return { best, alternative: close ? second : undefined }
+/** Größentabelle des Rahmens: eigene aus der Datenbank, sonst die mitgelieferte. */
+function getSizeChart(frame: CatalogFrame): SizeChart | undefined {
+  if (frame.sizeChart?.length) return { rows: frame.sizeChart, source: 'manufacturer' }
+  return DEFAULT_SIZE_CHARTS[frame.id]
 }
 
-/** „54“ bzw. „54 oder 56“ – kleinere Größe zuerst. */
-function sizeList({ best, alternative }: { best: string; alternative?: string }) {
-  if (!alternative) return best
-  const [a, b] = [best, alternative].sort((x, y) => Number(x) - Number(y))
-  return `${a} oder ${b}`
+/**
+ * Stufenlose Position eines Maßes zwischen den Größen: 0 = Mitte der ersten
+ * Größe, 1 = Mitte der zweiten … Außerhalb wird mit der Spannbreite der
+ * Randgröße weitergerechnet (Rand der Spanne = ±0,5).
+ */
+function position(value: number, ranges: Range[]): number {
+  const mids = ranges.map(([a, b]) => (a + b) / 2)
+  const last = ranges.length - 1
+  if (value <= mids[0]) return (value - mids[0]) / Math.max(ranges[0][1] - ranges[0][0], 1)
+  if (value >= mids[last]) return last + (value - mids[last]) / Math.max(ranges[last][1] - ranges[last][0], 1)
+  let i = 1
+  while (value > mids[i]) i++
+  return i - 1 + (value - mids[i - 1]) / (mids[i] - mids[i - 1])
 }
 
-function smaller(a: string, b?: string) {
-  return b === undefined ? a : Number(a) <= Number(b) ? a : b
-}
+const outside = (value: number, ranges: Range[]) => value < ranges[0][0] - 3 || value > ranges[ranges.length - 1][1] + 3
+
+const span = ([a, b]: Range) => `${a}–${b} cm`
+
+const mm = (value: number) => `${Math.round(value)} mm`
 
 export function recommendFrameSize(frame: CatalogFrame | undefined, rider: RiderMeasures): SizeAdvice | undefined {
   const sizes = getFrameSizes(frame)
   if (!frame || sizes.length === 0 || (!rider.height && !rider.inseam)) return undefined
 
-  const reasons: string[] = []
-  const chart = frame.sizeChart?.filter((row) => sizes.includes(row.size)) ?? []
+  const chart = getSizeChart(frame)
+  const chartRows = new Map(chart?.rows.map((row) => [row.size, row]))
+  const ordered = [...sizes].sort((a, b) => Number(a) - Number(b))
+  const rows: SizeChartRow[] = ordered.map((size) => chartRows.get(size) ?? { size })
+  const hasChart = rows.every((r) => r.minHeight && r.maxHeight)
+  const fromManufacturer = hasChart && chart?.source === 'manufacturer'
 
-  // 1) Schrittlänge – am aussagekräftigsten
-  let byInseam: { best: string; alternative?: string } | undefined
-  if (rider.inseam) {
-    const target = rider.inseam * INSEAM_FACTOR
-    byInseam = nearest(sizes, (s) => Math.abs(Number(s) - target), 1)
-    reasons.push(`Deine Schrittlänge von ${rider.inseam} cm ergibt rechnerisch etwa ${Math.round(target)} cm Rahmengröße.`)
+  // Körpergrößen-Spannen: Tabelle oder Richtwert ±2,5 cm
+  const heightRanges: Range[] = rows.map((r) => {
+    if (hasChart) return [r.minHeight!, r.maxHeight!]
+    const mid = typicalHeight(Number(r.size))
+    return [mid - 2.5, mid + 2.5]
+  })
+  const inseamRanges: Range[] | undefined = rows.every((r) => r.minInseam && r.maxInseam)
+    ? rows.map((r) => [r.minInseam!, r.maxInseam!])
+    : undefined
+
+  const reasons: string[] = []
+  let pos: number
+  let outOfRange = false
+
+  if (rider.height) {
+    pos = position(rider.height, heightRanges)
+    outOfRange = outside(rider.height, heightRanges)
+    if (rider.inseam) {
+      // Oberkörper (Körpergröße − Schrittlänge) bestimmt den passenden Reach:
+      // in eine Körpergröße mit durchschnittlichem Körperbau umrechnen und einfließen lassen.
+      const torsoHeight = (rider.height - rider.inseam) / (1 - LEG_RATIO)
+      pos = (1 - TORSO_WEIGHT) * pos + TORSO_WEIGHT * position(torsoHeight, heightRanges)
+    }
+  } else {
+    // Nur Schrittlänge: Herstellertabelle oder in eine Körpergröße umrechnen
+    const inseam = rider.inseam!
+    const equivalentHeight = inseam / LEG_RATIO
+    pos = inseamRanges ? position(inseam, inseamRanges) : position(equivalentHeight, heightRanges)
+    outOfRange = inseamRanges ? outside(inseam, inseamRanges) : outside(equivalentHeight, heightRanges)
   }
 
-  // 2) Körpergröße – Herstellertabelle oder Richtwert
-  let byHeight: { best: string; alternative?: string } | undefined
-  let fromManufacturer = false
-  if (rider.height) {
-    const height = rider.height
-    if (chart.length > 0) {
-      fromManufacturer = true
-      const fits = chart.filter(
-        (row) => (row.minHeight ?? -Infinity) <= height && height <= (row.maxHeight ?? Infinity),
-      )
-      if (fits.length > 0) {
-        byHeight = { best: fits[0].size, alternative: fits[1]?.size }
-      } else {
-        const gap = (row: (typeof chart)[number]) =>
-          height < (row.minHeight ?? -Infinity) ? (row.minHeight ?? 0) - height : height - (row.maxHeight ?? Infinity)
-        byHeight = { best: [...chart].sort((a, b) => gap(a) - gap(b))[0].size }
-        reasons.push(
-          `Deine Körpergröße liegt außerhalb der Größentabelle des Herstellers – ${byHeight.best} ist die nächstpassende Größe. Frag im Zweifel beim Händler nach.`,
-        )
-      }
-      reasons.push(`Laut Größentabelle des Herstellers passt bei ${height} cm Körpergröße Größe ${sizeList(byHeight)}.`)
-    } else {
-      byHeight = nearest(sizes, (s) => Math.abs(typicalHeight(Number(s)) - height), 2)
-      reasons.push(`Bei ${height} cm Körpergröße passt als Richtwert Größe ${sizeList(byHeight)}.`)
+  pos = Math.min(Math.max(pos, 0), ordered.length - 1)
+  const lowerIndex = Math.floor(pos)
+  const fraction = pos - lowerIndex
+  let index = Math.round(pos)
+  let alternativeIndex: number | undefined
+  // Genau zwischen zwei Größen: beide nennen
+  if (fraction > 0.35 && fraction < 0.65 && lowerIndex + 1 < ordered.length) {
+    // Ohne Schrittlänge die kleinere – sie lässt sich mit Spacern und Sattelstütze leichter anpassen.
+    if (!rider.inseam) index = lowerIndex
+    alternativeIndex = index === lowerIndex ? lowerIndex + 1 : lowerIndex
+  }
+  const sizeId = ordered[index]
+  const row = rows[index]
+
+  // Begründung
+  if (fromManufacturer) {
+    const ranges = [`${span(heightRanges[index])} Körpergröße`]
+    if (inseamRanges) ranges.push(`${span(inseamRanges[index])} Schrittlänge`)
+    reasons.push(`Laut Größentabelle des Herstellers ist Größe ${sizeId} für ${ranges.join(' und ')} gedacht.`)
+  } else if (hasChart && chart?.source === 'derived') {
+    reasons.push(
+      `Der Hersteller nennt keine Körpergrößen. Wir haben Stack und Reach mit dem ${chart.reference} verglichen – danach passt Größe ${sizeId} bei etwa ${span(heightRanges[index])} Körpergröße.`,
+    )
+  } else {
+    reasons.push(`Als Richtwert passt Größe ${sizeId} bei etwa ${span(heightRanges[index].map(Math.round) as Range)} Körpergröße.`)
+  }
+
+  if (rider.height && rider.inseam) {
+    const ratio = rider.inseam / rider.height
+    if (ratio > LEG_RATIO + 0.015) {
+      reasons.push('Du hast im Verhältnis lange Beine und einen eher kurzen Oberkörper – deshalb tendieren wir zur kleineren Größe mit kürzerem Reach.')
+    } else if (ratio < LEG_RATIO - 0.015) {
+      reasons.push('Du hast im Verhältnis einen eher langen Oberkörper – deshalb tendieren wir zur größeren Größe mit längerem Reach.')
+    }
+    if (ratio > LEG_RATIO + 0.05 || ratio < LEG_RATIO - 0.05) {
+      reasons.push('Körpergröße und Schrittlänge passen ungewöhnlich schlecht zusammen – miss die Schrittlänge am besten noch einmal nach.')
+    } else if (inseamRanges && rider.inseam > inseamRanges[index][1] + 2) {
+      reasons.push('Achte beim Hochstellen des Sattels auf die Mindesteinstecktiefe der Sattelstütze.')
     }
   }
 
-  // Kombinieren: Schrittlänge hat Vorrang, Körpergröße als Gegencheck
-  const main = byInseam ?? byHeight!
-  let sizeId = main.best
-  let alternativeId = main.alternative
-  if (byInseam && byHeight && byHeight.best !== byInseam.best) {
-    alternativeId = byHeight.best
-    reasons.push('Schrittlänge und Körpergröße zeigen auf unterschiedliche Größen – wir empfehlen die Größe nach Schrittlänge.')
-  }
-  // Bei zwei gleich passenden Größen die kleinere empfehlen – sie ist leichter anzupassen.
-  if (alternativeId && Number(alternativeId) < Number(sizeId) && !byInseam) {
-    ;[sizeId, alternativeId] = [smaller(sizeId, alternativeId), sizeId]
+  if (outOfRange) {
+    reasons.push(`Deine Maße liegen außerhalb der Größentabelle – ${sizeId} ist die nächstpassende Größe. Frag im Zweifel beim Händler nach.`)
   }
 
-  if (!fromManufacturer && !byInseam) {
-    reasons.push('Für diesen Rahmen gibt es keine Größentabelle des Herstellers – die Schrittlänge macht die Empfehlung genauer.')
+  if (row.stack && row.reach) {
+    reasons.push(`Größe ${sizeId} hat ${mm(row.stack)} Stack und ${mm(row.reach)} Reach – praktisch zum Vergleich mit deinem jetzigen Rad.`)
   }
-  return { sizeId, alternativeId: alternativeId !== sizeId ? alternativeId : undefined, fromManufacturer, reasons }
+
+  if (!fromManufacturer && chart?.source !== 'derived' && !rider.inseam) {
+    reasons.push('Für diesen Rahmen gibt es keine Größentabelle des Herstellers – die Schrittlänge macht die Empfehlung genauer.')
+  } else if (!rider.inseam) {
+    reasons.push('Mit deiner Schrittlänge können wir auch deinen Körperbau berücksichtigen.')
+  }
+
+  return {
+    sizeId,
+    alternativeId: alternativeIndex !== undefined ? ordered[alternativeIndex] : undefined,
+    fromManufacturer,
+    reasons,
+  }
 }

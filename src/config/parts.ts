@@ -13,6 +13,7 @@ import groupsetEinsteiger from '../assets/parts/groupset/groupset-einsteiger.svg
 import groupsetMittelklasse from '../assets/parts/groupset/groupset-mittelklasse.svg'
 import groupsetPerformance from '../assets/parts/groupset/groupset-performance.svg'
 import { withShopChoices } from './shopChoices'
+import type { SizeChartRow } from './sizeCharts'
 
 // Produktfotos kommen von GitHub Pages (siehe ./assets.ts)
 const frameSpcycleR088 = partImage('frame/spcycle-r088.png')
@@ -329,10 +330,10 @@ export interface CatalogFrame extends ConfigurablePart {
   /** Tretlager-Standard; legt bei Kurbeln mit Tretlager-Auswahl die passende Variante fest. */
   bottomBracket?: BottomBracket
   /**
-   * Größentabelle des Herstellers: Körpergröße in cm je Rahmengröße (Options-ID
-   * der Variante „size“). Fehlt sie, rechnet der Größenrechner mit Richtwerten.
+   * Größentabelle des Herstellers je Rahmengröße (Options-ID der Variante
+   * „size“). Fehlt sie, nutzt der Größenrechner sizeCharts.ts bzw. Richtwerte.
    */
-  sizeChart?: { size: string; minHeight?: number; maxHeight?: number }[]
+  sizeChart?: SizeChartRow[]
 }
 
 export const DEFAULT_FRAME_CATALOG: CatalogFrame[] = [
