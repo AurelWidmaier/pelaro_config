@@ -1,7 +1,8 @@
 /**
  * Inhalte der Tutorials. Jedes Überthema (Gruppe) hat eine eigene Seite,
  * jeder Abschnitt darin ist ein aufklappbares Dropdown.
- * Text darf **fett** enthalten. Blöcke werden in TutorialSection gerendert.
+ * Text darf **fett** enthalten. Werkzeug verlinken: [[werkzeug-id|Text]] – die id
+ * aus src/config/tools.ts, der Link geht als Affiliate-Link zum Händler.
  */
 export type TutorialBlock =
   | { type: 'p'; text: string }
@@ -64,13 +65,13 @@ export const TUTORIAL: TutorialGroup[] = [
             type: 'list',
             title: 'Grundausstattung – damit erledigst du 90 % aller Arbeiten',
             items: [
-              '**Innensechskant (Inbus) 2–8 mm** – am häufigsten brauchst du 4, 5 und 6 mm',
+              '**[[inbus-set|Innensechskant (Inbus) 2–8 mm]]** – am häufigsten brauchst du 4, 5 und 6 mm',
               '**Torx T25** – für manche Bremsen, Kurbeln und Bremsscheiben',
-              '**Drehmomentschlüssel** – bei Carbon Pflicht, siehe unten',
-              '**Kettenwerkzeug + Kettenschloss-Zange** – zum Kürzen, Öffnen und Schließen der Kette',
-              '**Kassetten-Abzieher + Kettenpeitsche** – für Kassette und Center-Lock-Bremsscheiben',
-              '**Reifenheber** und eine **Standpumpe mit Manometer**',
-              '**Montagefett** (für Gewinde) und **Carbon-Montagepaste** (für Carbon-Klemmungen)',
+              '**[[drehmoment-set|Drehmomentschlüssel]]** – bei Carbon Pflicht, siehe unten',
+              '**[[werkzeugkoffer|Kettenwerkzeug]] + [[kettenschloss-zange|Kettenschloss-Zange]]** – zum Kürzen, Öffnen und Schließen der Kette',
+              '**[[kassetten-werkzeug|Kassetten-Abzieher + Kettenpeitsche]]** – für Kassette und Center-Lock-Bremsscheiben',
+              '**[[reifenheber|Reifenheber]]** und eine **[[standpumpe|Standpumpe mit Manometer]]**',
+              '**[[montagefett|Montagefett]]** (für Gewinde) und **[[carbon-paste|Carbon-Montagepaste]]** (für Carbon-Klemmungen)',
               '**Kettenöl** und Lappen',
             ],
           },
@@ -79,10 +80,10 @@ export const TUTORIAL: TutorialGroup[] = [
             title: 'Für den kompletten Aufbau zusätzlich',
             items: [
               '**Innenlager-Werkzeug** passend zu deinem Rahmen (BSA, T47 …)',
-              '**Carbon-Säge mit Sägeführung** zum Kürzen des Gabelschafts',
-              '**Bremsleitungs-Schneider + Einpresswerkzeug** und ein **Entlüftungs-Kit mit Mineralöl**',
-              '**Magnet-Set** zum Einfädeln innenverlegter Leitungen',
-              '**Montageständer** – kein Muss, macht aber fast jede Arbeit deutlich angenehmer',
+              '**[[saegefuehrung|Carbon-Säge mit Sägeführung]]** zum Kürzen des Gabelschafts',
+              '**[[leitungsschneider|Bremsleitungs-Schneider]] + [[einpresswerkzeug|Einpresswerkzeug]]** und ein **[[entlueftungs-kit|Entlüftungs-Kit]] mit [[mineraloel|Mineralöl]]**',
+              '**[[innenverlegung|Magnet-Set]]** zum Einfädeln innenverlegter Leitungen',
+              '**[[montagestaender|Montageständer]]** – kein Muss, macht aber fast jede Arbeit deutlich angenehmer',
             ],
           },
           {
@@ -186,7 +187,7 @@ export const TUTORIAL: TutorialGroup[] = [
             type: 'steps',
             items: [
               '**Auspacken und prüfen:** Alle Teile auslegen, mit Bestellung vergleichen. Rahmen und Gabel auf Transportschäden (Risse, tiefe Kratzer) untersuchen. Fotos machen, falls etwas fehlt.',
-              '**Rahmen in den Montageständer:** An der Sattelstütze einspannen – niemals am Carbon-Rahmenrohr selbst.',
+              '**Rahmen in den [[montagestaender|Montageständer]]:** An der Sattelstütze einspannen – niemals am Carbon-Rahmenrohr selbst.',
               '**Leitungen und Züge durch den Rahmen fädeln**, solange noch nichts im Weg ist (Abschnitt „Innenverlegte Leitungen“).',
               '**Innenlager einschrauben** (Abschnitt „Tretlager“).',
               '**Gabel mit Steuersatz einsetzen**, Vorbau und Lenker provisorisch montieren, Gabelschaft anzeichnen und **kürzen** (Abschnitt „Gabelschaft kürzen“).',
@@ -201,7 +202,7 @@ export const TUTORIAL: TutorialGroup[] = [
               '**Schaltung einstellen** – mechanisch oder elektronisch (Abschnitte „Schaltwerk“ bzw. „LTWOO ER7“).',
               '**Sattelstütze und Sattel** montieren, Sitzhöhe grob einstellen, **Pedale** einschrauben.',
               '**Lenkerband wickeln** – erst ganz zum Schluss, wenn Hebel und Leitungen final sitzen.',
-              '**Alle Schrauben mit Drehmomentschlüssel prüfen** (Abschnitt „Drehmoment-Tabelle“).',
+              '**Alle Schrauben mit [[drehmoment-set|Drehmomentschlüssel]] prüfen** (Abschnitt „Drehmoment-Tabelle“).',
               '**Probefahrt** zuerst auf einem ruhigen Platz: Bremsen, Schalten, Knackgeräusche. Nach 50–100 km alles noch einmal nachprüfen – Züge setzen sich, Schrauben ebenfalls.',
             ],
           },
@@ -226,7 +227,7 @@ export const TUTORIAL: TutorialGroup[] = [
             type: 'steps',
             items: [
               '**Plan machen:** Welche Leitung läuft wohin? Hinterradbremse und Schaltwerk nach hinten, Vorderradbremse durch die Gabel. Bei integrierten Cockpits geht alles zuerst durch Lenker und Vorbau, dann durch den Steuersatz in den Rahmen.',
-              '**Führungsleitung verwenden:** Aus dem Magnet-Set den dünnen Führungsschlauch bzw. -draht zuerst von der Austrittsöffnung zum Eingang schieben.',
+              '**Führungsleitung verwenden:** Aus dem [[innenverlegung|Magnet-Set]] den dünnen Führungsschlauch bzw. -draht zuerst von der Austrittsöffnung zum Eingang schieben.',
               '**Mit dem Magneten „angeln“:** Den Magneten außen am Rahmen entlangführen, um das Metallende innen zur Öffnung zu ziehen.',
               '**Leitung nachziehen:** Bremsleitung oder Zughülle auf die Führung stecken und vorsichtig durchziehen – nicht mit Gewalt, sonst knickt sie.',
               '**Länge großzügig lassen:** Bremsleitungen erst kürzen, wenn Lenker und Hebel final sitzen (nach dem Einlenken nach links und rechts prüfen!).',
@@ -256,7 +257,7 @@ export const TUTORIAL: TutorialGroup[] = [
               '**Gabel, Steuersatz, Spacer und Vorbau provisorisch montieren** und die gewünschte Lenkerhöhe festlegen.',
               '**Oberkante des Vorbaus** auf dem Gabelschaft mit einem Stift markieren.',
               '**Schnittlinie festlegen:** 3 mm **unter** dieser Markierung – der Schaft muss etwas unter der Vorbau-Oberkante enden, damit die Deckelkappe das Lager vorspannen kann.',
-              '**Gabel ausbauen** und den Schaft in die **Sägeführung** einspannen, Schnittlinie genau am Sägeschlitz.',
+              '**Gabel ausbauen** und den Schaft in die **[[saegefuehrung|Sägeführung]]** einspannen, Schnittlinie genau am Sägeschlitz.',
               '**Mit der Bügelsäge langsam und ohne Druck sägen.** Carbon-Staub nicht einatmen – Maske tragen, Staub feucht aufwischen.',
               '**Schnittkante mit feinem Schleifpapier entgraten**, damit keine Fasern ausfransen.',
               '**Expander (Kralle für Carbon) einsetzen** und nach Herstellerangabe festziehen – niemals eine Sternmutter in einen Carbon-Schaft schlagen.',
@@ -264,7 +265,7 @@ export const TUTORIAL: TutorialGroup[] = [
           },
           {
             type: 'tip',
-            text: 'Carbon-Montagepaste auf den Schaft, wo der Vorbau klemmt. So hält der Vorbau schon bei 5 Nm sicher.',
+            text: '[[carbon-paste|Carbon-Montagepaste]] auf den Schaft, wo der Vorbau klemmt. So hält der Vorbau schon bei 5 Nm sicher.',
           },
         ],
       },
@@ -279,10 +280,10 @@ export const TUTORIAL: TutorialGroup[] = [
             type: 'steps',
             items: [
               '**Länge bestimmen:** Lenker komplett nach links und rechts einschlagen – die Leitung darf nirgends spannen oder abknicken. Stelle markieren.',
-              '**Leitung am Bremshebel lösen** (Überwurfmutter aufdrehen) – etwas Mineralöl tritt aus, Lappen unterlegen.',
+              '**Leitung am Bremshebel lösen** (Überwurfmutter aufdrehen) – etwas [[mineraloel|Mineralöl]] tritt aus, Lappen unterlegen.',
               '**Mit dem Leitungsschneider gerade abschneiden.** Eine schräge oder gequetschte Schnittkante wird undicht.',
               '**Überwurfmutter und neue Olive** (kleiner Messingring) auf die Leitung schieben.',
-              '**Stützhülse (Nadel) mit dem Einpresswerkzeug** ins Leitungsende drücken, bis sie bündig sitzt.',
+              '**Stützhülse (Nadel) mit dem [[einpresswerkzeug|Einpresswerkzeug]]** ins Leitungsende drücken, bis sie bündig sitzt.',
               '**Leitung bis zum Anschlag in den Bremshebel stecken** und die Überwurfmutter festziehen (meist 5–7 Nm).',
               '**Entlüften** – nach dem Kürzen ist fast immer etwas Luft im System (nächster Abschnitt).',
             ],
@@ -322,8 +323,8 @@ export const TUTORIAL: TutorialGroup[] = [
               '**Kette ohne Schaltwerk** über das **größte Kettenblatt und das größte Ritzel** legen.',
               '**Enden zusammenführen** und so kürzen, dass sich die Enden mit **2 zusätzlichen Gliedern** (= 1 Zoll) schließen lassen. Das ist die Standard-Methode für Rennrad und 2x.',
               '**Bei 1x-Gravelgruppen (GRT12)** gibt der Hersteller oft eigene Angaben – im Zweifel die Anleitung des Schaltwerks verwenden.',
-              '**Mit dem Kettenwerkzeug** den Stift an der gewünschten Stelle vollständig herausdrücken.',
-              '**Mit dem Kettenschloss verbinden:** beide Hälften einsetzen, dann das Rad blockieren und kräftig in die Pedale treten, bis das Schloss hörbar einrastet – oder die Kettenschloss-Zange zum Schließen nutzen.',
+              '**Mit dem [[werkzeugkoffer|Kettenwerkzeug]]** den Stift an der gewünschten Stelle vollständig herausdrücken.',
+              '**Mit dem Kettenschloss verbinden:** beide Hälften einsetzen, dann das Rad blockieren und kräftig in die Pedale treten, bis das Schloss hörbar einrastet – oder die [[kettenschloss-zange|Kettenschloss-Zange]] zum Schließen nutzen.',
             ],
           },
           {
@@ -364,10 +365,10 @@ export const TUTORIAL: TutorialGroup[] = [
             type: 'steps',
             title: 'Kassette montieren',
             items: [
-              '**Freilauf leicht fetten** (dünn), damit die Kassette später wieder leicht abgeht.',
+              '**Freilauf leicht [[montagefett|fetten]]** (dünn), damit die Kassette später wieder leicht abgeht.',
               '**Kassette aufschieben:** Eine Nut ist breiter als die anderen – die Kassette passt nur in einer Stellung. Bei Rennrad-HG-Freiläufen und MTB-Kassetten (z. B. 11–50T der GRT12) kann ein **1,85-mm-Spacer** hinter die Kassette nötig sein, sonst sitzt sie lose.',
               '**Verschlussring (Lockring)** von Hand eindrehen.',
-              '**Mit Kassetten-Werkzeug und Drehmomentschlüssel** auf 40 Nm anziehen.',
+              '**Mit [[kassetten-werkzeug|Kassetten-Werkzeug]] und [[drehmoment-set|Drehmomentschlüssel]]** auf 40 Nm anziehen.',
             ],
           },
           {
@@ -494,7 +495,7 @@ export const TUTORIAL: TutorialGroup[] = [
               '**Hebel ganz auf den kleinsten Gang** schalten (mehrmals den kleinen Schaltpaddel drücken).',
               '**Griffgummi vorne hochklappen** – dort liegt die Einfädelöffnung für den Zug.',
               '**Neuen Zug mit dem Nippel voran einfädeln**, bis der Nippel im Hebel einrastet.',
-              '**Zughülle auf Länge schneiden** – mit dem Seilzugschneider, damit die Hülle rund bleibt. Hüllenenden mit Endkappen versehen.',
+              '**Zughülle auf Länge schneiden** – mit dem [[zugschneider|Seilzugschneider]], damit die Hülle rund bleibt. Hüllenenden mit Endkappen versehen.',
               '**Zug durch Hülle und Rahmen** zum Schaltwerk führen und dort wie oben beschrieben einklemmen.',
               '**Griffgummi wieder zurückklappen.**',
             ],
@@ -600,10 +601,10 @@ export const TUTORIAL: TutorialGroup[] = [
             title: 'Geschraubtes Tretlager einbauen',
             items: [
               '**Gewinde im Rahmen reinigen** und prüfen.',
-              '**Gewinde der Lagerschalen dünn fetten.**',
+              '**Gewinde der Lagerschalen dünn [[montagefett|fetten]].**',
               '**Die Seiten beachten:** Die rechte Schale (Antriebsseite) hat bei BSA ein **Linksgewinde** – sie wird **gegen** den Uhrzeigersinn festgezogen. Beschriftung „R“/„L“ beachten.',
               '**Beide Schalen von Hand** einschrauben, bis sie sauber greifen – nie schief ansetzen.',
-              '**Mit Innenlager-Schlüssel und Drehmomentschlüssel** auf 35–45 Nm anziehen (Herstellerangabe beachten).',
+              '**Mit Innenlager-Schlüssel und [[drehmoment-set|Drehmomentschlüssel]]** auf 35–45 Nm anziehen (Herstellerangabe beachten).',
             ],
           },
           {
@@ -640,7 +641,7 @@ export const TUTORIAL: TutorialGroup[] = [
             items: [
               '**Laufrad ausbauen.**',
               '**Sicherungsstift bzw. -clip** am Bremssattel entfernen und die alten Beläge herausziehen.',
-              '**Kolben zurückdrücken** – mit einem Kunststoff-Reifenheber, vorsichtig und gleichmäßig. Nie mit Metall, sonst beschädigst du die Kolben.',
+              '**Kolben zurückdrücken** – mit einem [[reifenheber|Kunststoff-Reifenheber]], vorsichtig und gleichmäßig. Nie mit Metall, sonst beschädigst du die Kolben.',
               '**Neue Beläge mit Spreizfeder** einsetzen und den Stift wieder sichern.',
               '**Laufrad einbauen** und den Hebel mehrmals ziehen, bis der Druckpunkt wieder da ist.',
               '**Einbremsen:** 10–20 Mal aus ca. 25 km/h kräftig (nicht bis zum Stillstand) abbremsen. Erst danach erreichen die Beläge volle Bremskraft.',
@@ -676,14 +677,14 @@ export const TUTORIAL: TutorialGroup[] = [
         blocks: [
           {
             type: 'warning',
-            text: 'LTWOO-Bremsen laufen mit **Mineralöl**. Niemals DOT-Flüssigkeit einfüllen – DOT zerstört die Dichtungen. Mineralöl ist rot oder grün, DOT meist gelblich/klar.',
+            text: 'LTWOO-Bremsen laufen mit **[[mineraloel|Mineralöl]]**. Niemals DOT-Flüssigkeit einfüllen – DOT zerstört die Dichtungen. Mineralöl ist rot oder grün, DOT meist gelblich/klar.',
           },
           {
             type: 'steps',
             items: [
               '**Laufrad ausbauen, Beläge herausnehmen** und einen **Entlüftungsblock** (Kunststoffplatte aus dem Kit) zwischen die Kolben stecken.',
               '**Rad so drehen**, dass der Bremshebel waagerecht steht und die Entlüftungsschraube oben am Hebel der höchste Punkt ist.',
-              '**Am Hebel:** Entlüftungsschraube herausdrehen und den **Trichter** einschrauben, etwas Mineralöl einfüllen.',
+              '**Am Hebel:** Entlüftungsschraube herausdrehen und den **Trichter** aus dem [[entlueftungs-kit|Entlüftungs-Kit]] einschrauben, etwas Mineralöl einfüllen.',
               '**Am Bremssattel:** die mit Öl gefüllte **Spritze mit Schlauch** am Entlüftungsnippel anschließen und den Nippel eine Vierteldrehung öffnen.',
               '**Öl von unten nach oben drücken:** langsam mit der Spritze Öl in den Sattel drücken. Im Trichter steigen Luftblasen auf.',
               '**Hebel mehrmals ziehen und loslassen** und leicht gegen Leitung und Sattel klopfen, bis keine Blasen mehr kommen.',
@@ -741,13 +742,13 @@ export const TUTORIAL: TutorialGroup[] = [
             items: [
               '**Luft komplett ablassen** – beim Sclaverand-Ventil die kleine Rändelmutter aufdrehen und drücken.',
               '**Reifen rundherum zur Felgenmitte drücken** – dort ist die Felge tiefer, der Reifen wird lockerer.',
-              '**Mit einem Reifenheber** gegenüber dem Ventil eine Seite über die Felge hebeln, mit dem zweiten Heber Stück für Stück weiterarbeiten.',
+              '**Mit einem [[reifenheber|Reifenheber]]** gegenüber dem Ventil eine Seite über die Felge hebeln, mit dem zweiten Heber Stück für Stück weiterarbeiten.',
               '**Schlauch herausnehmen.**',
               '**Ursache suchen:** Innenseite des Reifens vorsichtig mit den Fingern abtasten – oft steckt die Scherbe oder der Dorn noch drin.',
               '**Neuen Schlauch leicht aufpumpen**, bis er rund ist, und zuerst mit dem Ventil in die Felge einlegen.',
               '**Reifen von Hand aufziehen** – am Ventil beginnen, zum Schluss gegenüber. Das letzte Stück mit dem Handballen „rollen“, nur im Notfall mit dem Heber (Schlauch nicht einklemmen!).',
               '**Sitz prüfen:** Die feine Linie an der Reifenflanke muss rundherum gleich weit von der Felge entfernt sein.',
-              '**Auf Solldruck aufpumpen.**',
+              '**Mit der [[standpumpe|Standpumpe]] auf Solldruck aufpumpen.**',
             ],
           },
           {
@@ -870,7 +871,7 @@ export const TUTORIAL: TutorialGroup[] = [
               '**Deckelschraube oben** langsam anziehen, bis kein Spiel mehr da ist. **Test:** Vorderbremse ziehen und das Rad vor und zurück schieben – es darf nichts klacken.',
               '**Nicht zu fest:** Der Lenker muss sich ohne Hakeln leicht drehen lassen, wenn du das Vorderrad anhebst.',
               '**Vorbau gerade zum Vorderrad ausrichten** (von oben über den Lenker peilen).',
-              '**Klemmschrauben abwechselnd** mit dem Drehmomentschlüssel anziehen (meist 5 Nm, Angabe am Vorbau beachten).',
+              '**Klemmschrauben abwechselnd** mit dem [[drehmoment-set|Drehmomentschlüssel]] anziehen (meist 5 Nm, Angabe am Vorbau beachten).',
             ],
           },
           {
@@ -890,7 +891,7 @@ export const TUTORIAL: TutorialGroup[] = [
             type: 'steps',
             title: 'Lenker (bzw. integriertes Cockpit)',
             items: [
-              '**Carbon-Montagepaste** dünn auf die Klemmflächen.',
+              '**[[carbon-paste|Carbon-Montagepaste]]** dünn auf die Klemmflächen.',
               '**Lenker mittig ausrichten** und den Winkel wählen: Die Unterlenker-Enden zeigen etwa zur hinteren Bremse oder waagerecht nach hinten.',
               '**Klemmschrauben über Kreuz** und in mehreren Durchgängen anziehen, bis der Spalt oben und unten gleich ist (meist 4–6 Nm).',
               'Bei **integrierten Cockpits** ist Lenker und Vorbau ein Teil – hier stellst du nur Höhe (Spacer) und Ausrichtung ein.',
@@ -944,7 +945,7 @@ export const TUTORIAL: TutorialGroup[] = [
             type: 'steps',
             title: 'Pedale montieren',
             items: [
-              '**Gewinde leicht fetten.**',
+              '**Gewinde leicht [[montagefett|fetten]].**',
               '**Von Hand ansetzen** und einige Umdrehungen eindrehen – so merkst du, ob es schief sitzt.',
               '**Mit Inbus oder Pedalschlüssel** festziehen (35–40 Nm).',
             ],
@@ -1056,7 +1057,7 @@ export const TUTORIAL: TutorialGroup[] = [
               'Bremsen entlüften bzw. Mineralöl tauschen',
               'Schaltzüge und -hüllen prüfen, bei Bedarf tauschen',
               'Tubeless-Milch nachfüllen',
-              'Alle Schrauben mit dem Drehmomentschlüssel nachprüfen',
+              'Alle Schrauben mit dem [[drehmoment-set|Drehmomentschlüssel]] nachprüfen',
             ],
           },
         ],
@@ -1101,30 +1102,180 @@ export const TUTORIAL: TutorialGroup[] = [
 ]
 
 /**
- * YouTube-Videos ganz unten auf der Tutorial-Seite. Für jedes Thema die
- * Video-ID eintragen (der Teil nach „watch?v=“). Videos ohne ID werden nicht angezeigt.
+ * YouTube-Videos. Mit `section` erscheinen sie im Dropdown der passenden Anleitung,
+ * und zusätzlich gesammelt unten auf der Themenseite; die Übersicht zeigt alle. Video-ID ist
+ * der Teil nach „youtu.be/“ bzw. „watch?v=“. Videos ohne ID werden nicht angezeigt.
  */
 export interface TutorialVideo {
   title: string
-  /** Kurzer Satz, was man im Video sieht */
+  /** Kurzer Satz, was man im Video sieht – darf **fett** und [[werkzeug-id|Links]] enthalten */
   description: string
   youtubeId?: string
-  /** Überthema (Gruppen-id), auf dessen Seite das Video zusätzlich erscheint */
-  group?: string
+  /** Überthema (Gruppen-id), auf dessen Seite das Video erscheint */
+  group: string
+  /** Abschnitt (Section-id), in dessen Dropdown das Video eingebettet wird */
+  section?: string
+  /** Sprache, falls nicht Deutsch */
+  language?: 'Englisch'
 }
 
 export const TUTORIAL_VIDEOS: TutorialVideo[] = [
+  // Bike aufbauen
+  {
+    title: 'How-To: Gabelschaft einer Carbon-Gabel kürzen & Expander einbauen',
+    youtubeId: 'ADh-zLhjy_g',
+    group: 'fahrrad-aufbauen',
+    section: 'gabelschaft',
+    description: 'Messen, mit [[saegefuehrung|Sägeführung]] sauber absägen und den Expander einsetzen.',
+  },
+  {
+    title: 'How To Install A Compression Plug Into A Carbon Steerer Tube',
+    youtubeId: '_R9XwPMw2WA',
+    group: 'fahrrad-aufbauen',
+    section: 'gabelschaft',
+    language: 'Englisch',
+    description: 'Den Expander (Compression Plug) richtig im Carbon-Schaft setzen – mit [[carbon-paste|Carbon-Montagepaste]] und Drehmoment.',
+  },
+  {
+    title: 'Kabel am Lenker intern verlegen',
+    youtubeId: 'OCpKrOjBiVU',
+    group: 'fahrrad-aufbauen',
+    section: 'innenverlegung',
+    description: 'Leitungen durch Lenker, Vorbau und Steuerrohr fädeln – am einfachsten mit einem [[innenverlegung|magnetischen Cable Router]].',
+  },
+  {
+    title: 'Internal Cable Routing Hacks',
+    youtubeId: 'QZaGL83RMFI',
+    group: 'fahrrad-aufbauen',
+    section: 'innenverlegung',
+    language: 'Englisch',
+    description: 'Tricks, mit denen innenverlegte Züge und Leitungen schneller durch den Rahmen gehen.',
+  },
   { title: 'Rennrad oder Gravelbike komplett aufbauen', group: 'fahrrad-aufbauen', description: 'Vom Rahmen zum fertigen Bike – der ganze Ablauf im Zeitraffer.' },
-  { title: 'Innenverlegte Leitungen einfädeln', group: 'fahrrad-aufbauen', description: 'Brems- und Schaltleitungen durch einen voll integrierten Rahmen.' },
-  { title: 'Carbon-Gabelschaft kürzen', group: 'fahrrad-aufbauen', description: 'Messen, Sägeführung, Expander einsetzen.' },
-  { title: 'Hydraulische Bremsleitung kürzen', group: 'fahrrad-aufbauen', description: 'Leitung schneiden, Stützhülse und Olive einpressen.' },
-  { title: 'Scheibenbremse entlüften (Mineralöl)', group: 'bremsen', description: 'Trichter-Methode Schritt für Schritt.' },
-  { title: 'Kette kürzen und Kettenschloss schließen', group: 'antrieb-schaltung', description: 'Richtige Länge finden und die Kette verbinden.' },
-  { title: 'Schaltwerk einstellen (mechanisch)', group: 'antrieb-schaltung', description: 'H/L-Anschläge, B-Schraube und Indexierung.' },
-  { title: 'LTWOO ER7 einrichten', group: 'antrieb-schaltung', description: 'Koppeln, App verbinden und die Schaltung feinjustieren.' },
-  { title: 'Tretlager einbauen (BSA / T47)', group: 'antrieb-schaltung', description: 'Gewinde vorbereiten, Lager einschrauben, Drehmoment.' },
-  { title: 'Kassette montieren und wechseln', group: 'antrieb-schaltung', description: 'Kassetten-Werkzeug und Kettenpeitsche richtig einsetzen.' },
-  { title: 'Reifen und Schlauch wechseln', group: 'laufraeder-reifen', description: 'Platten beheben ohne eingeklemmten Schlauch.' },
+  { title: 'Hydraulische Bremsleitung kürzen', group: 'fahrrad-aufbauen', section: 'bremsleitung-kuerzen', description: 'Leitung schneiden, Stützhülse und Olive einpressen.' },
+
+  // Bremsen
+  {
+    title: 'LTWOO Oiling Tool – Usage Tutorial',
+    youtubeId: 'GTG5DovxCHg',
+    group: 'bremsen',
+    section: 'entlueften',
+    language: 'Englisch',
+    description: 'So wird das LTWOO-Entlüftungswerkzeug an den LTWOO-Bremsen benutzt.',
+  },
+  {
+    title: 'Mineral Oil Replacement LTWOO',
+    youtubeId: 'HlDWHPlNoUE',
+    group: 'bremsen',
+    section: 'entlueften',
+    language: 'Englisch',
+    description: 'Altes [[mineraloel|Mineralöl]] an LTWOO-Bremsen komplett tauschen.',
+  },
+  {
+    title: 'Shimano-Scheibenbremsen entlüften',
+    youtubeId: 'e_z7d8RULG0',
+    group: 'bremsen',
+    section: 'entlueften',
+    description: 'Die Trichter-Methode an Shimano – bei LTWOO und anderen Mineralöl-Bremsen läuft es sehr ähnlich.',
+  },
+
+  // Antrieb & Schaltung
+  {
+    title: 'Rear Derailleur – Adjustment (LTWOO mechanisch)',
+    youtubeId: 'y0eCutXuTPA',
+    group: 'antrieb-schaltung',
+    section: 'schaltwerk-ltwoo',
+    language: 'Englisch',
+    description: 'Ein mechanisches LTWOO-Schaltwerk einstellen: Anschläge, B-Schraube und Zugspannung.',
+  },
+  {
+    title: 'Shimano-Schaltwerk perfekt einstellen am Rennrad',
+    youtubeId: '0G3gXLUVS4o',
+    group: 'antrieb-schaltung',
+    section: 'schaltwerk-ltwoo',
+    description: 'Schritt für Schritt auf Deutsch – LTWOO R9 und GRT12 sind Shimano-kompatibel und werden genauso eingestellt.',
+  },
+  {
+    title: 'L-TWOO Electronic Rear Derailleur Adjustment',
+    youtubeId: 'XSjAKk_Eb9c',
+    group: 'antrieb-schaltung',
+    section: 'er7',
+    language: 'Englisch',
+    description: 'Das elektronische LTWOO-Schaltwerk (ER7) einstellen und feinjustieren.',
+  },
+  {
+    title: 'Electronic Shifter – Installation Tutorial (LTWOO)',
+    youtubeId: '58TrStlOpjs',
+    group: 'antrieb-schaltung',
+    section: 'er7',
+    language: 'Englisch',
+    description: 'Die elektronischen LTWOO-Schalt-/Bremshebel am Lenker montieren und anschließen.',
+  },
+  {
+    title: 'L-TWOO Electronic Rear Derailleur Installation Guide',
+    youtubeId: '7cp4WIXEWS8',
+    group: 'antrieb-schaltung',
+    section: 'er7',
+    language: 'Englisch',
+    description: 'Das elektronische ER7-Schaltwerk am Schaltauge montieren und den Akku einsetzen.',
+  },
+  {
+    title: 'Electronic Front Derailleur – Installation (LTWOO)',
+    youtubeId: 'L_BAZO3C1RI',
+    group: 'antrieb-schaltung',
+    section: 'er7',
+    language: 'Englisch',
+    description: 'Den elektronischen ER7-Umwerfer montieren: Höhe und Ausrichtung zum großen Kettenblatt.',
+  },
+  {
+    title: 'L-TWOO Electronic Front Derailleur Adjustment',
+    youtubeId: '5q-Ts7LKws0',
+    group: 'antrieb-schaltung',
+    section: 'er7',
+    language: 'Englisch',
+    description: 'Den elektronischen Umwerfer einstellen, damit er sauber und ohne Schleifen schaltet.',
+  },
+  { title: 'Kette kürzen und Kettenschloss schließen', group: 'antrieb-schaltung', section: 'kette', description: 'Richtige Länge finden und die Kette verbinden.' },
+  { title: 'Tretlager einbauen (BSA / T47)', group: 'antrieb-schaltung', section: 'tretlager', description: 'Gewinde vorbereiten, Lager einschrauben, Drehmoment.' },
+  { title: 'Kassette montieren und wechseln', group: 'antrieb-schaltung', section: 'kassette', description: 'Kassetten-Werkzeug und Kettenpeitsche richtig einsetzen.' },
+
+  // Laufräder & Reifen
+  { title: 'Reifen und Schlauch wechseln', group: 'laufraeder-reifen', section: 'reifen', description: 'Platten beheben ohne eingeklemmten Schlauch.' },
+  { title: 'Tubeless montieren', group: 'laufraeder-reifen', section: 'tubeless', description: 'Felgenband, Ventil, Dichtmilch und Reifen aufpoppen.' },
+  { title: 'Laufrad zentrieren', group: 'laufraeder-reifen', section: 'zentrieren', description: 'Seitenschlag mit dem Speichenschlüssel herausziehen.' },
+
+  // Cockpit
+  // Steuersatz-Spiel stellt man über Expander und Deckelschraube ein – gleiche Videos wie beim Gabelschaft
+  {
+    title: 'How-To: Gabelschaft einer Carbon-Gabel kürzen & Expander einbauen',
+    youtubeId: 'ADh-zLhjy_g',
+    group: 'cockpit',
+    section: 'steuersatz',
+    description: 'Expander einsetzen und über die Deckelschraube das Steuersatz-Spiel einstellen.',
+  },
+  {
+    title: 'How To Install A Compression Plug Into A Carbon Steerer Tube',
+    youtubeId: '_R9XwPMw2WA',
+    group: 'cockpit',
+    section: 'steuersatz',
+    language: 'Englisch',
+    description: 'Kompressionsstopfen setzen, Lager vorspannen und den Vorbau mit [[drehmoment-set|Drehmoment]] festziehen.',
+  },
   { title: 'Lenkerband wickeln', group: 'cockpit', description: 'Sauber und straff – auch um den Bremshebel.' },
-  { title: 'Sitzposition einstellen', group: 'cockpit', description: 'Sitzhöhe, Sattelposition und Cleats.' },
+  {
+    title: 'How To Fit New Cleats To Your Cycling Shoes',
+    youtubeId: 'CvIuJok2VE8',
+    group: 'cockpit',
+    section: 'pedale',
+    language: 'Englisch',
+    description: 'Cleats an den Radschuhen positionieren und festschrauben – Ausgangsstellung für schmerzfreie Knie.',
+  },
+  {
+    title: 'How To Perform A Basic Bike Fit',
+    youtubeId: '1VYhyppWTDc',
+    group: 'cockpit',
+    section: 'cockpit-montage',
+    language: 'Englisch',
+    description: 'Sitzhöhe, Sattelposition und Lenkerhöhe selbst einstellen – die Grundeinstellung ohne Bikefitter.',
+  },
 ]

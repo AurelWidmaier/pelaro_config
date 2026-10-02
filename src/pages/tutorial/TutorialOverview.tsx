@@ -8,6 +8,11 @@ import { VideoGrid } from './TutorialParts'
 import styles from './Tutorial.module.css'
 
 /** Alte Links (/tutorial#kette, /tutorial#gruppe-bremsen) zeigen auf die neue Themenseite. */
+/** Manche Videos hängen an mehreren Anleitungen – in der Übersicht nur einmal zeigen. */
+const UNIQUE_VIDEOS = TUTORIAL_VIDEOS.filter(
+  (video, i) => !video.youtubeId || TUTORIAL_VIDEOS.findIndex((v) => v.youtubeId === video.youtubeId) === i,
+)
+
 function legacyTarget(hash: string): string | null {
   const id = hash.slice(1)
   if (!id) return null
@@ -90,7 +95,7 @@ export function TutorialOverview() {
         })}
       </div>
 
-      <VideoGrid videos={TUTORIAL_VIDEOS} title="Videos zum Mitmachen" />
+      <VideoGrid videos={UNIQUE_VIDEOS} title="Videos zum Mitmachen" />
     </div>
   )
 }
