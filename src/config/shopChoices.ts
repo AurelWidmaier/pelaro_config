@@ -43,6 +43,26 @@ export const DEFAULT_SHOP_CHOICES: Record<string, { template: string; labels: Re
       }
     }
   },
+  "frame-bxt-tt-219": {
+    "template": "„{size} {extension}-HB“ · Farbe „NO LOGO Black“ (andere Farben ca. +45 €)",
+    "labels": {
+      "size": {
+        "xs": "XS",
+        "s": "S",
+        "m": "M",
+        "l": "L"
+      }
+    }
+  },
+  "groupset-ltwoo-er9-tt": {
+    "template": "„eR9 TT“ (nur eine Variante)",
+    "labels": {
+      "cassette": {
+        "11-34": "CS-R7101-12 11-34T",
+        "11-36": "CS-HG710-12 11-36T"
+      }
+    }
+  },
   "groupset-ltwoo-er7": {
     "template": "„{crankLength}-5034-12s32T“",
     "labels": {}

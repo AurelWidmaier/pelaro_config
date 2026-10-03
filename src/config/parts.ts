@@ -770,7 +770,8 @@ export const DEFAULT_GROUPSET_CATALOG: CatalogGroupset[] = [
         id: 'crankLength',
         label: 'Kurbellänge',
         defaultOptionId: '172.5',
-        options: Object.keys(R7100_CRANK_PRICES).map((length) => ({ id: length, label: `${length.replace('.', ',')} mm` })),
+        // Reihenfolge explizit: Object.keys stellt '172.5' hinter die ganzzahligen Längen
+      options: ['160', '165', '170', '172.5', '175'].map((length) => ({ id: length, label: `${length.replace('.', ',')} mm` })),
       },
       {
         id: 'chainring',
