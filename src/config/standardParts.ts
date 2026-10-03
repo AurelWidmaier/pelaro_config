@@ -1,6 +1,7 @@
 import {
   getConfiguredPrice,
   getConfiguredWeight,
+  getExtraParts,
   hasBottomBracketInSet,
   getSelectedVariantOptions,
   type BikeType,
@@ -47,6 +48,8 @@ export interface SimplePart {
  */
 export interface StandardPartsConfig {
   saddle: SimplePart
+  /** Sattel fürs Zeitfahrrad (kurze Nase). */
+  timetrialSaddle: SimplePart
   barTape: SimplePart
   /** Rennrad-Reifen, Preis/Gewicht für beide Reifen. */
   roadTire: SimplePart
@@ -88,6 +91,12 @@ export const DEFAULT_STANDARD_PARTS: StandardPartsConfig = {
     weight: 135,
     url: 'https://s.click.aliexpress.com/e/_c3ySK67f',
     shopChoice: 'keine Auswahl nötig (nur eine Variante)',
+  },
+  timetrialSaddle: {
+    name: 'BALUGOE TT-Sattel 240 × 125 mm',
+    price: 30.99,
+    url: 'https://s.click.aliexpress.com/e/_c3jbzKw9',
+    shopChoice: '„Nylon“ (runde 7-mm-Streben passen in jede Klemmung)',
   },
   barTape: {
     name: 'BUCKLOS Lenkerband',
@@ -160,6 +169,14 @@ export const DEFAULT_STANDARD_PARTS: StandardPartsConfig = {
       price: 18.89,
       url: 'https://s.click.aliexpress.com/e/_c3MkQtc5',
     },
+    // BXT Triathlon-219: T47 86 mm, Shimano-105-Kurbel mit 24-mm-Achse
+    'frame-bxt-tt-219|groupset-ltwoo-er9-tt': {
+      name: 'KOCEVLO Innenlager T47 86–92 mm',
+      detail: 'T47 für 86-mm-Gehäuse, 24-mm-Achse',
+      shopChoice: '„86-92 24mm Axle“',
+      price: 18.99,
+      url: 'https://s.click.aliexpress.com/e/_c3MkQtc5',
+    },
   },
 }
 
@@ -170,8 +187,8 @@ export function applyStandardParts(value: StandardPartsConfig) {
   config = value
 }
 
-/** Bike-Typen mit Straßen-/Gravel-Ausstattung (700C, Rennlenker). */
-const SUPPORTED_BIKE_TYPES: BikeType[] = ['rennrad', 'gravel']
+/** Bike-Typen mit Straßen-/Gravel-Ausstattung (700C, Renn- oder Zeitfahrlenker). */
+const SUPPORTED_BIKE_TYPES: BikeType[] = ['rennrad', 'gravel', 'timetrial']
 
 /** Gravel-Reifen als wählbares Teil (Preis/Gewicht für beide Reifen). */
 export function getGravelTire() {
@@ -240,6 +257,7 @@ export function getTireWarning(
 export interface StandardPartsContext {
   frame?: CatalogFrame
   groupset?: CatalogGroupset
+  groupsetVariants?: VariantSelection
   wheels?: CatalogWheelset
   wheelsVariants?: VariantSelection
   tireVariants?: VariantSelection
@@ -251,11 +269,12 @@ function rotor(size: number) {
 
 export function getStandardParts(
   bikeType: BikeType | null,
-  { frame, groupset, wheels, wheelsVariants = {}, tireVariants = {} }: StandardPartsContext = {},
+  { frame, groupset, groupsetVariants = {}, wheels, wheelsVariants = {}, tireVariants = {} }: StandardPartsContext = {},
 ): StandardPart[] {
   if (!bikeType || !SUPPORTED_BIKE_TYPES.includes(bikeType)) return []
 
-  const gravel = bikeType !== 'rennrad'
+  const gravel = bikeType === 'gravel'
+  const saddle = bikeType === 'timetrial' ? config.timetrialSaddle : config.saddle
   const rim = selectedRim(wheels, wheelsVariants)
   const [front, rear] = frame?.brakeRotors ?? config.defaultRotors
   // Bringt die Schaltgruppe ein zum Rahmen passendes Lager mit, braucht es kein zusätzliches.
@@ -264,7 +283,7 @@ export function getStandardParts(
   const gravelTire = getGravelTire()
 
   return [
-    { id: 'saddle', label: 'Sattel', ...config.saddle },
+    { id: 'saddle', label: 'Sattel', ...saddle },
     { id: 'bartape', label: 'Lenkerband', ...config.barTape },
     gravel
       ? {
@@ -308,5 +327,7 @@ export function getStandardParts(
           },
         ]),
     ...(bottomBracket ? [{ id: 'bottomBracket', label: 'Innenlager', ...bottomBracket }] : []),
+    // Nicht im Set enthaltene Teile der Schaltgruppe (z. B. Kurbel, Kassette, Kette)
+    ...getExtraParts(groupset, groupsetVariants),
   ]
 }

@@ -14,12 +14,15 @@ Die Kurznamen stehen als `imageKey` in `src/config/parts.ts`:
 | BXT Pro-145 Aero | `bxtPro145` |
 | Spcycle R088 | `spcycleR088` |
 | BXT Gravel 135 | `bxtGravel135` |
+| BXT Triathlon-219 | `bxtTt219` |
 | Elitewheels ENT 2.0 | `ent2` |
 | Elitewheels SLR Gravel | `slr` |
 | RUJIXU RD300 Alu | `rujix` |
+| Elitewheels AERO TT | `aerott` |
 | LTWOO ER7 2x12 | `er7` |
 | LTWOO GRT12 1x12 | `grt12` |
 | LTWOO R9 2x11 | `r9` |
+| LTWOO eR9 TT 2x12 | `er9tt` |
 
 ## Unterordner
 

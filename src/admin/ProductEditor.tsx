@@ -11,13 +11,15 @@ type Data = Record<string, unknown>
 const BIKE_TYPES = Object.keys(BIKE_TYPE_LABEL)
 
 /** Felder, die über das JSON-Feld „Varianten & Preistabelle“ gepflegt werden. */
-const ADVANCED_KEYS = ['variants', 'priceTable', 'sizeChart'] as const
+const ADVANCED_KEYS = ['variants', 'priceTable', 'sizeChart', 'extraParts'] as const
 
 const VARIANTS_HELP = `Varianten: [{ "id": "size", "label": "Rahmengröße", "defaultOptionId": "54",
   "options": [{ "id": "54", "label": "54 cm", "shopLabel": "54cm Matte", "priceDelta": 0, "weight": 1600, "maxTireWidth": 43,
   "specs": [{ "label": "…", "value": "…" }] }] }]
 Preistabelle (optional): [{ "when": { "rimDepth": "50", "bearing": "steel" }, "price": 349.99 }]
-Größentabelle (optional, Rahmen): [{ "size": "54", "minHeight": 172, "maxHeight": 177, "minInseam": 78, "maxInseam": 82, "stack": 541, "reach": 384.8 }]`
+Größentabelle (optional, Rahmen): [{ "size": "54", "minHeight": 172, "maxHeight": 177, "minInseam": 78, "maxInseam": 82, "stack": 541, "reach": 384.8 }]
+Zusatzteile (optional, Schaltgruppe): [{ "id": "chain", "label": "Kette", "name": "…", "url": "…", "price": 25.79, "weight": 252,
+  "shopChoice": "„{cassette}“", "when": { "drivetrain": "shimano-105" }, "priceTable": [{ "when": { "cassette": "11-36" }, "price": 78.39 }] }]`
 
 function emptyData(category: ProductCategory): Data {
   if (category === 'frame') return { name: '', description: '', price: 0, bikeType: 'rennrad', material: 'carbon', image: '' }

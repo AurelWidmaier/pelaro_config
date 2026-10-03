@@ -54,6 +54,17 @@ const SPCYCLE_R088_GEOMETRY: SizeChartRow[] = [
 ]
 
 /**
+ * BXT Triathlon-219: nur Geometrie. Stack = Maß K, Reach = Maß L der
+ * Herstellerzeichnung.
+ */
+const BXT_TT_219_GEOMETRY: SizeChartRow[] = [
+  { size: 'xs', stack: 488.1, reach: 395 },
+  { size: 's', stack: 498.5, reach: 405 },
+  { size: 'm', stack: 518.5, reach: 421 },
+  { size: 'l', stack: 540.4, reach: 442 },
+]
+
+/**
  * Leitet Körpergrößen über Stack + Reach von einem Rahmen mit Herstellertabelle
  * ab (gleiche Radgattung): gleiche Sitzposition ⇒ gleiche Körpergröße.
  */
@@ -79,6 +90,13 @@ export const DEFAULT_SIZE_CHARTS: Record<string, SizeChart> = {
   'frame-bxt-gravel-135': { rows: BXT_GRAVEL_135, source: 'manufacturer' },
   'frame-spcycle-r088': {
     rows: deriveHeights(SPCYCLE_R088_GEOMETRY, BXT_PRO_145),
+    source: 'derived',
+    reference: 'BXT Pro-145',
+  },
+  // Zeitfahrrahmen: tieferer Stack, längerer Reach – die Summe entspricht etwa
+  // der gleichen Körpergröße auf dem Rennrad.
+  'frame-bxt-tt-219': {
+    rows: deriveHeights(BXT_TT_219_GEOMETRY, BXT_PRO_145),
     source: 'derived',
     reference: 'BXT Pro-145',
   },

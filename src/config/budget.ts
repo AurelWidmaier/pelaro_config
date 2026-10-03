@@ -58,8 +58,9 @@ export function getBudgetRange(bikeType: BikeType | null): BudgetRange {
   for (const frame of frames) {
     for (const groupset of groupsets) {
       for (const wheels of wheelsets) {
-        const wheelsVariants = { ...getDefaultVariants(wheels), ...getWheelsLocks(wheels, groupset) }
-        const standard = getStandardParts(bikeType, { frame, groupset, wheels, wheelsVariants })
+        const groupsetVariants = getDefaultVariants(groupset, bikeType)
+        const wheelsVariants = { ...getDefaultVariants(wheels, bikeType), ...getWheelsLocks(wheels, groupset) }
+        const standard = getStandardParts(bikeType, { frame, groupset, groupsetVariants, wheels, wheelsVariants })
           .reduce((sum, p) => sum + p.price, 0)
         const [fMin, fMax] = partPriceRange(frame)
         const [gMin, gMax] = partPriceRange(groupset)

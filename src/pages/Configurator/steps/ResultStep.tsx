@@ -48,7 +48,14 @@ export function ResultStep() {
   const frame = getFrameById(frameId)
   const groupset = getGroupsetById(groupsetId)
   const wheels = getWheelsById(wheelsId)
-  const standardParts = getStandardParts(bikeType, { frame, groupset, wheels, wheelsVariants, tireVariants })
+  const standardParts = getStandardParts(bikeType, {
+    frame,
+    groupset,
+    groupsetVariants,
+    wheels,
+    wheelsVariants,
+    tireVariants,
+  })
   const overBudget = totalPrice > budget
   const toolList = getToolList(frame, groupset, wheels)
   const [exporting, setExporting] = useState(false)

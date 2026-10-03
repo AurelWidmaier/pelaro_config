@@ -98,6 +98,15 @@ export function WheelsStep() {
           locked={wheelsLocks}
         />
       )}
+      {selectedWheels?.rimBrake && (
+        <p className={styles.warning}>
+          ⚠ {selectedWheels.name} ist für Felgenbremsen gebaut – Scheibenbremsen lassen sich nicht montieren.
+          Passt nur an einen Rahmen mit Felgenbrems-Aufnahme.
+        </p>
+      )}
+      {bikeType === 'timetrial' && (
+        <p className={styles.note}>Fürs Zeitfahren empfehlen wir 55–82 mm Felgenhöhe.</p>
+      )}
       {bikeType === 'gravel' && (
         <PartDetails part={getGravelTire()} selection={tireVariants} onChange={setTireVariant} />
       )}

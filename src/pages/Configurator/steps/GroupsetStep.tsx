@@ -2,6 +2,7 @@ import { useConfigurator } from '../../../context/ConfiguratorContext'
 import {
   getConfiguredPrice,
   getConfiguredWeight,
+  getExtraParts,
   getGroupsetById,
   getPriceBracket,
   suggestGroupsets,
@@ -113,6 +114,7 @@ export function GroupsetStep() {
           selection={groupsetVariants}
           onChange={setGroupsetVariant}
           locked={groupsetLocks}
+          extras={getExtraParts(selectedGroupset, groupsetVariants)}
         />
       )}
     </StepShell>

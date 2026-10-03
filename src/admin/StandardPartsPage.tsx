@@ -4,10 +4,11 @@ import { invalidateCatalog } from '../lib/catalog'
 import { supabase } from '../lib/supabase'
 import styles from './Admin.module.css'
 
-type SimpleKey = 'saddle' | 'barTape' | 'roadTire'
+type SimpleKey = 'saddle' | 'timetrialSaddle' | 'barTape' | 'roadTire'
 
 const SIMPLE_PARTS: { key: SimpleKey; label: string; hint: string }[] = [
   { key: 'saddle', label: 'Sattel', hint: '' },
+  { key: 'timetrialSaddle', label: 'Sattel Zeitfahren', hint: 'Nur für Zeitfahrräder.' },
   { key: 'barTape', label: 'Lenkerband', hint: '' },
   { key: 'roadTire', label: 'Rennrad-Reifen', hint: 'Preis und Gewicht für beide Reifen.' },
 ]

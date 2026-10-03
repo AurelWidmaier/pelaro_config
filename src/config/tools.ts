@@ -284,7 +284,7 @@ const GENERAL_TOOL_IDS = [
 ]
 
 /** Kurbeln mit 24-mm-Achse und Kunststoff-Einstellkappe (Hollowtech-Stil), Innenlager BSA-24. */
-const HOLLOWTECH_GROUPSETS = ['groupset-ltwoo-er7']
+const HOLLOWTECH_GROUPSETS = ['groupset-ltwoo-er7', 'groupset-ltwoo-er9-tt']
 /** Kurbeln mit DUB-Achse (29 mm) – Innenlager aus dem Set ist ein DUB-Lager. */
 const DUB_GROUPSETS = ['groupset-ltwoo-r9', 'groupset-ltwoo-grt12']
 

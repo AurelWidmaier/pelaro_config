@@ -146,3 +146,47 @@
   font-weight: 600;
   text-align: right;
 }
+
+.extras {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.extra {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--color-dark);
+}
+
+.extraImage {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: var(--bg-card-media);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+
+.extraText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.extraLabel {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+
+.extraPrice {
+  font-weight: 600;
+  white-space: nowrap;
+}

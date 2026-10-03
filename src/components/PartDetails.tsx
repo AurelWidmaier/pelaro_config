@@ -20,12 +20,22 @@ interface PartDetailsPart {
   variants?: VariantGroup[]
 }
 
+interface ExtraPartPreview {
+  id: string
+  label: string
+  name: string
+  image?: string
+  price: number
+}
+
 interface PartDetailsProps {
   part: PartDetailsPart
   selection: VariantSelection
   onChange: (groupId: string, optionId: string) => void
   /** Von anderen Teilen festgelegte Unterauswahlen – nur die passende Option ist wählbar. */
   locked?: VariantSelection
+  /** Teile, die nicht im Set sind und separat dazukommen (z. B. Kurbel, Kassette). */
+  extras?: ExtraPartPreview[]
 }
 
 /**
@@ -33,7 +43,7 @@ interface PartDetailsProps {
  * plus Unterauswahlen (Größe, Oberfläche, Felgenhöhe, …). Specs einer
  * gewählten Option (z. B. Gewicht je Felgenhöhe) werden mit angezeigt.
  */
-export function PartDetails({ part, selection, onChange, locked = {} }: PartDetailsProps) {
+export function PartDetails({ part, selection, onChange, locked = {}, extras = [] }: PartDetailsProps) {
   const selected = getSelectedVariantOptions(part, selection)
   const optionSpecs = selected.flatMap(({ option }) => option.specs ?? [])
   const weight = getConfiguredWeight(part, selection)
@@ -91,6 +101,24 @@ export function PartDetails({ part, selection, onChange, locked = {} }: PartDeta
           </div>
         </fieldset>
       ))}
+
+      {extras.length > 0 && (
+        <div className={styles.group}>
+          <p className={styles.groupLabel}>Kommt separat dazu</p>
+          <ul className={styles.extras}>
+            {extras.map((extra) => (
+              <li key={extra.id} className={styles.extra}>
+                {extra.image && <img src={extra.image} alt="" className={styles.extraImage} loading="lazy" />}
+                <span className={styles.extraText}>
+                  <span className={styles.extraLabel}>{extra.label}</span>
+                  {extra.name}
+                </span>
+                <span className={styles.extraPrice}>{formatPrice(extra.price)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {specs.length > 0 && (
         <dl className={styles.specs}>

@@ -125,6 +125,10 @@ export const DEFAULT_SHOP_CHOICES: Record<string, { template: string; labels: Re
       }
     }
   },
+  "wheels-elitewheels-aero-tt": {
+    "template": "„ROAD WHEELS“ · „Tubeless compatible“",
+    "labels": {}
+  },
   "wheels-rujixu-rd300": {
     "template": "„700C deep {rimDepth}mm“ · „HG“ · „TA100x12 142x12“ · „{hub}“ · „Center lock“",
     "labels": {

@@ -107,7 +107,8 @@ export function recommendFrameSize(frame: CatalogFrame | undefined, rider: Rider
 
   const chart = getSizeChart(frame)
   const chartRows = new Map(chart?.rows.map((row) => [row.size, row]))
-  const ordered = [...sizes].sort((a, b) => Number(a) - Number(b))
+  // Größen in cm aufsteigend sortieren; Buchstabengrößen (XS–L) bleiben in Katalogreihenfolge.
+  const ordered = sizes.every((s) => !Number.isNaN(Number(s))) ? [...sizes].sort((a, b) => Number(a) - Number(b)) : sizes
   const rows: SizeChartRow[] = ordered.map((size) => chartRows.get(size) ?? { size })
   const hasChart = rows.every((r) => r.minHeight && r.maxHeight)
   const fromManufacturer = hasChart && chart?.source === 'manufacturer'

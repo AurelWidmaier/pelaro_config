@@ -19,10 +19,15 @@ import type { SizeChartRow } from './sizeCharts'
 const frameSpcycleR088 = partImage('frame/spcycle-r088.png')
 const frameBxtPro145 = partImage('frame/bxt-pro-145.png')
 const frameBxtGravel135 = partImage('frame/bxt-gravel-135.png')
+const frameBxtTt219 = partImage('frame/bxt-tt-219.png')
 const wheelsEliteEnt20 = partImage('wheels/elitewheels-ent-2-0.png')
 const wheelsEliteSlrGravel = partImage('wheels/elitewheels-slr-gravel.png')
+const wheelsEliteAeroTt = partImage('wheels/elitewheels-aero-tt.png')
 const groupsetLtwooEr7 = partImage('groupset/ltwoo-er7.png')
 const groupsetLtwooGrt12 = partImage('groupset/ltwoo-grt12.png')
+const groupsetLtwooEr9Tt = partImage('groupset/ltwoo-er9-tt.png')
+const crankShimano105 = partImage('groupset/shimano-105-fc-r7100.png')
+const cassetteShimano105 = partImage('groupset/shimano-105-cs-r7101.png')
 
 // Komplettbike-Bilder als Vorschau für die Bike-Typ-Auswahl
 const previewRennrad = `${ASSET_BASE}/bikes/bxtPro145_ent2_er7.png`
@@ -67,7 +72,7 @@ export function toStoredImage(url: string): string {
  * gepflegt wird das Sortiment dann im Admin unter /admin.
  */
 
-export type BikeType = 'rennrad' | 'gravel' | 'hardtail-mtb'
+export type BikeType = 'rennrad' | 'gravel' | 'timetrial' | 'hardtail-mtb'
 
 export interface BikeTypeInfo {
   id: BikeType
@@ -92,6 +97,13 @@ export const BIKE_TYPES: BikeTypeInfo[] = [
     description: 'Vom vielseitigen Allrounder bis zum schnellen Race-Gravel – für Asphalt, Schotter und Waldwege.',
     image: previewGravel,
     hint: 'Nimm das, wenn du auch Schotter- und Waldwege fahren willst oder noch unsicher bist – der vielseitigste Einstieg.',
+  },
+  {
+    id: 'timetrial',
+    name: 'Zeitfahren / Triathlon',
+    description: 'Aero-Rahmen mit Triathlon-Lenker und tiefen Felgen – für Zeitfahren, Triathlon und schnelle Solo-Kilometer.',
+    image: frameBxtTt219,
+    hint: 'Nimm das, wenn du Triathlon oder Zeitfahren fährst und jede Sekunde im Wind zählt – nicht für Gruppenfahrten gedacht.',
   },
   {
     id: 'hardtail-mtb',
@@ -136,6 +148,8 @@ export interface VariantGroup {
   options: VariantOption[]
   /** Vorauswahl; ohne Angabe die erste Option. */
   defaultOptionId?: string
+  /** Abweichende Vorauswahl je Bike-Typ, z. B. tiefere Felgen fürs Zeitfahren. */
+  defaultByBikeType?: Partial<Record<BikeType, string>>
 }
 
 /** Gewählte Option je Unterauswahl: { [groupId]: optionId }. */
@@ -174,10 +188,10 @@ interface ConfigurablePart {
   priceTable?: { when: VariantSelection; price: number }[]
 }
 
-export function getDefaultVariants(part: ConfigurablePart | undefined): VariantSelection {
+export function getDefaultVariants(part: ConfigurablePart | undefined, bikeType?: BikeType | null): VariantSelection {
   const selection: VariantSelection = {}
   for (const group of part?.variants ?? []) {
-    selection[group.id] = group.defaultOptionId ?? group.options[0].id
+    selection[group.id] = (bikeType && group.defaultByBikeType?.[bikeType]) ?? group.defaultOptionId ?? group.options[0].id
   }
   return selection
 }
@@ -457,6 +471,58 @@ export const DEFAULT_FRAME_CATALOG: CatalogFrame[] = [
   },
   { id: 'frame-gravel-carbon-race', bikeType: 'gravel', material: 'carbon', name: 'Carbon Gravel', description: 'Leichter Carbon-Rahmen mit gedämpfter Fahrt über groben Untergrund.', price: 949, image: frameGravelCarbon },
 
+  // Zeitfahren / Triathlon
+  {
+    id: 'frame-bxt-tt-219',
+    imageKey: 'bxtTt219',
+    bikeType: 'timetrial',
+    material: 'carbon',
+    brand: 'BXT',
+    name: 'BXT Triathlon-219',
+    description: 'T1000-Carbon-Zeitfahrrahmen mit Triathlon-Lenker, Aero-Stütze und Staufach – innen verlegt, nur für elektronische Schaltung.',
+    price: 2120.69,
+    url: 'https://s.click.aliexpress.com/e/_c3u5H8Al',
+    brakeRotors: [140, 140],
+    bottomBracket: 't47',
+    // Rahmen 1650 (M) + Gabel 490 + Basislenker 790 + Aufsatz 390 + Sattelstütze 240
+    weight: 3560,
+    image: frameBxtTt219,
+    photo: true,
+    specs: [
+      { label: 'Einsatz', value: 'Zeitfahren / Triathlon' },
+      { label: 'Material', value: 'Carbon T1000' },
+      {
+        label: 'Lieferumfang',
+        value: 'Rahmen, Gabel, TT-Lenker mit Aufsatz, Sattelstütze, Sattelklemme, Steuersatz, Innenlager T47, Steckachsen, UDH-Schaltauge, Staufach',
+      },
+      { label: 'Gewichtsangabe', value: 'Rahmen bezogen auf Größe M' },
+      { label: 'Lenker', value: 'Basislenker 400 × 80 mm, Aufsatz 321 oder 361 mm' },
+      { label: 'Sattelstütze', value: 'Carbon, 350 mm' },
+      { label: 'Gabelschaft', value: '28,6 mm' },
+      { label: 'Steuersatz', value: 'oben 1-1/8" (41,8 mm), unten 1-1/2" (52 mm)' },
+      { label: 'Tretlager', value: 'T47-Gewinde, 86 mm breit' },
+      { label: 'Achsen VR/HR', value: '12 × 100 mm / 12 × 142 mm Steckachse' },
+      { label: 'Bremsen', value: 'Flat Mount, 140 mm' },
+      { label: 'Schaltung', value: 'nur elektronisch (Di2-kompatibel)' },
+      { label: 'Reifenfreiheit', value: 'max. 700 × 30C' },
+    ],
+    variants: [
+      {
+        id: 'size',
+        label: 'Rahmengröße',
+        defaultOptionId: 'm',
+        options: ['XS', 'S', 'M', 'L'].map((size) => ({ id: size.toLowerCase(), label: size })),
+      },
+      {
+        id: 'extension',
+        label: 'Lenkeraufsatz',
+        options: [
+          { id: '321', label: '321 mm' },
+          { id: '361', label: '361 mm' },
+        ],
+      },
+    ],
+  },
 
   // Hardtail-MTB
   { id: 'frame-hardtail-alu-basic', bikeType: 'hardtail-mtb', material: 'alu', name: 'Alu Hardtail Einstieg', description: 'Stabiler Alu-Rahmen für den Einstieg ins Mountainbiken.', price: 219, image: frameHardtailAlu },
@@ -489,9 +555,66 @@ export interface CatalogGroupset extends ConfigurablePart {
   freehub?: Freehub
   /** Bremsscheiben sind im Set – die Standard-Bremsscheiben entfallen. */
   includesRotors?: boolean
+  /**
+   * Teile, die nicht im Set sind und separat gekauft werden (z. B. Kurbel,
+   * Kassette, Kette). Sie erscheinen bei den Standardkomponenten und hängen
+   * von den Unterauswahlen der Schaltgruppe ab.
+   */
+  extraParts?: ExtraPart[]
+}
+
+/** Separat zu kaufendes Teil einer Schaltgruppe. */
+export interface ExtraPart {
+  id: string
+  label: string
+  name: string
+  url: string
+  price: number
+  weight?: number
+  /** Produktfoto, wird bei der Schaltgruppe unter „kommt separat dazu“ gezeigt. */
+  image?: string
+  /** `{gruppen-id}` wird wie bei `shopChoice` durch die Unterauswahl der Schaltgruppe ersetzt. */
+  shopChoice?: string
+  /** Preis/Gewicht je Kombination der Unterauswahlen; die erste passende Zeile gilt. */
+  priceTable?: { when: VariantSelection; price: number; weight?: number }[]
+  /** Nur dabei, wenn die Unterauswahl passt, z. B. { drivetrain: 'shimano-105' }. */
+  when?: VariantSelection
+}
+
+/** Zusatzteile der Schaltgruppe für die gewählten Unterauswahlen, mit Preis, Gewicht und Händler-Auswahl. */
+export function getExtraParts(groupset: CatalogGroupset | undefined, selection: VariantSelection) {
+  if (!groupset?.extraParts) return []
+  const chosen: VariantSelection = Object.fromEntries(
+    getSelectedVariantOptions(groupset, selection).map(({ group, option }) => [group.id, option.id]),
+  )
+  const matches = (when: VariantSelection) => Object.entries(when).every(([groupId, optionId]) => chosen[groupId] === optionId)
+  return groupset.extraParts
+    .filter((part) => !part.when || matches(part.when))
+    .map((part) => {
+      const row = part.priceTable?.find(({ when }) => matches(when))
+      return {
+        id: part.id,
+        label: part.label,
+        name: part.name,
+        url: part.url,
+        image: part.image,
+        price: row?.price ?? part.price,
+        weight: row ? row.weight : part.weight,
+        shopChoice: getShopChoice({ ...groupset, shopChoice: part.shopChoice }, selection),
+      }
+    })
 }
 
 export type Freehub = 'shimano-hg' | 'sram-xdr' | 'shimano-ms'
+
+/** Preise der Shimano-105-Kurbel FC-R7100 (ohne Innenlager) je Kurbellänge und Kettenblatt. */
+const R7100_CRANK_PRICES: Record<string, [number, number]> = {
+  '160': [96.99, 105.69],
+  '165': [97.39, 105.99],
+  '170': [90.69, 99.69],
+  '172.5': [93.99, 102.69],
+  '175': [87.39, 96.39],
+}
 
 export const DEFAULT_GROUPSET_CATALOG: CatalogGroupset[] = [
   // Mechanisch, 2-fach – passend für Rennrad und Gravel
@@ -612,6 +735,104 @@ export const DEFAULT_GROUPSET_CATALOG: CatalogGroupset[] = [
       },
     ],
   },
+
+  // Zeitfahren – Kurbel, Kassette und Kette sind nicht im Set
+  {
+    id: 'groupset-ltwoo-er9-tt',
+    imageKey: 'er9tt',
+    bikeTypes: ['timetrial'],
+    kind: 'elektronisch',
+    brand: 'LTWOO',
+    name: 'LTWOO eR9 TT 2x12',
+    description: 'Elektronische 2x12-Zeitfahrgruppe mit TT-Bremshebeln, Schalttasten am Aufsatz und hydraulischen Scheibenbremsen. Kurbel, Kassette und Kette kommen von Shimano 105 dazu.',
+    price: 969.39,
+    url: 'https://s.click.aliexpress.com/e/_c3ObDgtj',
+    freehub: 'shimano-hg',
+    image: groupsetLtwooEr9Tt,
+    photo: true,
+    specs: [
+      { label: 'Typ', value: 'Elektronisch, 2 × 12-fach, Zeitfahren' },
+      {
+        label: 'Lieferumfang',
+        value: 'TT-Brems-/Schalthebel, Schalttasten für den Aufsatz, Schaltwerk, Umwerfer, hydraulische Flat-Mount-Bremssättel, Akku 800 mAh, Kabel, USB-C-Ladekabel',
+      },
+      { label: 'Nicht im Set', value: 'Kurbel, Innenlager, Kassette, Kette, Bremsscheiben – kommen separat dazu' },
+      { label: 'Stromversorgung', value: 'Akku (Röhre) im Rahmen bzw. in der Sattelstütze, Laden per USB-C' },
+      { label: 'Bremsen', value: 'Hydraulisch, Flat Mount' },
+    ],
+    variants: [
+      {
+        id: 'drivetrain',
+        label: 'Antrieb',
+        options: [{ id: 'shimano-105', label: 'Shimano 105 (Kurbel R7100, Kassette, Kette)' }],
+      },
+      {
+        id: 'crankLength',
+        label: 'Kurbellänge',
+        defaultOptionId: '172.5',
+        options: Object.keys(R7100_CRANK_PRICES).map((length) => ({ id: length, label: `${length.replace('.', ',')} mm` })),
+      },
+      {
+        id: 'chainring',
+        label: 'Kettenblätter',
+        defaultOptionId: '52-36',
+        options: [
+          { id: '50-34', label: '50/34T' },
+          { id: '52-36', label: '52/36T' },
+        ],
+      },
+      {
+        id: 'cassette',
+        label: 'Kassette',
+        options: [
+          { id: '11-34', label: '11–34T (Shimano 105 R7101)' },
+          { id: '11-36', label: '11–36T (Shimano HG710)' },
+        ],
+      },
+    ],
+    extraParts: [
+      {
+        id: 'crank',
+        label: 'Kurbel',
+        name: 'Shimano 105 FC-R7100 2x12',
+        url: 'https://s.click.aliexpress.com/e/_c3gb13Tx',
+        image: crankShimano105,
+        price: 93.99,
+        // ca. Herstellerangabe für 172,5 mm, 50/34T
+        weight: 754,
+        shopChoice: '„R7100 2X12speed“ · „{crankLength}mm“ · „{chainring}T“ · „Without BB“',
+        when: { drivetrain: 'shimano-105' },
+        priceTable: Object.entries(R7100_CRANK_PRICES).flatMap(([crankLength, [small, large]]) => [
+          { when: { crankLength, chainring: '50-34' }, price: small, weight: 754 },
+          { when: { crankLength, chainring: '52-36' }, price: large, weight: 754 },
+        ]),
+      },
+      {
+        id: 'cassette',
+        label: 'Kassette',
+        name: 'Shimano 105 12-fach Kassette',
+        url: 'https://s.click.aliexpress.com/e/_c3qsNAVT',
+        image: cassetteShimano105,
+        price: 49.39,
+        shopChoice: '„{cassette}“',
+        when: { drivetrain: 'shimano-105' },
+        priceTable: [
+          { when: { cassette: '11-34' }, price: 49.39, weight: 367 },
+          { when: { cassette: '11-36' }, price: 78.39 },
+        ],
+      },
+      {
+        id: 'chain',
+        label: 'Kette',
+        name: 'Shimano CN-M7100 12-fach',
+        url: 'https://s.click.aliexpress.com/e/_c44yWOlx',
+        price: 25.79,
+        weight: 252,
+        shopChoice: '„HG7100-12Speed(126L)“',
+        when: { drivetrain: 'shimano-105' },
+      },
+    ],
+  },
 ]
 
 /* ------------------------------ Laufräder ------------------------------ */
@@ -633,6 +854,8 @@ export interface CatalogWheelset extends ConfigurablePart {
    * Auswahlkarte gezeigt, nicht über den Rahmen auf die Bike-Canvas gelegt.
    */
   photo?: boolean
+  /** Für Felgenbremsen – passt nicht an Rahmen mit Scheibenbremse (Warnung im Konfigurator). */
+  rimBrake?: boolean
 }
 
 function rimSpecs(outer: string, inner: string, erd: string, tires: string): PartSpec[] {
@@ -650,7 +873,7 @@ export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
   {
     id: 'wheels-elitewheels-ent-2-0',
     imageKey: 'ent2',
-    bikeTypes: ['rennrad'],
+    bikeTypes: ['rennrad', 'timetrial'],
     material: 'carbon',
     brand: 'Elitewheels',
     name: 'Elitewheels ENT 2.0',
@@ -673,6 +896,8 @@ export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
         id: 'rimDepth',
         label: 'Felgenhöhe',
         defaultOptionId: '50',
+        // Fürs Zeitfahren sind 55–82 mm empfohlen
+        defaultByBikeType: { timetrial: '60' },
         options: [
           { id: '30', label: '30 mm', weight: 1563, maxTireWidth: 38, specs: rimSpecs('28 mm', '18,5 mm', '579 mm', '700 × 25–38C') },
           { id: '38', label: '38 mm', weight: 1573, maxTireWidth: 43, specs: rimSpecs('28 mm', '21 mm', '563 mm', '700 × 25–43C') },
@@ -712,6 +937,33 @@ export const DEFAULT_WHEELS_CATALOG: CatalogWheelset[] = [
       ]),
       { when: { rimDepth: '82', bearing: 'steel' }, price: 364 },
       { when: { rimDepth: '82', bearing: 'ceramic' }, price: 409 },
+    ],
+  },
+  {
+    id: 'wheels-elitewheels-aero-tt',
+    imageKey: 'aerott',
+    bikeTypes: ['timetrial'],
+    material: 'carbon',
+    brand: 'Elitewheels',
+    name: 'Elitewheels AERO TT',
+    description: 'Zeitfahr-Kombi aus 82-mm-Vorderrad und geschlossenem Scheibenrad hinten – Achtung: nur für Felgenbremse.',
+    price: 922.99,
+    url: 'https://s.click.aliexpress.com/e/_c3DBVtnL',
+    rimBrake: true,
+    image: wheelsEliteAeroTt,
+    photo: true,
+    specs: [
+      { label: 'Bremse', value: 'Felgenbremse – keine Aufnahme für Bremsscheiben' },
+      { label: 'Material', value: 'Carbon, UD matt, PMI-Schaumkern' },
+      { label: 'Laufradgröße', value: '700C' },
+      { label: 'Vorderrad', value: '82 mm hoch, 28 mm breit' },
+      { label: 'Hinterrad', value: 'Scheibenrad, 12 × 142 mm, 1290 g' },
+      { label: 'Reifen', value: 'Tubeless-ready, 700 × 23–28C' },
+      { label: 'Fahrergewicht', value: 'max. 130 kg' },
+    ],
+    variants: [
+      // Nur eine Ausführung; die Felgenhöhe legt die Ventillänge der Schläuche fest.
+      { id: 'rimDepth', label: 'Felgenhöhe', options: [{ id: '82', label: '82 mm vorne, Scheibe hinten', maxTireWidth: 28 }] },
     ],
   },
   { id: 'wheels-rennrad-carbon-aero', bikeTypes: ['rennrad'], material: 'carbon', name: 'Carbon-Laufräder Aero', description: 'Aerodynamische Carbon-Laufräder für maximale Performance.', price: 649, image: wheelsAero },

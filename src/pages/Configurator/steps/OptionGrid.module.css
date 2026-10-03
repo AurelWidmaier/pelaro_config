@@ -9,6 +9,12 @@
   color: var(--color-accent);
 }
 
+.note {
+  margin-top: 16px;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
 .grid {
   display: grid;
   grid-template-columns: 1fr;

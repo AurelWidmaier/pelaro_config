@@ -38,6 +38,11 @@ export const LAYER_POSITIONS: Record<BikeType, FrameLayerConfig> = {
     wheelFront: { xPercent: 77.5, yPercent: 71.7, widthPercent: 33, scale: 1, zIndex: 2 },
     groupset: { xPercent: 44, yPercent: 71.7, widthPercent: 9, scale: 1, zIndex: 3 },
   },
+  timetrial: {
+    wheelRear: { xPercent: 22.5, yPercent: 71.7, widthPercent: 33, scale: 1, zIndex: 2 },
+    wheelFront: { xPercent: 77.5, yPercent: 71.7, widthPercent: 33, scale: 1, zIndex: 2 },
+    groupset: { xPercent: 44, yPercent: 71.7, widthPercent: 9, scale: 1, zIndex: 3 },
+  },
   gravel: {
     wheelRear: { xPercent: 21, yPercent: 73, widthPercent: 35, scale: 1, zIndex: 2 },
     wheelFront: { xPercent: 79, yPercent: 73, widthPercent: 35, scale: 1, zIndex: 2 },

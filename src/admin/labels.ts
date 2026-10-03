@@ -9,5 +9,6 @@ export const CATEGORY_LABEL: Record<ProductCategory, string> = {
 export const BIKE_TYPE_LABEL: Record<string, string> = {
   rennrad: 'Rennrad',
   gravel: 'Gravel',
+  timetrial: 'Zeitfahren',
   'hardtail-mtb': 'Hardtail-MTB',
 }

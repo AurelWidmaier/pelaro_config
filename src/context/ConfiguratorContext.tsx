@@ -118,6 +118,7 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
     const standardParts = getStandardParts(state.bikeType, {
       frame,
       groupset,
+      groupsetVariants,
       wheels,
       wheelsVariants,
       tireVariants: state.tireVariants,
@@ -193,17 +194,17 @@ export function ConfiguratorProvider({ children }: { children: ReactNode }) {
     // Erneutes Anklicken desselben Teils behält die Unterauswahl, ein Wechsel setzt die Defaults.
     selectFrame: (id) =>
       setState((s) =>
-        s.frameId === id ? s : { ...s, frameId: id, frameVariants: getDefaultVariants(getFrameById(id)) },
+        s.frameId === id ? s : { ...s, frameId: id, frameVariants: getDefaultVariants(getFrameById(id), s.bikeType) },
       ),
     selectGroupset: (id) =>
       setState((s) =>
         s.groupsetId === id
           ? s
-          : { ...s, groupsetId: id, groupsetVariants: getDefaultVariants(getGroupsetById(id)) },
+          : { ...s, groupsetId: id, groupsetVariants: getDefaultVariants(getGroupsetById(id), s.bikeType) },
       ),
     selectWheels: (id) =>
       setState((s) =>
-        s.wheelsId === id ? s : { ...s, wheelsId: id, wheelsVariants: getDefaultVariants(getWheelsById(id)) },
+        s.wheelsId === id ? s : { ...s, wheelsId: id, wheelsVariants: getDefaultVariants(getWheelsById(id), s.bikeType) },
       ),
     setFrameVariant: (groupId, optionId) =>
       setState((s) => ({ ...s, frameVariants: { ...s.frameVariants, [groupId]: optionId } })),
